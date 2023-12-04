@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material'
 import React from 'react'
 import { makeStyles } from "tss-react/mui";
-
-import backgroundImage from "../Assest/Images/authBack.png"
 import { Button } from '@mui/base';
+import backgroundImage from "../Assets/Images/authBack.png"
+import CommonTextField from './Fields/TextField';
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -27,7 +27,8 @@ const useStyles = makeStyles()((theme) => {
     };
 });
 
-const AuthLayout = () => {
+
+const AuthLayout = ({children}) => {
     const { classes } = useStyles();
     return (
         <Box className={classes?.mainBox}>
@@ -36,6 +37,7 @@ const AuthLayout = () => {
                 <Typography style={{ fontSize: '45px', fontWeight: 600, textAlign: 'center', marginTop: '20px' }}>Login</Typography>
                 <Typography style={{ fontSize: '18px', fontWeight: 400, textAlign: 'center', color: '#737791', marginTop: '15px' }}>Please login to your account</Typography>
                 <Typography style={{ fontSize: '18px', fontWeight: 500, textAlign: 'center', marginTop: '20px', color: '#5D5FEF' }}>Forgot Password ?</Typography>
+            {children}
             </Box>
         </Box>
     )
