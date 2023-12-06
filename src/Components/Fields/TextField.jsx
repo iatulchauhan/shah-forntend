@@ -1,6 +1,5 @@
 import {
   InputLabel,
-  OutlinedInput,
   Typography,
   Box,
   InputAdornment,
@@ -18,8 +17,8 @@ const useStyles = makeStyles()((theme) => {
     main: {
       background: theme?.palette?.bgWhite?.main,
       minWidth: "50px",
-      ".MuiInputBase-input":{
-        height:"20px"
+      ".MuiInputBase-input": {
+        height: "20px"
       },
       "&:hover": {
         borderColor: `${theme?.palette?.primary?.main} !important`,
@@ -29,6 +28,7 @@ const useStyles = makeStyles()((theme) => {
       },
       ".MuiOutlinedInput-notchedOutline": {
         borderColor: "#EDF2F6",
+        borderRadius: '12px',
       },
       ".Mui-focused .MuiOutlinedInput-notchedOutline": {
         borderColor: `${theme?.palette?.primary?.main} !important`,
@@ -113,21 +113,23 @@ const CommonTextField = ({
         </Box>
       )}
       <TextField
+        fullWidth
         name={name}
         value={value}
-        onChange={(e) => {
-          const value = e.target.value;
-          const strippedValue = value.replace(regex, '');
-          const modifiedEvent = {
-            ...e,
-            target: {
-              ...e.target,
-              name: name,
-              value: strippedValue,
-            },
-          };
-          onChange(modifiedEvent)
-        }}
+        // onChange={(e) => {
+        //   const value = e.target.value;
+        //   const strippedValue = value.replace(regex, '');
+        //   const modifiedEvent = {
+        //     ...e,
+        //     target: {
+        //       ...e.target,
+        //       name: name,
+        //       value: strippedValue,
+        //     },
+        //   };
+        //   onChange(modifiedEvent)
+        // }}
+        onChange={onChange}
         type={
           type == "password"
             ? showPassword && showPasswordToggle
@@ -136,7 +138,7 @@ const CommonTextField = ({
             : type
         }
         placeholder={placeholder}
-        sx={{ height: height || 52, width: width, bgcolor: bgcolor,borderRadius:"5px" }}
+        sx={{ height: height || 52, width: width, bgcolor: bgcolor, borderRadius: "5px" }}
         multiline={multiline}
         rows={rows}
         className={`${classes?.main} ${className}`}
@@ -158,6 +160,7 @@ const CommonTextField = ({
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
                   edge="end"
+                  style={{ color: showPassword ? '#5D5FEF' : '#5D5FEF' }}
                 >
                   {showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
@@ -167,7 +170,6 @@ const CommonTextField = ({
         }}
         onBlur={onBlur}
         disabled={disabled ? disabled : false}
-
       />
     </>
   );
