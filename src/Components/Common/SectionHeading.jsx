@@ -3,6 +3,7 @@ export default function SectionHeading({
     title,
     variant,
     style,
+    fontWeight,
     noWrap = true,
     color = "inherit"
 }) {
@@ -11,8 +12,9 @@ export default function SectionHeading({
             <Typography
                 noWrap={noWrap}
                 variant={variant || "subtitle1"}
-                style={{ fontWeight: "inherit", ...style }}
+                style={{ ...style }}
                 color={color}
+                fontWeight={fontWeight ? fontWeight : "inherit"}
             >
                 {title}
             </Typography>
