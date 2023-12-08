@@ -5,6 +5,7 @@ import { Regex } from '../../Utils/regex'
 import CommonTextField from '../../Components/Common/Fields/TextField'
 import TextLabel from '../../Components/Common/Fields/TextLabel'
 import CommonButton from '../../Components/Common/Button/CommonButton'
+import { lightTheme } from '../../theme'
 
 
 const Login = () => {
@@ -87,7 +88,7 @@ const Login = () => {
             <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={error?.password} />
           </Grid>
           <Grid item xs={10} sm={10} md={10} lg={10}>
-            <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', marginTop: '40px', color: '#5D5FEF' }}>{'Forgot Password ?'}</Typography>
+            <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', marginTop: '40px', color: lightTheme.palette.primary.main }}>{'Forgot Password ?'}</Typography>
             <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
               <CommonButton
                 width={'25%'}

@@ -24,6 +24,15 @@ export const defaultBgPurple = "#646CE1";
 export const defaultBgTrendGreen = "#ECF8F3";
 export const defaultBgTrendRed = "#FDE8EB";
 export const defaultBgTrendOrange = "#FFF5E5";
+export const defaultBgLightRed = "#F14336";
+export const defaultBgDarkPrimary = "#151D48";
+export const defaultBgLightSuccess = "#44B631";
+export const defaultBgLightExtraPrimary = "rgba(93, 95, 239, 0.2)";
+export const defaultBgLightExtraSuccess = "rgba(113, 239, 93, 0.2)";
+export const defaultBgLightExtraRed = "rgba(235, 87, 87, 0.2)";
+
+
+
 export const lightTheme = createTheme({
   palette: {
     mode: "light",
@@ -93,6 +102,26 @@ export const lightTheme = createTheme({
     bgTrendOrange: {
       main: defaultBgTrendOrange,
     },
+    bgLightRed: {
+      main: defaultBgLightRed,
+    },
+    bgDarkPrimary: {
+      main: defaultBgDarkPrimary,
+    },
+    bgLightSuccess: {
+      main: defaultBgLightSuccess,
+    },
+
+    bgLightExtraPrimary: {
+      main: defaultBgLightExtraPrimary,
+    },
+    bgLightExtraSuccess: {
+      main: defaultBgLightExtraSuccess,
+    },
+    bgLightExtraRed: {
+      main: defaultBgLightExtraRed,
+    },
+
     background: { default: "#EFEFEF" },
   },
   typography: {

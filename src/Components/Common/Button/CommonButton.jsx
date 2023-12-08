@@ -18,6 +18,8 @@ const CommonButton = ({
     fullWidth,
     fontSize,
     padding,
+    background,
+    borderRadius
 
 }) => {
     const theme = useTheme();
@@ -27,7 +29,7 @@ const CommonButton = ({
             type={type}
             variant={variant || "contained"}
             color={`${color === "error" ? "error" : "primary"}`}
-            sx={{ width: width, height: height, fontSize: fontSize, whiteSpace: "nowrap", padding: padding }}
+            sx={{ width: width, height: height, fontSize: fontSize, whiteSpace: "nowrap", padding: padding, background: background, borderRadius: borderRadius }}
             disableElevation
             startIcon={startIcon}
             endIcon={endIcon}

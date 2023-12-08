@@ -11,6 +11,7 @@ import { makeStyles } from "tss-react/mui";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import emojiRegex from "emoji-regex";
+import { lightTheme } from "../../../theme";
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -99,7 +100,7 @@ const CommonTextField = ({
               marginRight: "3px",
               fontWeight: fontWeight,
               fontSize: "15px",
-              color: '#151D48',
+              color: lightTheme.palette.bgDarkPrimary.main,
               padding: '3px',
             }}
           >
@@ -160,7 +161,7 @@ const CommonTextField = ({
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
                   edge="end"
-                  style={{ color: showPassword ? '#5D5FEF' : '#5D5FEF' }}
+                  style={{ color: showPassword ? lightTheme.palette.primary.main : lightTheme.palette.primary.main }}
                 >
                   {showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>

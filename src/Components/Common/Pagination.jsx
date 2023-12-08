@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, IconButton } from '@mui/material';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
+import { lightTheme } from '../../theme';
 
 const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPageChange }) => {
     const handlePageChange = (newPage) => {
@@ -42,7 +43,7 @@ const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPag
                 >
                     <FirstPageIcon />
                 </IconButton>
-                <Box sx={{ backgroundColor: '#5D5FEF', padding: { xs: '0px 8px', sm: '6px 11px' }, borderRadius: "5px", color: 'white', fontSize: '13px' }}>{page + 1}</Box>
+                <Box sx={{ backgroundColor: lightTheme.palette.primary.main, padding: { xs: '0px 8px', sm: '6px 11px' }, borderRadius: "5px", color: 'white', fontSize: '13px' }}>{page + 1}</Box>
                 <IconButton
                     onClick={() => handlePageChange(page + 1)}
                     disabled={page >= maxPage}

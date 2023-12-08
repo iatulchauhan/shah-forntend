@@ -1,8 +1,10 @@
-import { Box, InputBase, alpha, styled } from '@mui/material'
-import React from 'react'
+import { Box, Grid, InputBase, alpha, styled } from '@mui/material'
+import React, { useState } from 'react'
 import SectionHeading from './SectionHeading'
 import CommonButton from './Button/CommonButton'
 import SearchIcon from '@mui/icons-material/Search';
+import { lightTheme } from '../../theme';
+import SelectDropDown from './SelectDropDown';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -27,7 +29,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#5D5FEF'
+    color: lightTheme.palette.primary.main
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -39,14 +41,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
         [theme.breakpoints.up('sm')]: {
-            width: '12ch',
+            // width: '12ch',
             '&:focus': {
                 width: '20ch',
             },
         },
     },
 }));
-const TableHeading = ({ title, buttonText, onClick }) => {
+const TableHeading = ({ title, buttonText, onClick, showSelectDropDown }) => {
+    const [data, setData] = useState({})
+    const credit = ['Gujarat ', 'Gujarat']
+
     return (
         <Box style={{
             borderBottom: '1px solid #e3e1e1',
@@ -59,7 +64,7 @@ const TableHeading = ({ title, buttonText, onClick }) => {
                 style={{
                     fontSize: "18px",
                     fontWeight: 600,
-                    color: '#151D48',
+                    color: lightTheme.palette.bgDarkPrimary.main,
                     marginTop: '5px'
                 }}
             />
@@ -69,16 +74,29 @@ const TableHeading = ({ title, buttonText, onClick }) => {
                         <SearchIcon />
                     </SearchIconWrapper>
                     <StyledInputBase
-                        placeholder="Search…"
+                        placeholder="Search here..."
                         inputProps={{ 'aria-label': 'search' }}
                     />
                 </Search>
-                <CommonButton
+                {onClick && <CommonButton
                     text={buttonText}
                     type="submit"
                     fontSize="13px"
                     onClick={onClick}
-                />
+                />}
+                {showSelectDropDown && (
+                    <SelectDropDown
+                        fullWidth
+                        size={'small'}
+                        width={'130px'}
+                        values={credit || []}
+                        value={data?.credit}
+                        name="state"
+                        onChange={(e) => {
+                            setData({ ...data, state: e.target.value });
+                        }}
+                    />
+                )}
             </Box>
         </Box>
     )

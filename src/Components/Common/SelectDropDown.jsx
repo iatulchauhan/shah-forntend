@@ -8,6 +8,7 @@ import {
     MenuItem,
 } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
+import { lightTheme } from "../../theme";
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -81,40 +82,33 @@ const SelectDropDown = ({
     onChange,
     name,
     value,
-    label,
     defaultValue,
     defaultChecked,
     disabled,
     fontWeight,
     labelSize,
-    multiple,
-    children,
     rejection,
     className,
     size,
     backgroundColor,
     color,
     sx,
-    borderRadius
 }) => {
     const { classes, cx } = useStyles();
-    console.log(value, 'value');
     return (
         <>
             {text && (
                 <Box
                     mt={1.5}
-                    // mb={1}
                     display="flex"
                     fontSize="12px"
                     flexDirection={"row"}
-                // gap={0.5}
                 >
-                    <InputLabel sx={{ fontWeight: fontWeight, fontSize: labelSize || "15px", marginRight: "2px", color: '#151D48', padding: '3px', }}>
+                    <InputLabel sx={{ fontWeight: fontWeight, fontSize: labelSize || "15px", marginRight: "2px", color: lightTheme.palette.bgDarkPrimary.main, padding: '3px', }}>
                         {text}
                     </InputLabel>
                     {valid && (
-                        <Typography color="#EF627A" component={"caption"} variant={"body2"}>
+                        <Typography style={{ color: lightTheme.palette.defaultBgRejectColor.main }} component={"caption"} variant={"body2"}>
                             *
                         </Typography>
                     )}
@@ -134,7 +128,7 @@ const SelectDropDown = ({
                     sx={sx}
                     renderValue={(selected) => {
                         if (selected === "") {
-                            return <span style={{ color: color || "#00000070", }}>Select</span>;
+                            return <span style={{ color: color || "#00000070" }}>Select</span>;
                         }
                         return (
                             <span style={{ color: color || "#00000070" }}>
@@ -149,7 +143,7 @@ const SelectDropDown = ({
                         color: color || 'white',
                         width: width || '120px',
                         borderRadius: "10px",
-                        height: size === 'medium' ? '52px' : 'auto'
+                        height: size === 'medium' ? '52px' : size === 'small' ? '39px' : 'auto',
                     }}
                     inputProps={{
                         classes: {

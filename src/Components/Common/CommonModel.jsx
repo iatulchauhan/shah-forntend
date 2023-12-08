@@ -4,6 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import { Box } from "@mui/material";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { makeStyles } from 'tss-react/mui';
+import { lightTheme } from '../../theme';
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -43,10 +44,10 @@ const CommonModal = ({ onClose, open, title, content }) => {
                     width={30}
                     height={30}
                     borderRadius={2}
-                    sx={{ backgroundColor: "#F14336", cursor: "pointer" }}
+                    sx={{ backgroundColor: lightTheme.palette.bgLightRed.main, cursor: "pointer" }}
                     onClick={() => onClose()}
                 >
-                    <CloseOutlinedIcon sx={{ color: "#fff", fontSize: "18px" }} />
+                    <CloseOutlinedIcon sx={{ color: lightTheme.palette.bgWhite.main, fontSize: "18px" }} />
                 </Box>
             </DialogTitle>
             <Box sx={{ overflow: 'auto' }}>
