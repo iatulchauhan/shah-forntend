@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          {/* <Route path="/user" element={<User />} /> */}
+          <Route path="/user" element={<User />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

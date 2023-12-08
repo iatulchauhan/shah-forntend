@@ -89,18 +89,18 @@ const CommonTextField = ({
       {text && (
         <Box
           mt={1.5}
-          mb={1}
+          // mb={1}
           display="flex"
           fontSize="12px"
           flexDirection={"row"}
-        // gap={0.5}
         >
           <InputLabel
             sx={{
-              marginRight: "2px",
+              marginRight: "3px",
               fontWeight: fontWeight,
-              fontSize: "14px",
-              color: labelColor,
+              fontSize: "15px",
+              color: '#151D48',
+              padding: '3px',
             }}
           >
             {text}

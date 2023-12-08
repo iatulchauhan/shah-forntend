@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import AuthLayout from '../../Components/AuthLayout'
 import { Box, Grid } from '@mui/material'
-import CommonTextField from '../../Components/Fields/TextField'
-import CommonButton from '../../Components/Button/CommonButton'
-import TextLabel from '../../Components/Fields/TextLabel'
+import CommonTextField from '../../Components/Common/Fields/TextField'
 import { Regex } from '../../Utils/regex'
+import TextLabel from '../../Components/Common/Fields/TextLabel'
+import CommonButton from '../../Components/Common/Button/CommonButton'
 
 const Register = () => {
     //States 

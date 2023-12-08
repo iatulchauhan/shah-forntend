@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import AuthLayout from '../../Components/AuthLayout'
-import CommonTextField from '../../Components/Fields/TextField'
 import { Box, Grid, Typography } from '@mui/material'
-import CommonButton from '../../Components/Button/CommonButton'
-import TextLabel from '../../Components/Fields/TextLabel'
 import { Regex } from '../../Utils/regex'
+import CommonTextField from '../../Components/Common/Fields/TextField'
+import TextLabel from '../../Components/Common/Fields/TextLabel'
+import CommonButton from '../../Components/Common/Button/CommonButton'
 
 
 const Login = () => {
@@ -46,6 +46,7 @@ const Login = () => {
       handleValidation()
     }
   }
+
   const handleLoginClick = () => {
     setIsSubmit(true)
     if (handleValidation()) {
@@ -53,7 +54,6 @@ const Login = () => {
     }
   }
 
-  console.log("error", error)
 
   return (
     <>
