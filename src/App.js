@@ -16,6 +16,7 @@ import Email from "./Pages/Email";
 import VerifyAttendance from "./Pages/VerifyAttendance";
 import ModifyPlan from "./Pages/ModifyPlan";
 import AssignFile from "./Pages/AssignFile";
+import Reminder from "./Pages/Reminder";
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
           <Route path="/verify-attendance" element={<VerifyAttendance />} />
           <Route path="/modify-plan" element={<ModifyPlan />} />
           <Route path="/assign-file" element={<AssignFile />} />
+          <Route path="/remider" element={<Reminder />} />
+
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

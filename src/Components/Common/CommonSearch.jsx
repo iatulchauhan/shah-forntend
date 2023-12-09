@@ -38,7 +38,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
         [theme.breakpoints.up('sm')]: {
-            width: '12ch',
+            // width: '12ch',
             '&:focus': {
                 width: '20ch',
             },
@@ -46,14 +46,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-const CommonSearch = ({placeholder}) => {
+const CommonSearch = ({ placeholder }) => {
     return (
         <Search>
             <SearchIconWrapper>
                 <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-                placeholder={placeholder ? placeholder : "Search…"}
+                placeholder={placeholder ? placeholder : "Search here..."}
                 inputProps={{ 'aria-label': 'search' }}
             />
         </Search>
