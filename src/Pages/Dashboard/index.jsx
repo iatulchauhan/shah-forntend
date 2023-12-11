@@ -278,12 +278,7 @@ const Dashboard = () => {
                                         {upcomingData.map((item) => {
                                             return (
                                                 <Box backgroundColor={item.backgroundColor} padding={2} marginBottom={1} sx={{
-                                                    borderLeft: `5px solid ${item.borderColor}`, minWidth: "300px", overflowX: "scroll", "::-webkit-scrollbar": {
-                                                        width: "0.5px"
-                                                    },
-                                                    "::-webkit-scrollbar-thumb": {
-                                                        backgroundColor: "transparent"
-                                                    }
+                                                    borderLeft: `5px solid ${item.borderColor}`, minWidth: "300px"
                                                 }}>
                                                     <Box display={"flex"} justifyContent={"space-between"}>
                                                         <Box display={"flex"} gap={1}>
@@ -336,12 +331,7 @@ const Dashboard = () => {
                                         {past.map((item) => {
                                             return (
                                                 <Box backgroundColor={item.backgroundColor} padding={2} marginBottom={1} sx={{
-                                                    borderLeft: `5px solid ${item.borderColor}`, minWidth: "300px", overflowX: "scroll", "::-webkit-scrollbar": {
-                                                        width: "0.5px"
-                                                    },
-                                                    "::-webkit-scrollbar-thumb": {
-                                                        backgroundColor: "transparent"
-                                                    }
+                                                    borderLeft: `5px solid ${item.borderColor}`, minWidth: "300px"
                                                 }}>
                                                     <Box display={"flex"} justifyContent={"space-between"}>
                                                         <Box display={"flex"} gap={1}>
@@ -388,12 +378,7 @@ const Dashboard = () => {
                                         {ongoing.map((item) => {
                                             return (
                                                 <Box backgroundColor={item.backgroundColor} padding={2} marginBottom={1} sx={{
-                                                    borderLeft: `5px solid ${item.borderColor}`, minWidth: "300px", overflowX: "scroll", "::-webkit-scrollbar": {
-                                                        width: "0.5px"
-                                                    },
-                                                    "::-webkit-scrollbar-thumb": {
-                                                        backgroundColor: "transparent"
-                                                    }
+                                                    borderLeft: `5px solid ${item.borderColor}`, minWidth: "300px",
                                                 }}>
                                                     <Box display={"flex"} justifyContent={"space-between"}>
                                                         <Box display={"flex"} gap={1}>
