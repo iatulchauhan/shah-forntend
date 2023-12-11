@@ -15,7 +15,6 @@ import Assets from '../../Components/Common/ImageContainer';
 import PaperContainer from '../../Components/Common/PaperContainer';
 import TableHeading from '../../Components/Common/CommonTableHeading';
 import CommonPagination from '../../Components/Common/Pagination';
-import Footer from '../../Components/Footer';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -171,9 +170,7 @@ const Investment = () => {
                         onPageChange={handleChangePage}
                     />
                 </Box>
-            </PaperContainer>          
-            <Footer />
-
+            </PaperContainer>
         </>
     )
 }

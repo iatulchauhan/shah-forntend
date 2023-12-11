@@ -6,6 +6,7 @@ const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
   const [auth_token, setAuth_token] = useState(getLSItem("auth_token"));
+  const [sideBarOpen, setSideBarOpen] = useState(true);
   const [user, setUser] = useState(
     getLSItem("user") ? JSON.parse(getLSItem("user")) : null
   );
@@ -89,6 +90,10 @@ const AppProvider = ({ children }) => {
     setWishList(item);
   };
 
+  const toggleSideBar = () => {
+    setSideBarOpen(!sideBarOpen);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -110,6 +115,7 @@ const AppProvider = ({ children }) => {
         OnUpdateCart,
         OnUpdateWishList,
         onUpdateUserType,
+        toggleSideBar,
       }}
     >
       {children}

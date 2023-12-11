@@ -21,12 +21,15 @@ import NewFile from "./Pages/NewFile";
 import Investment from "./Pages/Investment";
 import Profile from "./Pages/Profile";
 import Dashboard from "./Pages/Dashboard";
+import Home from "./Pages/Home";
+import Layout from "./Components/Layout";
 
 function App() {
   return (
     <BrowserRouter basename={"/"}>
       <ThemeProvider theme={lightTheme}>
         <Loader />
+        <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
@@ -48,6 +51,11 @@ function App() {
           <Route path="/investment" element={<Investment />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
+      </Layout>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+      </Routes>
       </ThemeProvider>
     </BrowserRouter>
   );

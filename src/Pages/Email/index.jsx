@@ -9,7 +9,6 @@ import Star from "../../Assets/Icon/star.png"
 import Preview from "../../Assets/Icon/preview.png"
 import Frame from "../../Assets/Icon/frame.png"
 import Share from "../../Assets/Icon/share.png"
-import Footer from '../../Components/Footer';
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 import Assets from '../../Components/Common/ImageContainer';
 
@@ -122,8 +121,6 @@ const Email = () => {
                     </Box>
                 </Grid>
             </Grid>
-
-            <Footer />
         </>
     )
 }

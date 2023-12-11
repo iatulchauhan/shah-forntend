@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Typography, Divider } from '@mui/material'
 import { makeStyles } from "tss-react/mui";
-import { lightTheme } from '../theme';
 
 
 const useStyles = makeStyles()((theme) => {
@@ -31,7 +30,7 @@ const useStyles = makeStyles()((theme) => {
         footerLinkText: {
             fontSize: "16px",
             fontWeight: "600",
-            color: lightTheme.palette.bgDarkPrimary.main,
+            color: theme.palette.bgDarkPrimary.main,
             [theme.breakpoints.down("sm")]: {
                 fontSize: "12px",
             }

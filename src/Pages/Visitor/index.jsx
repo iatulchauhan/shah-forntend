@@ -21,7 +21,6 @@ import SelectDropDown from '../../Components/Common/SelectDropDown';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import CommonPagination from '../../Components/Common/Pagination';
-import Footer from '../../Components/Footer';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -424,8 +423,6 @@ const Visitor = () => {
                     </Box>
                 }
             />
-            <Footer />
-
         </>
     )
 }
