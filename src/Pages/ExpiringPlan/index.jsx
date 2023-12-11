@@ -92,8 +92,8 @@ const rows = [
         activePlan: 'Lorem ipsum',
         expiringPlan: '10 Days',
     },
-   
-    
+
+
 ];
 const ExpiringPlan = () => {
     const { classes } = useStyles();
@@ -107,13 +107,13 @@ const ExpiringPlan = () => {
         setRowsPerPage(value);
         setPage(0);
     };
- 
+
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Expiring Plan"/>
+                        <TableHeading title="Expiring Plan" />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -126,7 +126,7 @@ const ExpiringPlan = () => {
                                         <StyledTableCell>Email Id</StyledTableCell>
                                         <StyledTableCell>Active Plan</StyledTableCell>
                                         <StyledTableCell>Expiring In</StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -141,7 +141,7 @@ const ExpiringPlan = () => {
                                             <StyledTableCell>{row.activePlan}</StyledTableCell>
                                             <StyledTableCell>{row.expiringPlan}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"center"} gap={1}>
+                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}
@@ -171,7 +171,7 @@ const ExpiringPlan = () => {
                         onPageChange={handleChangePage}
                     />
                 </Box>
-            </PaperContainer>          
+            </PaperContainer>
             <Footer />
 
         </>

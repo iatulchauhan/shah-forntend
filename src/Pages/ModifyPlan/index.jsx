@@ -14,7 +14,7 @@ const useStyles = makeStyles()((theme) => {
             borderRadius: '20px',
             border: '1px solid #F8F9FA',
             boxShadow: '0px 4px 20px 0px rgba(238, 238, 238, 0.50)',
-            background: '#fff'
+            background: '#fff',
         },
         CardContent: {
             padding: "20px 0px",
@@ -32,7 +32,7 @@ const ModifyPlan = () => {
                 <Grid item lg={3} >
                     <Card className={classes.card}>
                         <CardMedia
-                            sx={{ height: 140, background: "#EDF2F6" }}
+                            sx={{ height: 140, background: "#EDF2F6", borderRadius: '16px' }}
                             image=""
                         />
                         <CardContent className={classes.CardContent}>
@@ -45,7 +45,7 @@ const ModifyPlan = () => {
                 <Grid item lg={3} >
                     <Card className={classes.card}>
                         <CardMedia
-                            sx={{ height: 140, background: "#EDF2F6" }}
+                            sx={{ height: 140, background: "#EDF2F6", borderRadius: '16px' }}
                             image=""
                         />
                         <CardContent className={classes.CardContent}>

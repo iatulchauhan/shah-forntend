@@ -83,7 +83,7 @@ const rows = [
         role: "Accountant",
         inTime: "09:30 AM",
         outTime: "06:30 PM",
-        
+
     },
     {
         key: '2',
@@ -136,7 +136,7 @@ const VerifyAttendance = () => {
                                         <StyledTableCell>Role</StyledTableCell>
                                         <StyledTableCell>Clock In Time</StyledTableCell>
                                         <StyledTableCell>Clock Out Time</StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -151,7 +151,7 @@ const VerifyAttendance = () => {
                                             <StyledTableCell>{row.inTime}</StyledTableCell>
                                             <StyledTableCell>{row.outTime}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"center"} gap={1}>
+                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}

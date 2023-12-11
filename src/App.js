@@ -38,7 +38,7 @@ function App() {
           <Route path="/verify-attendance" element={<VerifyAttendance />} />
           <Route path="/modify-plan" element={<ModifyPlan />} />
           <Route path="/assign-file" element={<AssignFile />} />
-          <Route path="/remider" element={<Reminder />} />
+          <Route path="/reminder" element={<Reminder />} />
 
         </Routes>
       </ThemeProvider>

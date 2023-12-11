@@ -134,7 +134,7 @@ const Payment = () => {
                                         <StyledTableCell>Credit Amount</StyledTableCell>
                                         <StyledTableCell>Date</StyledTableCell>
                                         <StyledTableCell>Total Amount</StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>

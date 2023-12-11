@@ -92,7 +92,7 @@ const rows = [
         roi: '7%',
         totalBalance: '$22000',
     },
-    
+
 ];
 const FinancialData = () => {
     const { classes } = useStyles();
@@ -106,13 +106,13 @@ const FinancialData = () => {
         setRowsPerPage(value);
         setPage(0);
     };
- 
+
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Financial Data History"/>
+                        <TableHeading title="Financial Data History" />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -125,7 +125,7 @@ const FinancialData = () => {
                                         <StyledTableCell>Closing Date</StyledTableCell>
                                         <StyledTableCell>ROI</StyledTableCell>
                                         <StyledTableCell>Total Balance</StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -140,7 +140,7 @@ const FinancialData = () => {
                                             <StyledTableCell>{row.roi}</StyledTableCell>
                                             <StyledTableCell>{row.totalBalance}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"center"} gap={1}>
+                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}
@@ -170,7 +170,7 @@ const FinancialData = () => {
                         onPageChange={handleChangePage}
                     />
                 </Box>
-            </PaperContainer>          
+            </PaperContainer>
             <Footer />
 
         </>

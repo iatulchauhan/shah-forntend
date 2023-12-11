@@ -144,7 +144,7 @@ const MeetingList = () => {
                                         <StyledTableCell>Start Time</StyledTableCell>
                                         <StyledTableCell>Status</StyledTableCell>
                                         <StyledTableCell>Creator</StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>

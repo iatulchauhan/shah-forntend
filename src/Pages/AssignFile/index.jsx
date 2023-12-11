@@ -206,7 +206,7 @@ const AssignFile = () => {
                                         <StyledTableCell>Investment Amount</StyledTableCell>
                                         <StyledTableCell>Plan</StyledTableCell>
                                         <StyledTableCell>Assign To</StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -221,7 +221,7 @@ const AssignFile = () => {
                                             <StyledTableCell>{row.plan}</StyledTableCell>
                                             <StyledTableCell>{row.assignTo}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"center"} gap={1}>
+                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}

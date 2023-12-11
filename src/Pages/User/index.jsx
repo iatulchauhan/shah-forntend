@@ -222,7 +222,7 @@ const User = () => {
                                         <StyledTableCell>Active Plan</StyledTableCell>
                                         <StyledTableCell>Branch</StyledTableCell>
                                         <StyledTableCell>Role</StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>

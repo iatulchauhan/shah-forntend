@@ -212,7 +212,7 @@ const Visitor = () => {
                                         <StyledTableCell>Address</StyledTableCell>
                                         <StyledTableCell>Contact No.</StyledTableCell>
                                         <StyledTableCell>Email Id</StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -226,7 +226,7 @@ const Visitor = () => {
                                             <StyledTableCell>{row.contact}</StyledTableCell>
                                             <StyledTableCell>{row.email}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"center"} gap={1}>
+                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}
