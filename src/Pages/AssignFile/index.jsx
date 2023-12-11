@@ -123,8 +123,8 @@ const AssignFile = () => {
     const state = ['Gujarat ', 'Gujarat']
     const city = ['Surat', 'Ahmadabad']
     const braches = ['Surat', 'Ahmadabad']
-    const roles = ['Surat', 'Ahmadabad']
-    const plan = ['Surat', 'Ahmadabad']
+    const Plan = ['Surat', 'Ahmadabad']
+    const assignTo = ['Surat', 'Ahmadabad']
 
     //States
     const [model, setModel] = useState(false);
@@ -182,6 +182,7 @@ const AssignFile = () => {
         if (handleValidation()) {
 
         }
+        console.log('data', data)
     }
     useEffect(() => {
         if (isSubmit) {
@@ -287,8 +288,8 @@ const AssignFile = () => {
                                     fontWeight={400}
                                     text={'Investment Amount'}
                                     placeholder={"Enter Amount"}
-                                    type='text'
-                                    name='email'
+                                    type='number'
+                                    name='investmetAmount'
                                     value={data?.investmetAmount}
                                     onChange={(e) => handleChange(e, false)}
                                 />
@@ -298,12 +299,12 @@ const AssignFile = () => {
                                 <SelectDropDown
                                     fullWidth
                                     width={'100%'}
-                                    values={braches || []}
+                                    values={Plan || []}
                                     text="Plan"
                                     name="plan"
                                     value={data?.plan}
                                     onChange={(e) => {
-                                        setData({ ...data, braches: e.target.value })
+                                        setData({ ...data, plan: e.target.value })
                                     }}
                                 />
                                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.plan ? error?.plan : ""} />
@@ -312,12 +313,12 @@ const AssignFile = () => {
                                 <SelectDropDown
                                     fullWidth
                                     width={'100%'}
-                                    values={roles || []}
+                                    values={assignTo || []}
                                     text="Assign To"
                                     name="assignTo"
                                     value={data?.assignTo}
                                     onChange={(e) => {
-                                        setData({ ...data, roles: e.target.value })
+                                        setData({ ...data, assignTo: e.target.value })
                                     }}
                                 />
                                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.assignTo ? error?.assignTo : ""} />

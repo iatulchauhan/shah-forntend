@@ -17,6 +17,10 @@ import VerifyAttendance from "./Pages/VerifyAttendance";
 import ModifyPlan from "./Pages/ModifyPlan";
 import AssignFile from "./Pages/AssignFile";
 import Reminder from "./Pages/Reminder";
+import NewFile from "./Pages/NewFile";
+import Investment from "./Pages/Investment";
+import Profile from "./Pages/Profile";
+import Dashboard from "./Pages/Dashboard";
 
 function App() {
   return (
@@ -24,6 +28,7 @@ function App() {
       <ThemeProvider theme={lightTheme}>
         <Loader />
         <Routes>
+          <Route path="/" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/user" element={<User />} />
@@ -39,7 +44,9 @@ function App() {
           <Route path="/modify-plan" element={<ModifyPlan />} />
           <Route path="/assign-file" element={<AssignFile />} />
           <Route path="/reminder" element={<Reminder />} />
-
+          <Route path="/new-file" element={<NewFile />} />
+          <Route path="/investment" element={<Investment />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
@@ -47,3 +54,4 @@ function App() {
 }
 
 export default App;
+  
