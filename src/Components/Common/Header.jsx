@@ -24,8 +24,8 @@ const Header = ({ onClick }) => {
   };
   return (
     <Grid container sx={{ backgroundColor: "white", padding: 1.5, display: "flex", justifyContent: "space-between" }}>
-      <Box display={"flex"} gap={2}>
-        <MenuIcon sx={{ color: "black", alignSelf: "center", width: '36px', height: "36px", cursor: "pointer" }} onClick={onClick} />
+      <Box display={"flex"} alignItems={"center"} gap={2}>
+        <MenuIcon sx={{ color: "black", alignSelf: "center", width: '30px', height: "30px", cursor: "pointer" }} onClick={onClick} />
         <TextLabel title="Dashboard" variant={"h2"} fontWeight={"600"} />
       </Box>
       <Box display={"flex"} justifyContent={"center"} alignItems={"center"} gap={2}>

@@ -160,21 +160,6 @@ const SelectDropDown = ({
                                 </MenuItem>
                             );
                         })}
-                    {menu &&
-                        menu?.map((val, index) => {
-                            return (
-                                <MenuItem value={val?.clientId} key={index.toString()}>
-                                    {val?.clientName}
-                                </MenuItem>
-                            );
-                        })}
-                    {rejection && rejection?.map((val, index) => {
-                        return (
-                            <MenuItem value={val} key={index.toString()}>
-                                {val?.description}
-                            </MenuItem>
-                        );
-                    })}
                 </Select>
             </FormControl >
         </>

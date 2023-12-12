@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 export default function TextLabel({
     title,
     variant,
@@ -26,19 +27,32 @@ export default function TextLabel({
         body1: "14px",
         body2: "12px",
     };
-    if (window.innerWidth <= 600) {
-        variantToFontSize.h1 = "28px";
-        variantToFontSize.h2 = "25px";
-        variantToFontSize.h3 = "24px";
-        variantToFontSize.h4 = "22px";
-        variantToFontSize.h5 = "20px";
-        variantToFontSize.h6 = "18px";
-        variantToFontSize.subtitle1 = "16px";
-        variantToFontSize.subtitle2 = "14px";
-        variantToFontSize.body1 = "13px";
-        variantToFontSize.body2 = "12px";
-    }
-    const responsiveFontSize = fontSize || variantToFontSize[variant];
+    const [responsiveFontSize, setResponsiveFontSize] = useState(
+        fontSize || variantToFontSize[variant]
+    );
+    useEffect(() => {
+        const updateFontSizes = () => {
+            const newVariantToFontSize = { ...variantToFontSize };
+            if (window.innerWidth <= 600) {
+                newVariantToFontSize.h1 = "28px";
+                newVariantToFontSize.h2 = "25px";
+                newVariantToFontSize.h3 = "24px";
+                newVariantToFontSize.h4 = "22px";
+                newVariantToFontSize.h5 = "20px";
+                newVariantToFontSize.h6 = "18px";
+                newVariantToFontSize.subtitle1 = "16px";
+                newVariantToFontSize.subtitle2 = "14px";
+                newVariantToFontSize.body1 = "12px";
+                newVariantToFontSize.body2 = "12px";
+            }
+            setResponsiveFontSize(fontSize || newVariantToFontSize[variant]);
+        };
+        window.addEventListener("resize", updateFontSizes);
+        updateFontSizes();
+        return () => {
+            window.removeEventListener("resize", updateFontSizes);
+        };
+    }, [fontSize, variant]);
     return (
         <Box fontWeight={fontWeight || "fontWeightBold"}>
             <Typography
@@ -56,7 +70,7 @@ export default function TextLabel({
                 }}
                 color={color}
             >
-                {title}{" "}
+                {title}
                 {secondText ? (
                     <span style={{ color: secondTextColor ? secondTextColor : "#333" }}>
                         {secondText}

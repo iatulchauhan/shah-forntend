@@ -22,6 +22,10 @@ import CommonButton from '../../Components/Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import CommonPagination from '../../Components/Common/Pagination';
 import { lightTheme } from '../../theme';
+import AddUser from '../../Components/User';
+import { useAppContext } from '../../Context/context';
+import axios from "../../APiSetUp/axios";
+import swal from 'sweetalert';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -101,10 +105,36 @@ const rows = [
 ];
 const User = () => {
     const { classes } = useStyles();
+    const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
     const state = ['Gujarat ', 'Gujarat']
     const city = ['Surat', 'Ahmadabad']
-    const braches = ['Surat', 'Ahmadabad']
-    const roles = ['Surat', 'Ahmadabad']
+    const branches = ['Surat', 'Ahmadabad']
+    const roles = [
+        {
+            label: "admin",
+            id: "0",
+        },
+        {
+            label: "user",
+            id: "1",
+        },
+        {
+            label: "receptionist",
+            id: "2",
+        },
+        {
+            label: "counsellor",
+            id: "3",
+        },
+        {
+            label: "accountant",
+            id: "4",
+        },
+        {
+            label: "marketing",
+            id: "5",
+        },
+    ]
     const plan = ['Surat', 'Ahmadabad']
 
     //States
@@ -112,8 +142,9 @@ const User = () => {
     const [data, setData] = useState({})
     const [error, setError] = useState({})
     const [isSubmit, setIsSubmit] = useState(false)
+    const [isEdit, setIsEdit] = useState(false)
+    const [userDetails, setUserDetails] = useState([]);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
     const [page, setPage] = React.useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -146,13 +177,13 @@ const User = () => {
             formIsValid = false
             errors['city'] = 'Please select city.'
         }
-        if (!data?.code) {
+        if (!data?.postalCode) {
             formIsValid = false
-            errors['code'] = 'Please enter Postal Code.'
+            errors['postalCode'] = 'Please enter Postal Code.'
         }
-        if (!data?.contactno) {
+        if (!data?.mobileNo) {
             formIsValid = false
-            errors['contactno'] = 'Please enter Contact No.'
+            errors['mobileNo'] = 'Please enter Contact No.'
         }
         if (!data?.email) {
             formIsValid = false;
@@ -161,18 +192,18 @@ const User = () => {
             formIsValid = false;
             errors["invalidEmail"] = "* Invalid email Address";
         }
-        if (!data?.braches) {
+        if (!data?.branch) {
             formIsValid = false
-            errors['braches'] = 'Please select Branches.'
+            errors['branch'] = 'Please select branch.'
         }
-        if (!data?.roles) {
+        if (!data?.userType) {
             formIsValid = false
-            errors['roles'] = 'Please select Assign Roles.'
+            errors['userType'] = 'Please select Assign Roles.'
         }
-        if (!data?.plan) {
-            formIsValid = false
-            errors['plan'] = 'Please select Active Plan.'
-        }
+        // if (!data?.activePlan) {
+        //     formIsValid = false
+        //     errors['activePlan'] = 'Please select Active Plan.'
+        // }
         setError(errors)
         return formIsValid
     }
@@ -184,17 +215,63 @@ const User = () => {
             [name]: value
         }))
     }
-    const handleLoginClick = () => {
-        setIsSubmit(true)
-        if (handleValidation()) {
 
+    const _getUser = () => {
+        toggleLoader();
+        axios.get("admin/users").then((res) => {
+            if (res?.data?.data) {
+                setUserDetails(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+
+    const _addUpdateUser = () => {
+        if (handleValidation()) {
+            toggleLoader();
+            let body = {
+                "name": data?.name,
+                "address": data?.address,
+                "country": data?.country,
+                "state": data?.state,
+                "city": data?.city,
+                "postalCode": data?.postalCode,
+                "mobileNo": data?.mobileNo,
+                "email": data?.email,
+                "branch": data?.branch,
+                "userType": data?.userType,
+                "activePlan": data?.activePlan,
+            }
+            if (data?._id) {
+                body.id = data?._id
+            }
+            axios.post(`admin/users/${data?._id ? "update" : "create"}`, body).then((res) => {
+                if (res?.data?.data) {
+                    swal(res?.data?.message, { icon: "success", timer: 5000, })
+                    setModel(false)
+                    setData({})
+                    setError({})
+                    setIsEdit(false)
+                    _getUser()
+                    // navigate("/")
+                }
+                toggleLoader();
+            }).catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            }
+            );
         }
     }
+
     useEffect(() => {
-        if (isSubmit) {
-            handleValidation()
-        }
-    }, [data])
+        _getUser()
+    }, [])
     return (
         <>
             <PaperContainer elevation={0} square={false}>
@@ -219,24 +296,25 @@ const User = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows.map((row, index) => (
+                                    {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => (
                                         <StyledTableRow key={index} >
                                             <StyledTableCell>{row.key}</StyledTableCell>
                                             <StyledTableCell className={classes.paddedRow} component="th" scope="row">
                                                 {row.name}
                                             </StyledTableCell>
                                             <StyledTableCell>{row.address}</StyledTableCell>
-                                            <StyledTableCell>{row.contact}</StyledTableCell>
+                                            <StyledTableCell>{row.mobileNo}</StyledTableCell>
                                             <StyledTableCell>{row.email}</StyledTableCell>
                                             <StyledTableCell>{row.activePlan}</StyledTableCell>
                                             <StyledTableCell>{row.branch}</StyledTableCell>
-                                            <StyledTableCell>{row.role}</StyledTableCell>
+                                            <StyledTableCell>{row.userType}</StyledTableCell>
                                             <StyledTableCell>
                                                 <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}
                                                         absolutePath={true}
+                                                        onClick={() => { setData(row); setIsEdit(true); setModel(true) }}
                                                     />
                                                     <Assets
                                                         className={classes.viewBox}
@@ -269,166 +347,11 @@ const User = () => {
                 </Box>
             </PaperContainer>
 
-            <CommonModal open={model} onClose={() => setModel(false)} title={"Add New User"}
-                content={
-                    <Box>
-                        <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Name'}
-                                    placeholder={"Enter User Name"}
-                                    type='text'
-                                    name='name'
-                                    value={data?.name}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.name ? error?.name : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Address'}
-                                    placeholder={"Enter Address"}
-                                    type='text'
-                                    name='address'
-                                    value={data?.address}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.address ? error?.address : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Country'}
-                                    placeholder={"Enter Country"}
-                                    type='text'
-                                    name='country'
-                                    value={data?.country}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.country ? error?.country : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={state || []}
-                                    value={data?.state}
-                                    text="State"
-                                    name="state"
-                                    onChange={(e) => {
-                                        setData({ ...data, state: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.state ? error?.state : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={city || []}
-                                    value={data?.city}
-                                    text="City"
-                                    name="city"
-                                    onChange={(e) => {
-                                        setData({ ...data, city: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.city ? error?.city : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Postal Code'}
-                                    placeholder={"Enter Postal Code"}
-                                    type='number'
-                                    name='code'
-                                    value={data?.code}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.code ? error?.code : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Contact No.'}
-                                    placeholder={"Enter Contact No."}
-                                    type='number'
-                                    name='contactno'
-                                    value={data?.contactno}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.contactno ? error?.contactno : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Email'}
-                                    placeholder={"Enter Email"}
-                                    type='text'
-                                    name='email'
-                                    value={data?.email}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} title={!data?.email ? error?.email : ""} />
-                                <TextLabel fontSize={"12px"} color={"red"} title={data?.email?.match(Regex.emailRegex) ? "" : error.invalidEmail} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={braches || []}
-                                    text="Select Branches"
-                                    name="braches"
-                                    value={data?.braches}
-                                    onChange={(e) => {
-                                        setData({ ...data, braches: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.braches ? error?.braches : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={roles || []}
-                                    text="Assign Roles"
-                                    name="roles"
-                                    value={data?.roles}
-                                    onChange={(e) => {
-                                        setData({ ...data, roles: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.roles ? error?.roles : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={plan || []}
-                                    text="Choose Active Plan"
-                                    name="plan"
-                                    value={data?.plan}
-                                    onChange={(e) => {
-                                        setData({ ...data, plan: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.plan ? error?.plan : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
-                                    <CommonButton
-                                        width={'60%'}
-                                        text="Login"
-                                        type="submit"
-                                        onClick={handleLoginClick}
-                                    />
-                                </Box>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                }
+            <CommonModal
+                open={model}
+                onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
+                title={`${isEdit ? "Update" : "Add"} User`}
+                content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} roles={roles} plan={plan} city={city} state={state} onSubmit={_addUpdateUser} isEdit={isEdit} />}
             />
         </>
     )
