@@ -10,7 +10,7 @@ const instance = axios.create({
 
 const onRequestSuccess = (config) => {
   const auth_token = getLSItem("auth_token");
-  if (auth_token) config.headers["Authorization"] = "bearer " + auth_token;
+  if (auth_token) config.headers["Authorization"] = auth_token;
 
   return config;
 };

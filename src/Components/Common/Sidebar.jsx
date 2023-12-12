@@ -224,11 +224,7 @@ export default function SideBar(props) {
       cancelButtonColor: "#1A1B2F",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        axios.post("/logout").then((res) => {
-          if (res?.data?.result?.message === "Success!") {
-            logout();
-          }
-        });
+        logout();
       }
     });
   };

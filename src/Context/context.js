@@ -49,25 +49,25 @@ const AppProvider = ({ children }) => {
     // Perform logout logic here
     removeLSItem("user");
     removeLSItem("auth_token");
-    removeLSItem("profileImagePath");
-    removeLSItem("cart");
-    removeLSItem("wishlist");
+    // removeLSItem("profileImagePath");
+    // removeLSItem("cart");
+    // removeLSItem("wishlist");
     setUser(null);
     setAuth_token(null);
-    setProfileImagePath(null);
-    setCart(null);
-    setWishList(null);
-    axios
-      .post("/get-temp-count", {
-        params: { session_id: localStorage.getItem("sessionId") },
-      })
-      .then((res) => {
-        if (res?.data) {
-          OnUpdateCart(res?.data?.cart_count || 0);
-        } else if (res.data.error) {
-          OnUpdateError(res.data.error.meaning);
-        }
-      });
+    // setProfileImagePath(null);
+    // setCart(null);
+    // setWishList(null);
+    // axios
+    //   .post("/get-temp-count", {
+    //     params: { session_id: localStorage.getItem("sessionId") },
+    //   })
+    //   .then((res) => {
+    //     if (res?.data) {
+    //       OnUpdateCart(res?.data?.cart_count || 0);
+    //     } else if (res.data.error) {
+    //       OnUpdateError(res.data.error.meaning);
+    //     }
+    //   });
   };
   const OnUpdateSuccess = (data) => {
     setSuccess(data);

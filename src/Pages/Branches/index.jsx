@@ -21,6 +21,11 @@ import SelectDropDown from '../../Components/Common/SelectDropDown';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import CommonPagination from '../../Components/Common/Pagination';
+import { useAppContext } from '../../Context/context';
+import axios from "../../APiSetUp/axios";
+import swal from 'sweetalert';
+import { useNavigate } from 'react-router-dom';
+import AddBranch from '../../Components/Branch';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -89,6 +94,9 @@ const rows = [
 ];
 const Branches = () => {
     const { classes } = useStyles();
+    const navigate = useNavigate();
+    const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
+
     const state = ['Gujarat ', 'Gujarat']
     const city = ['Surat', 'Ahmadabad']
 
@@ -96,10 +104,11 @@ const Branches = () => {
     const [model, setModel] = useState(false);
     const [data, setData] = useState({})
     const [error, setError] = useState({})
-    const [isSubmit, setIsSubmit] = useState(false)
+    const [isEdit, setIsEdit] = useState(false)
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
     const [page, setPage] = React.useState(0);
+    const [brancesDetails, setBrancheDetails] = React.useState([]);
+
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -107,13 +116,14 @@ const Branches = () => {
         setRowsPerPage(value);
         setPage(0);
     };
+    console.log(data, "datadata")
     //Validation
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
-        if (!data?.name) {
+        if (!data?.branchName) {
             formIsValid = false
-            errors['name'] = 'Please enter name.'
+            errors['branchName'] = 'Please enter name.'
         }
         if (!data?.address) {
             formIsValid = false
@@ -131,10 +141,11 @@ const Branches = () => {
             formIsValid = false
             errors['city'] = 'Please select city.'
         }
-        if (!data?.code) {
+        if (!data?.postalCode) {
             formIsValid = false
-            errors['code'] = 'Please enter Postal Code.'
+            errors['postalCode'] = 'Please enter Postal Code.'
         }
+        // console.log(first)
         setError(errors)
         return formIsValid
     }
@@ -146,24 +157,68 @@ const Branches = () => {
             [name]: value
         }))
     }
-    const handleClick = () => {
-        setIsSubmit(true)
-        if (handleValidation()) {
 
+    const _getBranches = () => {
+        toggleLoader();
+
+        axios.get("admin/branch").then((res) => {
+            if (res?.data?.data) {
+                console.log("resasdasd", res?.data?.data);
+                setBrancheDetails(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+
+    const _addUpdateBranch = () => {
+        if (handleValidation()) {
+            toggleLoader();
+            let body = {
+                "branchName": data?.branchName,
+                "address": data?.address,
+                "country": data?.country,
+                "state": data?.state,
+                "city": data?.city,
+                "postalCode": data?.postalCode
+            }
+            if (data?._id) {
+                body.id = data?._id
+            }
+            axios.post(`admin/branch/${data?._id ? "update" : "create"}`, body).then((res) => {
+                console.log("resasdasd", res);
+                if (res?.data?.data) {
+                    swal(res?.data?.message, { icon: "success", timer: 5000, })
+                    setModel(false)
+                    setData({})
+                    setError({})
+                    setIsEdit(false)
+                    _getBranches()
+                    // navigate("/")
+                }
+                toggleLoader();
+            }).catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            }
+            );
         }
     }
-    console.log("error", data, error)
-    useEffect(() => {
-        if (isSubmit) {
-            handleValidation()
-        }
-    }, [data])
+
+    React.useEffect(() => {
+        _getBranches()
+    }, [])
+
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Branch List" buttonText={'Add Branch'} onClick={() => setModel(true)} />
+                        <TableHeading title="Branch List" buttonText={`Add Branch`} onClick={() => setModel(true)} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -173,29 +228,27 @@ const Branches = () => {
                                         <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
                                         <StyledTableCell>Branch Name</StyledTableCell>
                                         <StyledTableCell>Address</StyledTableCell>
+                                        <StyledTableCell>Country</StyledTableCell>
+                                        <StyledTableCell>State</StyledTableCell>
+                                        <StyledTableCell>City</StyledTableCell>
                                         <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows.map((row, index) => (
+                                    {brancesDetails?.response?.length > 0 && brancesDetails?.response?.map((row, index) => (
                                         <StyledTableRow key={index} >
-                                            <StyledTableCell>{row.key}</StyledTableCell>
-                                            <StyledTableCell className={classes.paddedRow} component="th" scope="row">
-                                                {row.name}
+                                            <StyledTableCell className={classes.paddedRow}>{index + 1}</StyledTableCell>
+                                            <StyledTableCell component="th" scope="row">
+                                                {row.branchName}
                                             </StyledTableCell>
                                             <StyledTableCell>{row.address}</StyledTableCell>
+                                            <StyledTableCell>{row.country}</StyledTableCell>
+                                            <StyledTableCell>{row.state}</StyledTableCell>
+                                            <StyledTableCell>{row.city}</StyledTableCell>
                                             <StyledTableCell>
                                                 <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                    <Assets
-                                                        className={classes.writeBox}
-                                                        src={"/assets/icons/write.svg"}
-                                                        absolutePath={true}
-                                                    />
-                                                    <Assets
-                                                        className={classes.deleteBox}
-                                                        src={"/assets/icons/delete.svg"}
-                                                        absolutePath={true}
-                                                    />
+                                                    <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true) }} />
+                                                    <Assets className={classes.deleteBox} src={"/assets/icons/delete.svg"} absolutePath={true} />
                                                 </Box>
                                             </StyledTableCell>
                                         </StyledTableRow>
@@ -216,99 +269,11 @@ const Branches = () => {
                 </Box>
             </PaperContainer>
 
-            <CommonModal open={model} onClose={() => setModel(false)} title={"Add Branch"}
-                content={
-                    <Box>
-                        <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Branch Name'}
-                                    placeholder={"Enter Branch Name"}
-                                    type='text'
-                                    name='name'
-                                    value={data?.name}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.name ? error?.name : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Address'}
-                                    placeholder={"Enter Address"}
-                                    type='text'
-                                    name='address'
-                                    value={data?.address}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.address ? error?.address : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Country'}
-                                    placeholder={"Enter Country"}
-                                    type='text'
-                                    name='country'
-                                    value={data?.country}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.country ? error?.country : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={state || []}
-                                    value={data?.state}
-                                    text="State"
-                                    name="state"
-                                    onChange={(e) => {
-                                        setData({ ...data, state: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.state ? error?.state : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={city || []}
-                                    value={data?.city}
-                                    text="City"
-                                    name="city"
-                                    onChange={(e) => {
-                                        setData({ ...data, city: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.city ? error?.city : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Postal Code'}
-                                    placeholder={"Enter Postal/Zip Code"}
-                                    type='number'
-                                    name='code'
-                                    value={data?.code}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.code ? error?.code : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
-                                    <CommonButton
-                                        width={'60%'}
-                                        text="Create Branch"
-                                        type="submit"
-                                        onClick={handleClick}
-                                    />
-                                </Box>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                }
+            <CommonModal
+                open={model}
+                onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
+                title={`${isEdit ? "Update" : "Add"} Branch`}
+                content={<AddBranch data={data} setData={setData} error={error} handleChange={handleChange} city={city} state={state} onSubmit={_addUpdateBranch} isEdit={isEdit} />}
             />
         </>
     )
