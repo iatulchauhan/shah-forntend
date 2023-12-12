@@ -102,9 +102,9 @@ const Drawer = styled(MuiDrawer, {
 
 
 const useStyles = makeStyles()((theme) => {
-    return {
-      
-    };
+  return {
+
+  };
 });
 
 export default function SideBar(props) {
@@ -137,7 +137,7 @@ export default function SideBar(props) {
     toggleSideBar();
     setOpen2(false);
   };
-console.log("location.pathname",location.pathname === "/");
+  console.log("location.pathname", location.pathname === "/");
   const data = [
     {
       title: "Dashboard",
@@ -148,11 +148,11 @@ console.log("location.pathname",location.pathname === "/");
         //     color: location.pathname === "/dashboard" ? "#FFFFFF" : "#424448",
         //   }}
         // />
-        <Assets src="/assets/icons/dashboard.svg" absolutePath={true} 
-          // style={{
-          //   color: location.pathname === "/" ? "red" : "red",
-          //   background: "red"
-          // }}
+        <Assets src="/assets/icons/dashboard.svg" absolutePath={true}
+        // style={{
+        //   color: location.pathname === "/" ? "red" : "red",
+        //   background: "red"
+        // }}
         />
       ),
       link: "/",
@@ -239,71 +239,72 @@ console.log("location.pathname",location.pathname === "/");
     });
   };
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Header
-          open={open}
-          sx={{
-            marginLeft: 0.8,
-          }}
-          onClick={handleDrawerOpen}
-        />
-      </AppBar>
-      <Drawer
-        className="drawer_main"
-        variant="permanent"
-        open={open}
-        onClose={handleDrawerOpen}
-        ref={sidebarRef}
-      >
-        <DrawerHeader
-          sx={{
-            position: "fixed",
-            top: 0,
-            background: "#fff",
-            zIndex: 999999,
-            width: "275px",
-          }}
-        >
-          <IconButton
-            onClick={handleDrawerOpen}
+    <>
+      {location?.pathname === "/login" || location?.pathname === "/register" ? <>{props.children}</> : <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        <AppBar position="fixed" open={open}>
+          <Header
+            open={open}
             sx={{
-              width: "100%",
-              justifyContent: open ? "space-between" : "center",
+              marginLeft: 0.8,
+            }}
+            onClick={handleDrawerOpen}
+          />
+        </AppBar>
+        <Drawer
+          className="drawer_main"
+          variant="permanent"
+          open={open}
+          onClose={handleDrawerOpen}
+          ref={sidebarRef}
+        >
+          <DrawerHeader
+            sx={{
+              position: "fixed",
+              top: 0,
+              background: "#fff",
+              zIndex: 999999,
+              width: "275px",
             }}
           >
-            {open ? (
-              <>
-                <button onClick={handleDrawerOpen}>Logo</button>
-              </>
-            ) : (
-              <button onClick={handleDrawerOpen}>Logo</button>
-
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <List sx={{ marginTop: { xs: 8, md: open ? 9.5 : 8 } }}>
-          {data.map((item, index) => (
-            <Link
-              to={item.link}
-              className={
-                item?.activeLinks?.includes(location.pathname.split("/")?.[1])
-                  ? "active"
-                  : "nav-link width-100"
-              }
-              onClick={width > 991 ? () => { } : () => handleDrawerOpen()}
+            <IconButton
+              onClick={handleDrawerOpen}
+              sx={{
+                width: "100%",
+                justifyContent: open ? "space-between" : "center",
+              }}
             >
-              <ListItem
-                key={index}
-                disablePadding
-                sx={{
-                  display: "block",
-                  marginBottom: 0.5,
-                  background: "#5D5FEF",
-                  
-                }}
+              {open ? (
+                <>
+                  <button onClick={handleDrawerOpen}>Logo</button>
+                </>
+              ) : (
+                <button onClick={handleDrawerOpen}>Logo</button>
+
+              )}
+            </IconButton>
+          </DrawerHeader>
+          <List sx={{ marginTop: { xs: 8, md: open ? 9.5 : 8 } }}>
+            {data.map((item, index) => (
+              <Link
+                to={item.link}
+                className={
+                  item?.activeLinks?.includes(location.pathname.split("/")?.[1])
+                    ? "active"
+                    : "nav-link width-100"
+                }
+                onClick={width > 991 ? () => { } : () => handleDrawerOpen()}
               >
+                <ListItem
+                  key={index}
+                  disablePadding
+                  sx={{
+                    display: "block",
+                    marginBottom: 0.5,
+                    background: "#5D5FEF",
+
+                  }}
+                >
                   <ListItemButton
                     sx={{
                       minHeight: 48,
@@ -315,9 +316,9 @@ console.log("location.pathname",location.pathname === "/");
                       )
                         ? "#5D5FEF"
                         : "#FFFFFF",
-                        "&:hover .MuiListItemText-root .MuiTypography-root":{
-                          color:"#FFFFFF"
-                        }
+                      "&:hover .MuiListItemText-root .MuiTypography-root": {
+                        color: "#FFFFFF"
+                      }
 
                     }}
                   >
@@ -345,60 +346,61 @@ console.log("location.pathname",location.pathname === "/");
                       }}
                     />
                   </ListItemButton>
-              </ListItem>
-            </Link>
-          ))}
-          <Link
-            onClick={() => logoutAdmin()}
-            className={
-              location.pathname === "/logout" ? "active" : "nav-link width-100"
-            }
-          >
-            <ListItem
-              disablePadding
-              sx={{
-                display: "block",
-                marginBottom: 0.5,
-                background: "#f1f1f1",
-              }}
+                </ListItem>
+              </Link>
+            ))}
+            <Link
+              onClick={() => logoutAdmin()}
+              className={
+                location.pathname === "/logout" ? "active" : "nav-link width-100"
+              }
             >
-              <ListItemButton
+              <ListItem
+                disablePadding
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                  background: "white",
+                  display: "block",
                   marginBottom: 0.5,
+                  background: "#f1f1f1",
                 }}
               >
-                <ListItemIcon
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    color: "#424448",
-                    mr: open ? 1 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                    background: "white",
+                    marginBottom: 0.5,
                   }}
                 >
-                  {/* <FeatherIcon icon="lock" /> */}
-                </ListItemIcon>
-                <ListItemText
-                  style={{ whiteSpace: "nowrap" }}
-                  primary={"Logout"}
-                  sx={{
-                    opacity: open ? 1 : 0,
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          </Link>
-        </List>
-      </Drawer>
-      <div className="main-content">
-        <div style={{ paddingLeft: "25px" }} className="div">
-          {props.children}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      color: "#424448",
+                      mr: open ? 1 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {/* <FeatherIcon icon="lock" /> */}
+                  </ListItemIcon>
+                  <ListItemText
+                    style={{ whiteSpace: "nowrap" }}
+                    primary={"Logout"}
+                    sx={{
+                      opacity: open ? 1 : 0,
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+          </List>
+        </Drawer>
+        <div className="main-content">
+          <div style={{ paddingLeft: "25px" }} className="div">
+            {props.children}
+          </div>
+          <Footer open={open} />
         </div>
-        <Footer open={open} />
-      </div>
-    </Box>
+      </Box>}
+    </>
   );
 }

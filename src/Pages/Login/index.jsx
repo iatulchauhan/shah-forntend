@@ -6,13 +6,19 @@ import CommonTextField from '../../Components/Common/Fields/TextField'
 import TextLabel from '../../Components/Common/Fields/TextLabel'
 import CommonButton from '../../Components/Common/Button/CommonButton'
 import { lightTheme } from '../../theme'
-
+import { useAppContext } from '../../Context/context'
+import axios from "../../APiSetUp/axios";
+import { useNavigate } from 'react-router-dom'
+import swal from 'sweetalert'
 
 const Login = () => {
+  const navigate = useNavigate();
+
   //States 
   const [data, setData] = useState({})
   const [error, setError] = useState({})
   const [isSubmit, setIsSubmit] = useState(false)
+  const { OnUpdateError, toggleLoader,onUpdateUser,updateToken } = useAppContext();
 
   //Validation
   const handleValidation = () => {
@@ -51,7 +57,27 @@ const Login = () => {
   const handleLoginClick = () => {
     setIsSubmit(true)
     if (handleValidation()) {
-
+      toggleLoader();
+      axios.post("admin/login", {
+          email: data?.email,
+          password: data?.password
+      }).then((res) => {
+          console.log("res",res);
+          if (res?.data?.data) {
+            onUpdateUser(res?.data?.data);
+            updateToken(res?.data?.data?.token)
+              swal(res?.data?.message, {
+                  icon: "success",
+                  timer: 5000,
+              })
+              navigate("/")
+          }
+          toggleLoader();
+      }).catch((err) =>{
+          toggleLoader();
+          OnUpdateError(err.data.message);
+      }
+      );
     }
   }
 

@@ -1,6 +1,7 @@
 import { Box, Typography, useTheme } from '@mui/material'
 import React from 'react'
 import { makeStyles } from "tss-react/mui";
+import ShowMessage from './Common/ShowMessage';
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -33,6 +34,9 @@ const AuthLayout = ({ children, logo, login, account, newAccount, register }) =>
                 <Typography style={{ fontSize: '22px', fontWeight: 600, textAlign: 'center', marginTop: '40px' }}>{logo}</Typography>
                 <Typography style={{ fontSize: '35px', fontWeight: 600, textAlign: 'center', marginTop: '30px' }}>{login}</Typography>
                 <Typography style={{ fontSize: '16px', fontWeight: 400, textAlign: 'center', color: '#737791', marginTop: '20px', marginBottom: '20px' }}>{account}</Typography>
+                <Box paddingX={2}>
+                <ShowMessage />
+                </Box>
                 {children}
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '30px', marginBottom: '30px' }}>
                     <Typography style={{ fontSize: '16px', fontWeight: 500, color: theme.palette.bgDarkPrimary.main }}>{newAccount}</Typography>

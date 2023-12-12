@@ -2,10 +2,10 @@ import axios from "axios";
 import { getLSItem, removeLSItem } from "./LocalStorage";
 import swal from "sweetalert";
 
-export const BASE_URL = "https://qyresearch.in/preview/";
+export const BASE_URL = "http://192.168.29.190:8000/";
 
 const instance = axios.create({
-  baseURL: BASE_URL + "api/",
+  baseURL: BASE_URL,
 });
 
 const onRequestSuccess = (config) => {
