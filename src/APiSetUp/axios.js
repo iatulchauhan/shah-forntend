@@ -3,6 +3,7 @@ import { getLSItem, removeLSItem } from "./LocalStorage";
 import swal from "sweetalert";
 
 export const BASE_URL = "http://192.168.29.190:8000/";
+export const Image_BASE_URL = "https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/";
 
 const instance = axios.create({
   baseURL: BASE_URL,

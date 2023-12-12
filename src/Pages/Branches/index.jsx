@@ -15,17 +15,14 @@ import Assets from '../../Components/Common/ImageContainer';
 import PaperContainer from '../../Components/Common/PaperContainer';
 import TableHeading from '../../Components/Common/CommonTableHeading';
 import CommonModal from '../../Components/Common/CommonModel';
-import TextLabel from '../../Components/Common/Fields/TextLabel';
-import CommonTextField from '../../Components/Common/Fields/TextField';
-import SelectDropDown from '../../Components/Common/SelectDropDown';
-import CommonButton from '../../Components/Common/Button/CommonButton';
-import { Regex } from '../../Utils/regex';
 import CommonPagination from '../../Components/Common/Pagination';
 import { useAppContext } from '../../Context/context';
 import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 import AddBranch from '../../Components/Branch';
+import DataNotFound from '../../Components/Common/DataNotFound';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -79,19 +76,7 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const rows = [
-    {
-        key: '1',
-        name: "John Doe",
-        address: '121, Quicksand view, Lorem ipsum , India',
-    },
-    {
-        key: '2',
-        name: "John Doe",
-        address: '121, Quicksand view, Lorem ipsum , India',
-    },
 
-];
 const Branches = () => {
     const { classes } = useStyles();
     const navigate = useNavigate();
@@ -145,7 +130,6 @@ const Branches = () => {
             formIsValid = false
             errors['postalCode'] = 'Please enter Postal Code.'
         }
-        // console.log(first)
         setError(errors)
         return formIsValid
     }
@@ -222,39 +206,45 @@ const Branches = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
-                            <Table sx={{ minWidth: 600 }} aria-label="customized table">
-                                <TableHead >
-                                    <TableRow>
-                                        <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
-                                        <StyledTableCell>Branch Name</StyledTableCell>
-                                        <StyledTableCell>Address</StyledTableCell>
-                                        <StyledTableCell>Country</StyledTableCell>
-                                        <StyledTableCell>State</StyledTableCell>
-                                        <StyledTableCell>City</StyledTableCell>
-                                        <StyledTableCell align="right">Action</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {brancesDetails?.response?.length > 0 && brancesDetails?.response?.map((row, index) => (
-                                        <StyledTableRow key={index} >
-                                            <StyledTableCell className={classes.paddedRow}>{index + 1}</StyledTableCell>
-                                            <StyledTableCell component="th" scope="row">
-                                                {row.branchName}
-                                            </StyledTableCell>
-                                            <StyledTableCell>{row.address}</StyledTableCell>
-                                            <StyledTableCell>{row.country}</StyledTableCell>
-                                            <StyledTableCell>{row.state}</StyledTableCell>
-                                            <StyledTableCell>{row.city}</StyledTableCell>
-                                            <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                    <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true) }} />
-                                                    <Assets className={classes.deleteBox} src={"/assets/icons/delete.svg"} absolutePath={true} />
-                                                </Box>
-                                            </StyledTableCell>
-                                        </StyledTableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                            {brancesDetails?.response?.length > 0 ?
+                                <Table sx={{ minWidth: 600 }} aria-label="customized table">
+                                    <TableHead >
+                                        <TableRow>
+                                            <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
+                                            <StyledTableCell>Branch Name</StyledTableCell>
+                                            <StyledTableCell>Address</StyledTableCell>
+                                            <StyledTableCell>Country</StyledTableCell>
+                                            <StyledTableCell>State</StyledTableCell>
+                                            <StyledTableCell>City</StyledTableCell>
+                                            <StyledTableCell align="right">Action</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {brancesDetails?.response?.length > 0 && brancesDetails?.response?.map((row, index) => (
+                                            <StyledTableRow key={index} >
+                                                <StyledTableCell className={classes.paddedRow}>{index + 1}</StyledTableCell>
+                                                <StyledTableCell component="th" scope="row">
+                                                    {row.branchName}
+                                                </StyledTableCell>
+                                                <StyledTableCell>{row.address}</StyledTableCell>
+                                                <StyledTableCell>{row.country}</StyledTableCell>
+                                                <StyledTableCell>{row.state}</StyledTableCell>
+                                                <StyledTableCell>{row.city}</StyledTableCell>
+                                                <StyledTableCell>
+                                                    <Box display={"flex"} justifyContent={"end"} gap={1}>
+                                                        <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true) }} />
+                                                        <Assets className={classes.deleteBox} src={"/assets/icons/delete.svg"} absolutePath={true} />
+                                                    </Box>
+                                                </StyledTableCell>
+                                            </StyledTableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table> :
+                                <DataNotFound
+                                    icon={<ErrorOutlineIcon color="primary" style={{ fontSize: '3rem' }} />}
+                                    elevation={2}
+                                />
+                            }
                         </TableContainer>
                     </Grid>
                 </Grid>
