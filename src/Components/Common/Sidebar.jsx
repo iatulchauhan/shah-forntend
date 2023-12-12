@@ -270,8 +270,8 @@ export default function SideBar(props) {
               marginTop: '10px'
             }}
           >
-            <Typography fontSize={'30px'} fontWeight={600}>Logo</Typography>
-            {/* <IconButton
+            {/* <Typography fontSize={'30px'} fontWeight={600}>Logo</Typography> */}
+            <IconButton
               onClick={handleDrawerOpen}
               sx={{
                 width: "100%",
@@ -286,9 +286,16 @@ export default function SideBar(props) {
                 <button onClick={handleDrawerOpen}>Logo</button>
 
               )}
-            </IconButton> */}
+            </IconButton>
           </DrawerHeader>
-          <List sx={{ marginTop: { xs: 8, md: open ? 7 : 8 }, padding: 3 }}>
+          <List sx={{
+            marginTop: { xs: 8, md: open ? 9.5 : 8 }, padding: {
+              xs: 1,
+              sm: 1,
+              md: theme => theme.spacing(3),
+              lg: theme => theme.spacing(3),
+            },
+          }}>
             {data.map((item, index) => (
               <Link
                 to={item.link}
@@ -305,7 +312,6 @@ export default function SideBar(props) {
                   sx={{
                     display: "block",
                     marginBottom: 0.5,
-                    background: "#5D5FEF",
                     borderRadius: '18px',
                   }}
                 >
@@ -314,16 +320,19 @@ export default function SideBar(props) {
                       minHeight: 50,
                       justifyContent: open ? "initial" : "center",
                       px: 2.5,
-                      marginBottom: 0.6,
+                      marginBottom: 2,
                       backgroundColor: item?.activeLinks?.includes(
                         location.pathname.split("/")?.[1]
                       )
                         ? "#5D5FEF"
                         : "#FFFFFF",
                       borderRadius: '16px',
-                      "&:hover .MuiListItemText-root .MuiTypography-root": {
-                        color: "#FFFFFF"
-                      }
+                      "&:hover": {
+                        backgroundColor: "#5D5FEF",
+                        ".MuiListItemText-root .MuiTypography-root": {
+                          color: "#FFFFFF",
+                        },
+                      },
 
                     }}
                   >
