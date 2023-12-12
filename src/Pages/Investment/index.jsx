@@ -46,8 +46,6 @@ const useStyles = makeStyles()((theme) => {
             padding: '15px 10px',
         },
         writeBox: {
-            width: "20px",
-            height: "20px",
             borderRadius: "6px",
             padding: "8px",
             backgroundColor: "rgba(93, 95, 239, 0.2)",
@@ -55,8 +53,6 @@ const useStyles = makeStyles()((theme) => {
             cursor: "pointer",
         },
         viewBox: {
-            width: "20px",
-            height: "20px",
             borderRadius: "6px",
             padding: "8px",
             color: "#44B631",
@@ -64,8 +60,6 @@ const useStyles = makeStyles()((theme) => {
             cursor: "pointer",
         },
         deleteBox: {
-            width: "20px",
-            height: "20px",
             borderRadius: "6px",
             padding: "8px",
             color: "#F14336",
@@ -91,8 +85,8 @@ const rows = [
         expiringPlan: '$2000',
         activePlan: 'Lorem ipsum',
     },
-   
-    
+
+
 ];
 const Investment = () => {
     const { classes } = useStyles();
@@ -106,13 +100,13 @@ const Investment = () => {
         setRowsPerPage(value);
         setPage(0);
     };
- 
+
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Investment Amount"/>
+                        <TableHeading title="Investment Amount" />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
