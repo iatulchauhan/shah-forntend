@@ -46,8 +46,6 @@ const useStyles = makeStyles()((theme) => {
             padding: '15px 10px',
         },
         writeBox: {
-            width: "20px",
-            height: "20px",
             borderRadius: "6px",
             padding: "8px",
             backgroundColor: "rgba(93, 95, 239, 0.2)",
@@ -55,8 +53,6 @@ const useStyles = makeStyles()((theme) => {
             cursor: "pointer",
         },
         viewBox: {
-            width: "20px",
-            height: "20px",
             borderRadius: "6px",
             padding: "8px",
             color: "#44B631",
@@ -64,8 +60,6 @@ const useStyles = makeStyles()((theme) => {
             cursor: "pointer",
         },
         deleteBox: {
-            width: "20px",
-            height: "20px",
             borderRadius: "6px",
             padding: "8px",
             color: "#F14336",
