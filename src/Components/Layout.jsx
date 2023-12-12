@@ -9,18 +9,11 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <Grid container>
-        <Grid item xs={12} md={3} lg={2}>
-          <SideBar />
-        </Grid>
-        <Grid item xs={12} md={9} lg={10}>
-          <Header />
+          {/* <Header /> */}
           <Box padding={2}>
-            {children}
+          <SideBar children={children}/>
+            
           </Box>
-          <Footer />
-        </Grid>
-      </Grid>
     </>
   )
 }

@@ -114,7 +114,7 @@ const Email = () => {
                             <Assets src={"/assets/icons/trash.png"} absolutePath={true} />
                             <Assets src={"/assets/icons/star.png"} absolutePath={true} />
                             <Assets src={"/assets/icons/preview.png"} absolutePath={true} />
-                            <Assets src={"/assets/icons/frame.png"} absolutePath={true} />
+                            <Assets src={"/assets/icons/frame.svg"} absolutePath={true} />
                             <Assets src={"/assets/icons/share.png"} absolutePath={true} />
                             
                         </Box>

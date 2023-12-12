@@ -8,11 +8,18 @@ const useStyles = makeStyles()((theme) => {
         footerMain: {
             padding: '24px',
             marginTop: '10px',
+            position: "fixed",
+            bottom: "0",
             background: theme.palette.bgWhite.main,
             boxShadow: '0px -1px 0px 0px rgba(0, 0, 0, 0.05)',
             [theme.breakpoints.down(500)]: {
                 padding: '12px 20px',
-            }
+            },
+            [theme.breakpoints.down("md")]: {
+                width: `100% !important`,
+                marginLeft:"-16px !important"
+            },
+
         },
         miniFooterItems: {
             display: "flex",
@@ -38,11 +45,11 @@ const useStyles = makeStyles()((theme) => {
     };
 });
 
-const Footer = () => {
+const Footer = ({ open }) => {
     const { classes } = useStyles();
     return (
         <>
-            <Box className={classes.footerMain}>
+            <Box className={classes.footerMain} style={{ width: !open ? "calc(100% - 48px)" : "calc(100% - 255px)", marginLeft: !open ? "48px" : "255px" }}>
                 <Box className={classes.miniFooterItems} sx={{ display: "flex", flexDirection: { xl: "row", lg: "row", md: "row", sm: "column", xs: "column" }, textAlign: "center" }}>
                     <Typography className={classes.footerLinkText}> 2023 © Copyright - Shah Investment Made with <span style={{ color: "red" }}> ❤ </span> for Investment.</Typography>
                     <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>

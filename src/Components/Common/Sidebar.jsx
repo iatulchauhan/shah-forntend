@@ -37,7 +37,7 @@ const openedMixin = (theme) => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: "hidden",
-  boxShadow: "0 4px 14px 0 rgb(0 0 0 / 10%)",
+  // boxShadow: "0 4px 14px 0 rgb(0 0 0 / 10%)",
   zIndex: 9999,
 });
 
@@ -111,7 +111,6 @@ export default function SideBar(props) {
   const classes = useStyles()
   const width = window.innerWidth;
   const location = useLocation();
-  const [open2, setOpen2] = useState(true);
   const [open, setOpen] = useState(width > 991 ? true : false);
   const { user, logout, toggleSideBar } = useAppContext();
   const sidebarRef = useRef(null);
@@ -135,9 +134,7 @@ export default function SideBar(props) {
   const handleDrawerOpen = () => {
     setOpen(!open);
     toggleSideBar();
-    setOpen2(false);
   };
-  console.log("location.pathname", location.pathname === "/");
   const data = [
     {
       title: "Dashboard",
@@ -214,9 +211,6 @@ export default function SideBar(props) {
     },
   ];
 
-  const handleClick = () => {
-    setOpen2(!open2);
-  };
 
   const logoutAdmin = () => {
     Swal.fire({
@@ -414,6 +408,12 @@ export default function SideBar(props) {
             </Link>
           </List>
         </Drawer>
+        <Box sx={{ marginTop: 8, width: "100%", overflow: "auto" }}>
+          <Box style={{ width: "100%" }}>
+            {props.children}
+          </Box>
+        </Box>
+        <Footer open={open} />
       </Box>}
     </>
   );
