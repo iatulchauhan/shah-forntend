@@ -394,12 +394,6 @@ export default function SideBar(props) {
             </Link>
           </List>
         </Drawer>
-        <div className="main-content">
-          <div style={{ paddingLeft: "25px" }} className="div">
-            {props.children}
-          </div>
-          <Footer open={open} />
-        </div>
       </Box>}
     </>
   );
