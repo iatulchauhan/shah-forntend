@@ -16,7 +16,7 @@ import Header from "./Header";
 // import FeatherIcon from "feather-icons-react";
 import { Link, useLocation } from "react-router-dom";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Collapse } from "@mui/material";
+import { Collapse, Typography } from "@mui/material";
 import Footer from "./Footer";
 import { useAppContext } from "../../Context/context";
 import Swal from "sweetalert2";
@@ -265,9 +265,13 @@ export default function SideBar(props) {
               background: "#fff",
               zIndex: 999999,
               width: "275px",
+              display: "flex",
+              justifyContent: "center",
+              marginTop: '10px'
             }}
           >
-            <IconButton
+            <Typography fontSize={'30px'} fontWeight={600}>Logo</Typography>
+            {/* <IconButton
               onClick={handleDrawerOpen}
               sx={{
                 width: "100%",
@@ -282,9 +286,9 @@ export default function SideBar(props) {
                 <button onClick={handleDrawerOpen}>Logo</button>
 
               )}
-            </IconButton>
+            </IconButton> */}
           </DrawerHeader>
-          <List sx={{ marginTop: { xs: 8, md: open ? 9.5 : 8 } }}>
+          <List sx={{ marginTop: { xs: 8, md: open ? 7 : 8 }, padding: 3 }}>
             {data.map((item, index) => (
               <Link
                 to={item.link}
@@ -302,20 +306,21 @@ export default function SideBar(props) {
                     display: "block",
                     marginBottom: 0.5,
                     background: "#5D5FEF",
-
+                    borderRadius: '18px',
                   }}
                 >
                   <ListItemButton
                     sx={{
-                      minHeight: 48,
+                      minHeight: 50,
                       justifyContent: open ? "initial" : "center",
                       px: 2.5,
-                      marginBottom: 0.5,
+                      marginBottom: 0.6,
                       backgroundColor: item?.activeLinks?.includes(
                         location.pathname.split("/")?.[1]
                       )
                         ? "#5D5FEF"
                         : "#FFFFFF",
+                      borderRadius: '16px',
                       "&:hover .MuiListItemText-root .MuiTypography-root": {
                         color: "#FFFFFF"
                       }
@@ -328,7 +333,6 @@ export default function SideBar(props) {
                         color: "#424448",
                         mr: open ? 1 : "auto",
                         justifyContent: "center",
-
                       }}
                     >
                       {item?.icon}
@@ -361,6 +365,8 @@ export default function SideBar(props) {
                   display: "block",
                   marginBottom: 0.5,
                   background: "#f1f1f1",
+                  borderRadius: '20px',
+                  marginTop: 3
                 }}
               >
                 <ListItemButton
@@ -368,8 +374,10 @@ export default function SideBar(props) {
                     minHeight: 48,
                     justifyContent: open ? "initial" : "center",
                     px: 2.5,
-                    background: "white",
+                    background: "#5D5FEF",
                     marginBottom: 0.5,
+                    borderRadius: '20px',
+                    color: 'White'
                   }}
                 >
                   <ListItemIcon
@@ -387,6 +395,9 @@ export default function SideBar(props) {
                     primary={"Logout"}
                     sx={{
                       opacity: open ? 1 : 0,
+                      display: "flex",
+                      justifyContent: "center",
+                      // padding: '8px'
                     }}
                   />
                 </ListItemButton>
