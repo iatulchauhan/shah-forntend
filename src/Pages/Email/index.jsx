@@ -1,14 +1,7 @@
 import { Avatar, Box, Divider, Grid, Typography } from '@mui/material'
 import React from 'react'
 import CommonSearch from '../../Components/Common/CommonSearch';
-import SectionHeading from '../../Components/Common/SectionHeading';
-import projectDetail from "../../Assets/Images/projectDetail.png"
-import screenShot from "../../Assets/Images/screenShot.png"
-import Trash from "../../Assets/Icon/trash.png"
-import Star from "../../Assets/Icon/star.png"
-import Preview from "../../Assets/Icon/preview.png"
-import Frame from "../../Assets/Icon/frame.png"
-import Share from "../../Assets/Icon/share.png"
+import SectionHeading from '../../Components/Common/SectionHeading'
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 import Assets from '../../Components/Common/ImageContainer';
 
@@ -97,14 +90,20 @@ const Email = () => {
 
                         <Box display={"flex"} flexDirection={"column"} gap={"15px"}>
                             <Box display={'flex'} gap={1}>
-                                <Assets src={projectDetail} absolutePath={true} />
+                                <Assets
+                                    src={"/assets/image/projectDetail.png"}
+                                    absolutePath={true}
+                                />
                                 <Box>
                                     <SectionHeading variant={"caption"} title={"Projectdetails.pdf"} />
                                     <SectionHeading variant={"caption"} color='#737791' title={"1.50 Mb"} />
                                 </Box>
                             </Box>
                             <Box display={'flex'} gap={1} >
-                                <Assets src={screenShot} absolutePath={true} />
+                                <Assets
+                                    src={"/assets/image/screenShot.png"}
+                                    absolutePath={true}
+                                />
                                 <Box>
                                     <SectionHeading variant={"caption"} title={"Projectdetails.pdf"} />
                                     <SectionHeading variant={"caption"} color='#737791' title={"1.50 Mb"} />
@@ -112,11 +111,12 @@ const Email = () => {
                             </Box>
                         </Box>
                         <Box display={"flex"} justifyContent={"end"} gap={3}>
-                            <Assets src={Trash} absolutePath={true} />
-                            <Assets src={Star} absolutePath={true} />
-                            <Assets src={Preview} absolutePath={true} />
-                            <Assets src={Frame} absolutePath={true} />
-                            <Assets src={Share} absolutePath={true} />
+                            <Assets src={"/assets/icons/trash.png"} absolutePath={true} />
+                            <Assets src={"/assets/icons/star.png"} absolutePath={true} />
+                            <Assets src={"/assets/icons/preview.png"} absolutePath={true} />
+                            <Assets src={"/assets/icons/frame.png"} absolutePath={true} />
+                            <Assets src={"/assets/icons/share.png"} absolutePath={true} />
+                            
                         </Box>
                     </Box>
                 </Grid>

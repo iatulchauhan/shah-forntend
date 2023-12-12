@@ -24,6 +24,9 @@ import axios from "../../APiSetUp/axios";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import Assets from "./ImageContainer";
+import { makeStyles } from "tss-react/mui";
+
 
 const drawerWidth = 275;
 
@@ -97,7 +100,15 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+
+const useStyles = makeStyles()((theme) => {
+    return {
+      
+    };
+});
+
 export default function SideBar(props) {
+  const classes = useStyles()
   const width = window.innerWidth;
   const location = useLocation();
   const [open2, setOpen2] = useState(true);
@@ -126,22 +137,81 @@ export default function SideBar(props) {
     toggleSideBar();
     setOpen2(false);
   };
-
+console.log("location.pathname",location.pathname === "/");
   const data = [
     {
       title: "Dashboard",
-    //   icon: (
-    //     <FeatherIcon
-    //       icon="home"
-    //       style={{
-    //         color: location.pathname === "/dashboard" ? "#FFFFFF" : "#424448",
-    //       }}
-    //     />
-    //   ),
-      link: "/dashboard",
-      activeLinks: ["dashboard"],
+      icon: (
+        // <FeatherIcon
+        //   icon="home"
+        //   style={{
+        //     color: location.pathname === "/dashboard" ? "#FFFFFF" : "#424448",
+        //   }}
+        // />
+        <Assets src="/assets/icons/dashboard.svg" absolutePath={true} 
+          // style={{
+          //   color: location.pathname === "/" ? "red" : "red",
+          //   background: "red"
+          // }}
+        />
+      ),
+      link: "/",
+      activeLinks: [""],
     },
-
+    {
+      title: "Create User",
+      icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
+      link: "/user",
+      activeLinks: ["user"],
+    },
+    {
+      title: "Create Branches",
+      icon: <Assets src="/assets/icons/branches.svg" absolutePath={true} />,
+      link: "/branches",
+      activeLinks: ["branches"],
+    },
+    {
+      title: "Visitor List",
+      icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
+      link: "/visitor",
+      activeLinks: ["visitor"],
+    },
+    {
+      title: "Email",
+      icon: <Assets src="/assets/icons/sms.svg" absolutePath={true} />,
+      link: "/email",
+      activeLinks: ["email"],
+    },
+    {
+      title: "Offer",
+      icon: <Assets src="/assets/icons/discount-shape.svg" absolutePath={true} />,
+      link: "/offer",
+      activeLinks: ["offer"],
+    },
+    {
+      title: "Financial Data",
+      icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
+      link: "/financial-data",
+      activeLinks: ["financial-data"],
+    },
+    {
+      title: "Meeting List",
+      icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
+      link: "/meeting",
+      activeLinks: ["meeting"],
+    },
+    {
+      title: "Expiring Plan List",
+      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
+      link: "/expiring-plan",
+      activeLinks: ["expiring-plan"],
+    },
+    {
+      title: "Payment",
+      icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
+      link: "/payment",
+      activeLinks: ["payment"],
+    },
   ];
 
   const handleClick = () => {
@@ -205,11 +275,11 @@ export default function SideBar(props) {
           >
             {open ? (
               <>
-                <button onClick={handleDrawerOpen}>123</button>
+                <button onClick={handleDrawerOpen}>Logo</button>
               </>
             ) : (
-                <button onClick={handleDrawerOpen}>123</button>
-              
+              <button onClick={handleDrawerOpen}>Logo</button>
+
             )}
           </IconButton>
         </DrawerHeader>
@@ -222,7 +292,7 @@ export default function SideBar(props) {
                   ? "active"
                   : "nav-link width-100"
               }
-              onClick={width > 991 ? () => {} : () => handleDrawerOpen()}
+              onClick={width > 991 ? () => { } : () => handleDrawerOpen()}
             >
               <ListItem
                 key={index}
@@ -230,101 +300,26 @@ export default function SideBar(props) {
                 sx={{
                   display: "block",
                   marginBottom: 0.5,
-                  background: "#f1f1f1",
+                  background: "#5D5FEF",
+                  
                 }}
               >
-                {item?.subData && item?.subData?.length !== 0 ? (
-                  <>
-                    <ListItemButton
-                      style={{ background: "white" }}
-                      onClick={handleClick}
-                      className={
-                        item?.activeLinks?.includes(
-                          location.pathname.split("/")?.[1]
-                        )
-                          ? "active_tab"
-                          : ""
-                      }
-                    >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 1 : "auto",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {item?.icon}
-                      </ListItemIcon>
-                      <ListItemText
-                        style={{ whiteSpace: "nowrap" }}
-                        primary={item?.title}
-                        sx={{ opacity: open ? 1 : 0 }}
-                      />
-                      {open2 ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={open2} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        {item?.subData?.map((e) => {
-                          return (
-                            <Link
-                              to={e.link}
-                              className={
-                                location.pathname === e.link
-                                  ? "active"
-                                  : "nav-link"
-                              }
-                              onClick={
-                                width > 991
-                                  ? () => {}
-                                  : () => handleDrawerOpen()
-                              }
-                            >
-                              <ListItemButton
-                                sx={{
-                                  pl: 4,
-                                  background: "white",
-                                  marginLeft: 2,
-                                }}
-                                className={
-                                  location.pathname === e.link
-                                    ? "active_tab"
-                                    : ""
-                                }
-                              >
-                                <ListItemText
-                                  style={{ whiteSpace: "nowrap" }}
-                                  primary={e?.title}
-                                  sx={{
-                                    color:
-                                      location.pathname === e.link
-                                        ? "#FFFFFF"
-                                        : "#424448",
-                                    opacity: open2 ? 1 : 0,
-                                  }}
-                                />
-                              </ListItemButton>
-                            </Link>
-                          );
-                        })}
-                      </List>
-                    </Collapse>
-                  </>
-                ) : (
                   <ListItemButton
                     sx={{
                       minHeight: 48,
                       justifyContent: open ? "initial" : "center",
                       px: 2.5,
-                      background: "white",
                       marginBottom: 0.5,
-                    }}
-                    className={
-                      item?.activeLinks?.includes(
+                      backgroundColor: item?.activeLinks?.includes(
                         location.pathname.split("/")?.[1]
                       )
-                        ? "active_tab"
-                        : ""
-                    }
+                        ? "#5D5FEF"
+                        : "#FFFFFF",
+                        "&:hover .MuiListItemText-root .MuiTypography-root":{
+                          color:"#FFFFFF"
+                        }
+
+                    }}
                   >
                     <ListItemIcon
                       sx={{
@@ -332,24 +327,24 @@ export default function SideBar(props) {
                         color: "#424448",
                         mr: open ? 1 : "auto",
                         justifyContent: "center",
+
                       }}
                     >
                       {item?.icon}
                     </ListItemIcon>
                     <ListItemText
-                      style={{ whiteSpace: "nowrap" }}
+                      style={{ whiteSpace: "nowrap", }}
                       primary={item?.title}
                       sx={{
                         color: item?.activeLinks?.includes(
                           location.pathname.split("/")?.[1]
                         )
                           ? "#FFFFFF"
-                          : "#424448",
+                          : "#737791",
                         opacity: open ? 1 : 0,
                       }}
                     />
                   </ListItemButton>
-                )}
               </ListItem>
             </Link>
           ))}

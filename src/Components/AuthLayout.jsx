@@ -1,13 +1,11 @@
-import { Box, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import { Box, Typography, useTheme } from '@mui/material'
+import React from 'react'
 import { makeStyles } from "tss-react/mui";
-import backgroundImage from "../Assets/Images/authBack.png"
-import { lightTheme } from '../theme';
 
 const useStyles = makeStyles()((theme) => {
     return {
         mainBox: {
-            backgroundImage: `url(${backgroundImage})`,
+            backgroundImage: "/assets/image/authBack.png",
             backgroundSize: 'cover',  // Adjust the background size as needed
             backgroundPosition: 'center',  // Adjust the background position as needed
             height: '100vh',  // Set the height of the container
@@ -16,7 +14,7 @@ const useStyles = makeStyles()((theme) => {
             alignItems: 'center',
         },
         loginBox: {
-            background: lightTheme.palette.bgWhite.main,
+            background: theme.palette.bgWhite.main,
             boxShadow: '0px 4px 20px 0px rgba(238, 238, 238, 0.50);',
             width: '550px',
             border: '1px solid #F8F9FA',
@@ -28,6 +26,7 @@ const useStyles = makeStyles()((theme) => {
 
 const AuthLayout = ({ children, logo, login, account, newAccount, register }) => {
     const { classes } = useStyles();
+    const theme = useTheme()
     return (
         <Box className={classes?.mainBox}>
             <Box className={classes?.loginBox}>
@@ -36,8 +35,8 @@ const AuthLayout = ({ children, logo, login, account, newAccount, register }) =>
                 <Typography style={{ fontSize: '16px', fontWeight: 400, textAlign: 'center', color: '#737791', marginTop: '20px', marginBottom: '20px' }}>{account}</Typography>
                 {children}
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '30px', marginBottom: '30px' }}>
-                    <Typography style={{ fontSize: '16px', fontWeight: 500, color: lightTheme.palette.bgDarkPrimary.main }}>{newAccount}</Typography>
-                    <Typography style={{ fontSize: '16px', fontWeight: 500, color: lightTheme.palette.primary.main }}>{register}</Typography>
+                    <Typography style={{ fontSize: '16px', fontWeight: 500, color: theme.palette.bgDarkPrimary.main }}>{newAccount}</Typography>
+                    <Typography style={{ fontSize: '16px', fontWeight: 500, color: theme.palette.primary.main }}>{register}</Typography>
                 </Box>
             </Box>
         </Box>

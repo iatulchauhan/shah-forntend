@@ -5,12 +5,12 @@ import TextLabel from '../../Components/Common/Fields/TextLabel';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import { lightTheme } from '../../theme';
 import { makeStyles } from "tss-react/mui";
-import exportIcon from "../../Assets/Icon/export.png"
-import DashboardIcon1 from "../../Assets/Icon/DashboardIcon-1.png"
-import DashboardIcon2 from "../../Assets/Icon/DashboardIcon-2.png"
-import DashboardIcon3 from "../../Assets/Icon/DashboardIcon-3.png"
-import DashboardIcon4 from "../../Assets/Icon/DashboardIcon-4.png"
-import DashboardIcon5 from "../../Assets/Icon/DashboardIcon-5.png"
+// import exportIcon from "../../Assets/Icon/export.png"
+// import DashboardIcon1 from "../../../public/assets/icons/DashboardIcon-1.png"
+// import DashboardIcon2 from "../../Assets/Icon/DashboardIcon-2.png"
+// import DashboardIcon3 from "../../Assets/Icon/DashboardIcon-3.png"
+// import DashboardIcon4 from "../../Assets/Icon/DashboardIcon-4.png"
+// import DashboardIcon5 from "../../Assets/Icon/DashboardIcon-5.png"
 import Assets from '../../Components/Common/ImageContainer';
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
@@ -172,31 +172,31 @@ const summaryData = [
     {
         name: "Total Receptionist",
         count: "250",
-        avtar: DashboardIcon1,
+        avtar: "/assets/icons/DashboardIcon-1.png",
         background: "#FFE2E5"
     },
     {
         name: "Total Counsellor",
         count: "300",
-        avtar: DashboardIcon2,
+        avtar: "/assets/icons/DashboardIcon-2.png",
         background: "#FFF4DE"
     },
     {
         name: "Total Accountant",
         count: "360",
-        avtar: DashboardIcon3,
+        avtar: "/assets/icons/DashboardIcon-3.png",
         background: "#DCFCE7"
     },
     {
         name: "Total Users",
         count: "2160",
-        avtar: DashboardIcon4,
+        avtar: "/assets/icons/DashboardIcon-4.png",
         background: "#F3E8FF"
     },
     {
         name: "Total New Visitor",
         count: "2160",
-        avtar: DashboardIcon5,
+        avtar: "/assets/icons/DashboardIcon-5.png",
         background: "#E0F0FF"
     },
 ]
@@ -223,7 +223,7 @@ const Dashboard = () => {
                         color={lightTheme.palette.bgDarkPrimary.main}
                         border={"2px solid #EDF2F6"}
                         className={classes.customButtom}
-                        startIcon={<Assets src={exportIcon} absolutePath={true} />}
+                    // startIcon={<Assets src={exportIcon} absolutePath={true} />}
                     />
                 </Box>
                 <Grid container padding={3} spacing={3}>
