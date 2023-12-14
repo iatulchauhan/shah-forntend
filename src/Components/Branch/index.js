@@ -4,8 +4,9 @@ import TextLabel from '../../Components/Common/Fields/TextLabel';
 import CommonTextField from '../../Components/Common/Fields/TextField';
 import SelectDropDown from '../../Components/Common/SelectDropDown';
 import CommonButton from '../../Components/Common/Button/CommonButton';
+import AutoCompleteDropDown from '../Common/commonAutoComplete';
 
-const AddBranch = ({ data, setData, state, city, error, handleChange, isEdit, onSubmit }) => {
+const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error, handleChange, isEdit, onSubmit, setSelectedState, selectedState }) => {
     return (
         <Box>
             <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -46,32 +47,36 @@ const AddBranch = ({ data, setData, state, city, error, handleChange, isEdit, on
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.country ? error?.country : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <SelectDropDown
-                        fullWidth
-                        width={'100%'}
-                        values={state || []}
-                        value={data?.state}
+                    <AutoCompleteDropDown
                         text="State"
-                        name="state"
-                        onChange={(e) => {
-                            setData({ ...data, state: e.target.value })
-                        }}
+                        options={states || []}
+                        onChange={(e, val) => { setSelectedState(val) }}
+                        value={selectedState?.label}
+                        defaultValue={selectedState?.label }
+                        getOptionLabel={(option) => option?.label}
+                        getOptionSelected={(option, selectedValue) => option === selectedValue}
+                        labelSize="15px"
+                        width={'100%'}
+                        size="small"
+                        placeholder={"Select State"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.state ? error?.state : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedState?.label ? error?.state : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <SelectDropDown
-                        fullWidth
-                        width={'100%'}
-                        values={city || []}
-                        value={data?.city}
+                    <AutoCompleteDropDown
                         text="City"
-                        name="city"
-                        onChange={(e) => {
-                            setData({ ...data, city: e.target.value })
-                        }}
+                        options={cities || []}
+                        onChange={(e, val) => { setSelectedCity(val) }}
+                        value={selectedCity?.label}
+                        defaultValue={selectedCity?.label}
+                        getOptionLabel={(option) => option?.label}
+                        getOptionSelected={(option, selectedValue) => option === selectedValue}
+                        labelSize="15px"
+                        width={'100%'}
+                        size="small"
+                        placeholder={"Select City"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.city ? error?.city : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedCity?.label ? error?.city : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <CommonTextField

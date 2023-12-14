@@ -19,7 +19,7 @@ const useStyles = makeStyles()((theme) => {
       background: theme?.palette?.bgWhite?.main,
       minWidth: "50px",
       ".MuiInputBase-input": {
-        height: "20px"
+        height: "16px"
       },
       "&:hover": {
         borderColor: `${theme?.palette?.primary?.main} !important`,

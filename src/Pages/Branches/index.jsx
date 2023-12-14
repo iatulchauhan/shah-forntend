@@ -82,8 +82,8 @@ const Branches = () => {
     const navigate = useNavigate();
     const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
 
-    const state = ['Gujarat ', 'Gujarat']
-    const city = ['Surat', 'Ahmadabad']
+    const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
+    const cities = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
 
     //States
     const [model, setModel] = useState(false);
@@ -93,6 +93,8 @@ const Branches = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [page, setPage] = React.useState(0);
     const [brancesDetails, setBrancheDetails] = React.useState([]);
+    const [selectedCity, setSelectedCity] = React.useState({});
+    const [selectedState, setSelectedState] = React.useState({});
 
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -101,7 +103,7 @@ const Branches = () => {
         setRowsPerPage(value);
         setPage(0);
     };
-    console.log(data, "datadata")
+    
     //Validation
     const handleValidation = () => {
         let formIsValid = true
@@ -118,11 +120,12 @@ const Branches = () => {
             formIsValid = false
             errors['country'] = 'Please enter country.'
         }
-        if (!data?.state) {
+        
+        if (!selectedState) {
             formIsValid = false
             errors['state'] = 'Please select state.'
         }
-        if (!data?.city) {
+        if (!selectedCity) {
             formIsValid = false
             errors['city'] = 'Please select city.'
         }
@@ -133,7 +136,7 @@ const Branches = () => {
         setError(errors)
         return formIsValid
     }
-
+console.log(error,"erorrrrrrrrrrr")
     const handleChange = (e) => {
         const { name, value } = e.target
         setData((prevState) => ({
@@ -166,8 +169,8 @@ const Branches = () => {
                 "branchName": data?.branchName,
                 "address": data?.address,
                 "country": data?.country,
-                "state": data?.state,
-                "city": data?.city,
+                "state": selectedState?.label,
+                "city": selectedCity?.label,
                 "postalCode": data?.postalCode
             }
             if (data?._id) {
@@ -259,12 +262,12 @@ const Branches = () => {
                 </Box>
             </PaperContainer>
 
-            <CommonModal
+            {model && <CommonModal
                 open={model}
                 onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
                 title={`${isEdit ? "Update" : "Add"} Branch`}
-                content={<AddBranch data={data} setData={setData} error={error} handleChange={handleChange} city={city} state={state} onSubmit={_addUpdateBranch} isEdit={isEdit} />}
-            />
+                content={<AddBranch data={data} setData={setData} error={error} handleChange={handleChange} cities={cities} states={states} onSubmit={_addUpdateBranch} isEdit={isEdit} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState}/>}
+            />}
         </>
     )
 }
