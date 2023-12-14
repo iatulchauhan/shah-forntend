@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { alpha, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
 import {
     Table,
@@ -15,10 +15,6 @@ import Assets from '../../Components/Common/ImageContainer';
 import PaperContainer from '../../Components/Common/PaperContainer';
 import TableHeading from '../../Components/Common/CommonTableHeading';
 import CommonModal from '../../Components/Common/CommonModel';
-import TextLabel from '../../Components/Common/Fields/TextLabel';
-import CommonTextField from '../../Components/Common/Fields/TextField';
-import SelectDropDown from '../../Components/Common/SelectDropDown';
-import CommonButton from '../../Components/Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import CommonPagination from '../../Components/Common/Pagination';
 import { lightTheme } from '../../theme';
@@ -26,6 +22,8 @@ import AddUser from '../../Components/User';
 import { useAppContext } from '../../Context/context';
 import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
+import DataNotFound from '../../Components/Common/DataNotFound';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -45,7 +43,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     "&:nth-of-type(odd)": {
         backgroundColor: theme.palette.action.hover,
     },
-    // hide last border
     "&:last-child td, &:last-child th": {
         border: 0,
     },
@@ -80,35 +77,12 @@ const useStyles = makeStyles()((theme) => {
     };
 });
 
-const rows = [
-    {
-        key: '1',
-        name: "John Doe",
-        address: '121, Quicksand view, India',
-        contact: ' +91 9865998545',
-        email: 'johndoe@gmail.com',
-        activePlan: 'Lorem ipsum',
-        branch: 'Surat',
-        role: 'Customer'
-    },
-    {
-        key: '2',
-        name: "John Doe",
-        address: '121, Quicksand view, India',
-        contact: ' +91 9865998545',
-        email: 'johndoe@gmail.com',
-        activePlan: 'Lorem ipsum',
-        branch: 'Surat',
-        role: 'Customer'
-    },
-
-];
 const User = () => {
     const { classes } = useStyles();
-    const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
-    const state = ['Gujarat ', 'Gujarat']
+    const { OnUpdateError, toggleLoader } = useAppContext();
+    const state = ['Gujarat ', 'Maharashtra']
     const city = ['Surat', 'Ahmadabad']
-    const branches = ['Surat', 'Ahmadabad']
+    const plan = ['Surat', 'Ahmadabad']
     const roles = [
         {
             label: "admin",
@@ -135,16 +109,16 @@ const User = () => {
             id: "5",
         },
     ]
-    const plan = ['Surat', 'Ahmadabad']
 
     //States
     const [model, setModel] = useState(false);
     const [data, setData] = useState({})
     const [error, setError] = useState({})
-    const [isSubmit, setIsSubmit] = useState(false)
+    const [deleteId, setDeleteId] = useState("")
     const [isEdit, setIsEdit] = useState(false)
     const [userDetails, setUserDetails] = useState([]);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [branchData, setBranchData] = useState({})
     const [page, setPage] = React.useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -184,6 +158,9 @@ const User = () => {
         if (!data?.mobileNo) {
             formIsValid = false
             errors['mobileNo'] = 'Please enter Contact No.'
+        } else if (!data?.mobileNo?.match(Regex.mobileNumberRegex)) {
+            formIsValid = false;
+            errors["mobileNo"] = "Invalid Contact No.";
         }
         if (!data?.email) {
             formIsValid = false;
@@ -191,6 +168,20 @@ const User = () => {
         } else if (!data?.email?.match(Regex.emailRegex)) {
             formIsValid = false;
             errors["invalidEmail"] = "* Invalid email Address";
+        }
+        if (!data?.password) {
+            formIsValid = false
+            errors['password'] = 'Please enter password.'
+        } else if (!data.password?.match(Regex.passwordRegex)) {
+            formIsValid = false;
+            errors["strongPassword"] = "Please enter strong password"
+        }
+        if (!data?.confirmPassword) {
+            formIsValid = false;
+            errors['confirmPassword'] = 'Please confirm your password.';
+        } else if (data?.confirmPassword !== data?.password) {
+            formIsValid = false;
+            errors['matchPassword'] = 'Passwords do not match.';
         }
         if (!data?.branch) {
             formIsValid = false
@@ -215,6 +206,7 @@ const User = () => {
             [name]: value
         }))
     }
+    console.log('data❤️', data)
 
     const _getUser = () => {
         toggleLoader();
@@ -230,6 +222,33 @@ const User = () => {
         );
     }
 
+    const _getBranches = () => {
+        axios.get("/admin/branch")
+            .then((res) => {
+                if (res?.data?.data?.response)
+                    setBranchData(res?.data?.data?.response)
+            }).catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            })
+    }
+
+    const _handleDelete = () => {
+        if (deleteId) {
+            toggleLoader();
+            axios.delete(`/admin/users/delete/${deleteId}`)
+                .then((res) => {
+                    swal(res?.data?.message, { icon: "success", timer: 5000, })
+                    toggleLoader();
+                    setDeleteId("");
+                    _getUser();
+                })
+                .catch((err) => {
+                    toggleLoader();
+                    OnUpdateError(err.data.message);
+                });
+        }
+    };
 
     const _addUpdateUser = () => {
         if (handleValidation()) {
@@ -243,9 +262,10 @@ const User = () => {
                 "postalCode": data?.postalCode,
                 "mobileNo": data?.mobileNo,
                 "email": data?.email,
-                "branch": data?.branch,
+                "password": data?.password,
+                "branch": branchData?.filter((item) => item?.branchName === data?.branch)?.[0]?._id,
                 "userType": data?.userType,
-                "activePlan": data?.activePlan,
+                // "activePlan": data?.activePlan,
             }
             if (data?._id) {
                 body.id = data?._id
@@ -271,6 +291,7 @@ const User = () => {
 
     useEffect(() => {
         _getUser()
+        _getBranches()
     }, [])
     return (
         <>
@@ -281,58 +302,65 @@ const User = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
-                            <Table sx={{ minWidth: 600 }} aria-label="customized table">
-                                <TableHead >
-                                    <TableRow>
-                                        <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
-                                        <StyledTableCell>Name</StyledTableCell>
-                                        <StyledTableCell>Address</StyledTableCell>
-                                        <StyledTableCell>Contact No.</StyledTableCell>
-                                        <StyledTableCell>Email Id</StyledTableCell>
-                                        <StyledTableCell>Active Plan</StyledTableCell>
-                                        <StyledTableCell>Branch</StyledTableCell>
-                                        <StyledTableCell>Role</StyledTableCell>
-                                        <StyledTableCell align="right">Action</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => (
-                                        <StyledTableRow key={index} >
-                                            <StyledTableCell>{row.key}</StyledTableCell>
-                                            <StyledTableCell className={classes.paddedRow} component="th" scope="row">
-                                                {row.name}
-                                            </StyledTableCell>
-                                            <StyledTableCell>{row.address}</StyledTableCell>
-                                            <StyledTableCell>{row.mobileNo}</StyledTableCell>
-                                            <StyledTableCell>{row.email}</StyledTableCell>
-                                            <StyledTableCell>{row.activePlan}</StyledTableCell>
-                                            <StyledTableCell>{row.branch}</StyledTableCell>
-                                            <StyledTableCell>{row.userType}</StyledTableCell>
-                                            <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                    <Assets
-                                                        className={classes.writeBox}
-                                                        src={"/assets/icons/write.svg"}
-                                                        absolutePath={true}
-                                                        onClick={() => { setData(row); setIsEdit(true); setModel(true) }}
-                                                    />
-                                                    <Assets
-                                                        className={classes.viewBox}
-                                                        src={"/assets/icons/view.svg"}
-                                                        absolutePath={true}
-                                                    />
-                                                    <Assets
-                                                        className={classes.deleteBox}
-                                                        src={"/assets/icons/delete.svg"}
-                                                        absolutePath={true}
-                                                    />
-                                                </Box>
-                                            </StyledTableCell>
+                            {userDetails?.response?.length > 0 ?
+                                <Table sx={{ minWidth: 600 }} aria-label="customized table">
+                                    <TableHead >
+                                        <TableRow>
+                                            <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
+                                            <StyledTableCell>Name</StyledTableCell>
+                                            <StyledTableCell>Address</StyledTableCell>
+                                            <StyledTableCell>Contact No.</StyledTableCell>
+                                            <StyledTableCell>Email Id</StyledTableCell>
+                                            <StyledTableCell>Active Plan</StyledTableCell>
+                                            <StyledTableCell>Branch</StyledTableCell>
+                                            <StyledTableCell>Role</StyledTableCell>
+                                            <StyledTableCell align="right">Action</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => (
+                                            <StyledTableRow key={index} >
+                                                <StyledTableCell>{index + 1}</StyledTableCell>
+                                                <StyledTableCell className={classes.paddedRow} component="th" scope="row">
+                                                    {row.name}
+                                                </StyledTableCell>
+                                                <StyledTableCell>{row.address}</StyledTableCell>
+                                                <StyledTableCell>{row.mobileNo}</StyledTableCell>
+                                                <StyledTableCell>{row.email}</StyledTableCell>
+                                                <StyledTableCell>{row.activePlan}</StyledTableCell>
+                                                <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
+                                                <StyledTableCell>{row.userType}</StyledTableCell>
+                                                <StyledTableCell>
+                                                    <Box display={"flex"} justifyContent={"end"} gap={1}>
+                                                        <Assets
+                                                            className={classes.writeBox}
+                                                            src={"/assets/icons/write.svg"}
+                                                            absolutePath={true}
+                                                            onClick={() => { setData(row); setIsEdit(true); setModel(true) }}
+                                                        />
+                                                        <Assets
+                                                            className={classes.viewBox}
+                                                            src={"/assets/icons/view.svg"}
+                                                            absolutePath={true}
+                                                        />
+                                                        <Assets
+                                                            className={classes.deleteBox}
+                                                            src={"/assets/icons/delete.svg"}
+                                                            absolutePath={true}
+                                                            onClick={() => { setDeleteId(row?._id); _handleDelete(); }}
+                                                        />
+                                                    </Box>
+                                                </StyledTableCell>
 
-                                        </StyledTableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                            </StyledTableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table> :
+                                <DataNotFound
+                                    icon={<ErrorOutlineIcon color="primary" style={{ fontSize: '3rem' }} />}
+                                    elevation={2}
+                                />
+                            }
                         </TableContainer>
                     </Grid>
                 </Grid>
@@ -352,7 +380,7 @@ const User = () => {
                 open={model}
                 onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
                 title={`${isEdit ? "Update" : "Add"} User`}
-                content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} roles={roles} plan={plan} city={city} state={state} onSubmit={_addUpdateUser} isEdit={isEdit} />}
+                content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branchData} roles={roles} plan={plan} city={city} state={state} onSubmit={_addUpdateUser} isEdit={isEdit} />}
             />
         </>
     )

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { alpha, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
 import {
     Table,
@@ -15,12 +15,14 @@ import Assets from '../../Components/Common/ImageContainer';
 import PaperContainer from '../../Components/Common/PaperContainer';
 import TableHeading from '../../Components/Common/CommonTableHeading';
 import CommonModal from '../../Components/Common/CommonModel';
-import TextLabel from '../../Components/Common/Fields/TextLabel';
-import CommonTextField from '../../Components/Common/Fields/TextField';
-import SelectDropDown from '../../Components/Common/SelectDropDown';
-import CommonButton from '../../Components/Common/Button/CommonButton';
-import { Regex } from '../../Utils/regex';
 import CommonPagination from '../../Components/Common/Pagination';
+import { Regex } from '../../Utils/regex';
+import { useAppContext } from '../../Context/context';
+import axios from "../../APiSetUp/axios";
+import swal from 'sweetalert';
+import DataNotFound from '../../Components/Common/DataNotFound';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import AddVisitor from '../../Components/Visitor';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -74,38 +76,21 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const rows = [
-    {
-        key: '1',
-        name: "John Doe",
-        address: '121, Quicksand view, India',
-        contact: ' +91 9865998545',
-        email: 'johndoe@gmail.com',
-    },
-    {
-        key: '2',
-        name: "John Doe",
-        address: '121, Quicksand view, India',
-        contact: ' +91 9865998545',
-        email: 'johndoe@gmail.com',
-    },
 
-];
 const Visitor = () => {
     const { classes } = useStyles();
-    const state = ['Gujarat ', 'Gujarat']
+    const { OnUpdateError, toggleLoader } = useAppContext();
+    const state = ['Gujarat ', 'Maharashtra']
     const city = ['Surat', 'Ahmadabad']
-    const braches = ['Surat', 'Ahmadabad']
-    const roles = ['Surat', 'Ahmadabad']
-    const plan = ['Surat', 'Ahmadabad']
 
     //States
     const [model, setModel] = useState(false);
     const [data, setData] = useState({})
     const [error, setError] = useState({})
-    const [isSubmit, setIsSubmit] = useState(false)
+    const [deleteId, setDeleteId] = useState("")
+    const [isEdit, setIsEdit] = useState(false)
+    const [visitorDetails, setVisitorDetails] = useState([]);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
     const [page, setPage] = React.useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -138,13 +123,13 @@ const Visitor = () => {
             formIsValid = false
             errors['city'] = 'Please select city.'
         }
-        if (!data?.code) {
+        if (!data?.postalCode) {
             formIsValid = false
-            errors['code'] = 'Please enter Postal Code.'
+            errors['postalCode'] = 'Please enter Postal Code.'
         }
-        if (!data?.contactno) {
+        if (!data?.mobileNo) {
             formIsValid = false
-            errors['contactno'] = 'Please enter Contact No.'
+            errors['mobileNo'] = 'Please enter Contact No.'
         }
         if (!data?.email) {
             formIsValid = false;
@@ -152,18 +137,6 @@ const Visitor = () => {
         } else if (!data?.email?.match(Regex.emailRegex)) {
             formIsValid = false;
             errors["invalidEmail"] = "* Invalid email Address";
-        }
-        if (!data?.braches) {
-            formIsValid = false
-            errors['braches'] = 'Please select Branches.'
-        }
-        if (!data?.roles) {
-            formIsValid = false
-            errors['roles'] = 'Please select Assign Roles.'
-        }
-        if (!data?.plan) {
-            formIsValid = false
-            errors['plan'] = 'Please select Active Plan.'
         }
         setError(errors)
         return formIsValid
@@ -176,72 +149,139 @@ const Visitor = () => {
             [name]: value
         }))
     }
-    const handleLoginClick = () => {
-        setIsSubmit(true)
-        if (handleValidation()) {
 
+    const _getVisitor = () => {
+        toggleLoader();
+        axios.get("receptionist/visitor").then((res) => {
+            if (res?.data?.data) {
+                setVisitorDetails(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+    const _handleDelete = () => {
+        if (deleteId) {
+            toggleLoader();
+            axios.delete(`/receptionist/visitor/delete/${deleteId}`)
+                .then((res) => {
+                    swal(res?.data?.message, { icon: "success", timer: 5000, })
+                    toggleLoader();
+                    setDeleteId("");
+                    _getVisitor();
+                })
+                .catch((err) => {
+                    toggleLoader();
+                    OnUpdateError(err.data.message);
+                });
+        }
+    };
+
+    const _addUpdateUser = () => {
+        if (handleValidation()) {
+            toggleLoader();
+            let body = {
+                "name": data?.name,
+                "address": data?.address,
+                "country": data?.country,
+                "state": data?.state,
+                "city": data?.city,
+                "postalCode": data?.postalCode,
+                "mobileNo": data?.mobileNo,
+                "email": data?.email,
+            }
+            if (data?._id) {
+                body.id = data?._id
+            }
+            axios.post(`receptionist/visitor/${data?._id ? "update" : "create"}`, body).then((res) => {
+                if (res?.data?.data) {
+                    swal(res?.data?.message, { icon: "success", timer: 5000, })
+                    setModel(false)
+                    setData({})
+                    setError({})
+                    setIsEdit(false)
+                    _getVisitor()
+                    // navigate("/")
+                }
+                toggleLoader();
+            }).catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            }
+            );
         }
     }
-    console.log("error", data, error)
+
     useEffect(() => {
-        if (isSubmit) {
-            handleValidation()
-        }
-    }, [data])
+        _getVisitor()
+    }, [])
+
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Visitor Data" onClick={() => setModel(true)} />
+                        <TableHeading title="Visitor Data" buttonText={'Add Visitor'} onClick={() => setModel(true)} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
-                            <Table sx={{ minWidth: 600 }} aria-label="customized table">
-                                <TableHead >
-                                    <TableRow>
-                                        <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
-                                        <StyledTableCell>Name</StyledTableCell>
-                                        <StyledTableCell>Address</StyledTableCell>
-                                        <StyledTableCell>Contact No.</StyledTableCell>
-                                        <StyledTableCell>Email Id</StyledTableCell>
-                                        <StyledTableCell align="right">Action</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows.map((row, index) => (
-                                        <StyledTableRow key={index} >
-                                            <StyledTableCell>{row.key}</StyledTableCell>
-                                            <StyledTableCell className={classes.paddedRow} component="th" scope="row">
-                                                {row.name}
-                                            </StyledTableCell>
-                                            <StyledTableCell>{row.address}</StyledTableCell>
-                                            <StyledTableCell>{row.contact}</StyledTableCell>
-                                            <StyledTableCell>{row.email}</StyledTableCell>
-                                            <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                    <Assets
-                                                        className={classes.writeBox}
-                                                        src={"/assets/icons/write.svg"}
-                                                        absolutePath={true}
-                                                    />
-                                                    <Assets
-                                                        className={classes.viewBox}
-                                                        src={"/assets/icons/view.svg"}
-                                                        absolutePath={true}
-                                                    />
-                                                    <Assets
-                                                        className={classes.deleteBox}
-                                                        src={"/assets/icons/delete.svg"}
-                                                        absolutePath={true}
-                                                    />
-                                                </Box>
-                                            </StyledTableCell>
+                            {visitorDetails?.response?.length > 0 ?
+                                <Table sx={{ minWidth: 600 }} aria-label="customized table">
+                                    <TableHead >
+                                        <TableRow>
+                                            <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
+                                            <StyledTableCell>Name</StyledTableCell>
+                                            <StyledTableCell>Address</StyledTableCell>
+                                            <StyledTableCell>Contact No.</StyledTableCell>
+                                            <StyledTableCell>Email Id</StyledTableCell>
+                                            <StyledTableCell align="right">Action</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {visitorDetails?.response?.map((row, index) => (
+                                            <StyledTableRow key={index} >
+                                                <StyledTableCell>{row.key}</StyledTableCell>
+                                                <StyledTableCell className={classes.paddedRow} component="th" scope="row">
+                                                    {row.name}
+                                                </StyledTableCell>
+                                                <StyledTableCell>{row.address}</StyledTableCell>
+                                                <StyledTableCell>{row.mobileNo}</StyledTableCell>
+                                                <StyledTableCell>{row.email}</StyledTableCell>
+                                                <StyledTableCell>
+                                                    <Box display={"flex"} justifyContent={"end"} gap={1}>
+                                                        <Assets
+                                                            className={classes.writeBox}
+                                                            src={"/assets/icons/write.svg"}
+                                                            absolutePath={true}
+                                                            onClick={() => { setData(row); setIsEdit(true); setModel(true) }}
+                                                        />
+                                                        <Assets
+                                                            className={classes.viewBox}
+                                                            src={"/assets/icons/view.svg"}
+                                                            absolutePath={true}
+                                                        />
+                                                        <Assets
+                                                            className={classes.deleteBox}
+                                                            src={"/assets/icons/delete.svg"}
+                                                            absolutePath={true}
+                                                            onClick={() => { setDeleteId(row?._id); _handleDelete(); }}
+                                                        />
+                                                    </Box>
+                                                </StyledTableCell>
 
-                                        </StyledTableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                            </StyledTableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table> :
+                                <DataNotFound
+                                    icon={<ErrorOutlineIcon color="primary" style={{ fontSize: '3rem' }} />}
+                                    elevation={2}
+                                />
+                            }
                         </TableContainer>
                     </Grid>
                 </Grid>
@@ -256,166 +296,11 @@ const Visitor = () => {
                 </Box>
             </PaperContainer>
 
-            <CommonModal open={model} onClose={() => setModel(false)} title={"Add New User"}
-                content={
-                    <Box>
-                        <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Name'}
-                                    placeholder={"Enter User Name"}
-                                    type='text'
-                                    name='name'
-                                    value={data?.name}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.name ? error?.name : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Address'}
-                                    placeholder={"Enter Address"}
-                                    type='text'
-                                    name='address'
-                                    value={data?.address}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.address ? error?.address : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Country'}
-                                    placeholder={"Enter Country"}
-                                    type='text'
-                                    name='country'
-                                    value={data?.country}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.country ? error?.country : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={state || []}
-                                    value={data?.state}
-                                    text="State"
-                                    name="state"
-                                    onChange={(e) => {
-                                        setData({ ...data, state: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.state ? error?.state : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={city || []}
-                                    value={data?.city}
-                                    text="City"
-                                    name="city"
-                                    onChange={(e) => {
-                                        setData({ ...data, city: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.city ? error?.city : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Postal Code'}
-                                    placeholder={"Enter Postal Code"}
-                                    type='number'
-                                    name='code'
-                                    value={data?.code}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.code ? error?.code : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Contact No.'}
-                                    placeholder={"Enter Contact No."}
-                                    type='number'
-                                    name='contactno'
-                                    value={data?.contactno}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.contactno ? error?.contactno : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Email'}
-                                    placeholder={"Enter Email"}
-                                    type='text'
-                                    name='email'
-                                    value={data?.email}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} title={!data?.email ? error?.email : ""} />
-                                <TextLabel fontSize={"12px"} color={"red"} title={data?.email?.match(Regex.emailRegex) ? "" : error.invalidEmail} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={braches || []}
-                                    text="Select Branches"
-                                    name="braches"
-                                    value={data?.braches}
-                                    onChange={(e) => {
-                                        setData({ ...data, braches: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.braches ? error?.braches : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={roles || []}
-                                    text="Assign Roles"
-                                    name="roles"
-                                    value={data?.roles}
-                                    onChange={(e) => {
-                                        setData({ ...data, roles: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.roles ? error?.roles : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={plan || []}
-                                    text="Choose Active Plan"
-                                    name="plan"
-                                    value={data?.plan}
-                                    onChange={(e) => {
-                                        setData({ ...data, plan: e.target.value })
-                                    }}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.plan ? error?.plan : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
-                                    <CommonButton
-                                        width={'60%'}
-                                        text="Login"
-                                        type="submit"
-                                        onClick={handleLoginClick}
-                                    />
-                                </Box>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                }
+            <CommonModal
+                open={model}
+                onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
+                title={`${isEdit ? "Update" : "Add"} Visitor`}
+                content={<AddVisitor data={data} setData={setData} error={error} handleChange={handleChange} city={city} state={state} onSubmit={_addUpdateUser} isEdit={isEdit} />}
             />
         </>
     )

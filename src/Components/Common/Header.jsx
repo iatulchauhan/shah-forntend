@@ -3,9 +3,6 @@ import React from 'react'
 import TextLabel from './Fields/TextLabel'
 import CommonSearch from './CommonSearch'
 import Assets from './ImageContainer'
-import CommonButton from './Button/CommonButton'
-
-
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -24,21 +21,21 @@ const Header = ({ onClick }) => {
   };
   return (
     <Grid container sx={{ backgroundColor: "white", padding: 1.5, display: "flex", justifyContent: "space-between" }}>
-      <Box display={"flex"} alignItems={"center"} gap={2}>
-        <MenuIcon sx={{ color: "black", alignSelf: "center", width: '30px', height: "30px", cursor: "pointer" }} onClick={onClick} />
-        <TextLabel title="Dashboard" variant={"h2"} fontWeight={"600"} />
+      <Box display={"flex"} alignItems={"center"} gap={{md: 2, xs: 1}}>
+        <MenuIcon sx={{ color: "black", alignSelf: "center", width: {xs: "25px", sm: "30px"}, height: {xs: "25px", sm: "30px"}, cursor: "pointer" }} onClick={onClick} />
+        <TextLabel title="Dashboard" variant={"h4"} fontWeight={"600"} />
       </Box>
       <Box display={"flex"} justifyContent={"center"} alignItems={"center"} gap={2}>
         <Hidden mdDown>
           <CommonSearch width={"500px"} />
-        </Hidden>
         <Box sx={{ backgroundColor: "#FFFAF1", display: "flex", justifyContent: "center", alignItems: "center", width: "45px", height: "45px", borderRadius: "16px" }}>
           <Assets src={"/assets/icons/notification.svg"} absolutePath={true} />
         </Box>
+        </Hidden>
         <Box display={"flex"} gap={1} onClick={handleClick}>
-          <Avatar />
+          <Avatar sx={{height: {xs: "30px", md: "40px"}, width: {xs: "30px", md: "40px"}}} />
           <Box>
-            <Box display={"flex"} gap={2}>
+            <Box display={"flex"} gap={{md: 2, xs: 1}}>
               <TextLabel title={"John Doe"} fontWeight={"500"} variant={"subtitle2"} />
               <Assets src={"/assets/icons/downArrow.svg"} absolutePath={true} />
             </Box>

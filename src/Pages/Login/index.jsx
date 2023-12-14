@@ -58,7 +58,7 @@ const Login = () => {
     setIsSubmit(true)
     if (handleValidation()) {
       toggleLoader();
-      axios.post("admin/login", {
+      axios.post("/login", {
           email: data?.email,
           password: data?.password
       }).then((res) => {

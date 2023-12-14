@@ -15,6 +15,8 @@ export const Regex = {
     isInteger: /[^0-9]/,
     onlySpace: "/^s*$/",
     ifscCode: "^[A-Z]{4}0[A-Z0-9]{6}$",
+    passwordRegex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    confirmPasswordRegex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
 };
 
 export const InvalidNumberKeys = [

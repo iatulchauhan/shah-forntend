@@ -26,7 +26,7 @@ const useStyles = makeStyles()((theme) => {
             alignItems: "center",
             justifyContent: "space-between",
             gap: "20px",
-            [theme.breakpoints.down(500)]: {
+            [theme.breakpoints.down("md")]: {
                 gap: '6px',
             }
         },
