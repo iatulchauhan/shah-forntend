@@ -8,6 +8,7 @@ import {
     TableContainer,
     Box,
     Grid,
+    Switch,
 } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -103,7 +104,7 @@ const Branches = () => {
         setRowsPerPage(value);
         setPage(0);
     };
-    
+
     //Validation
     const handleValidation = () => {
         let formIsValid = true
@@ -120,7 +121,7 @@ const Branches = () => {
             formIsValid = false
             errors['country'] = 'Please enter country.'
         }
-        
+
         if (!selectedState) {
             formIsValid = false
             errors['state'] = 'Please select state.'
@@ -136,7 +137,7 @@ const Branches = () => {
         setError(errors)
         return formIsValid
     }
-console.log(error,"erorrrrrrrrrrr")
+    console.log(error, "erorrrrrrrrrrr")
     const handleChange = (e) => {
         const { name, value } = e.target
         setData((prevState) => ({
@@ -150,7 +151,6 @@ console.log(error,"erorrrrrrrrrrr")
 
         axios.get("admin/branch").then((res) => {
             if (res?.data?.data) {
-                console.log("resasdasd", res?.data?.data);
                 setBrancheDetails(res?.data?.data)
             }
             toggleLoader();
@@ -160,6 +160,20 @@ console.log(error,"erorrrrrrrrrrr")
         }
         );
     }
+    const _activeDeactive = (userId, isActive) => {
+        toggleLoader();
+        const body = {
+            userId: userId,
+            isActive: isActive,
+        };
+        axios.post("admin/users/activeInactive", body)
+            .then((res) => {
+            })
+            .catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            });
+    };
 
 
     const _addUpdateBranch = () => {
@@ -198,6 +212,7 @@ console.log(error,"erorrrrrrrrrrr")
 
     React.useEffect(() => {
         _getBranches()
+        _activeDeactive()
     }, [])
 
     return (
@@ -219,6 +234,7 @@ console.log(error,"erorrrrrrrrrrr")
                                             <StyledTableCell>Country</StyledTableCell>
                                             <StyledTableCell>State</StyledTableCell>
                                             <StyledTableCell>City</StyledTableCell>
+                                            <StyledTableCell align='center'>Active/Deactive</StyledTableCell>
                                             <StyledTableCell align="right">Action</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
@@ -233,6 +249,13 @@ console.log(error,"erorrrrrrrrrrr")
                                                 <StyledTableCell>{row.country}</StyledTableCell>
                                                 <StyledTableCell>{row.state}</StyledTableCell>
                                                 <StyledTableCell>{row.city}</StyledTableCell>
+                                                <StyledTableCell align='center'>
+                                                    <Switch
+                                                        checked={row.isActive}
+                                                        onChange={(e) => _activeDeactive(row._id, e.target.checked)}
+                                                        color="primary"
+                                                    />
+                                                </StyledTableCell>
                                                 <StyledTableCell>
                                                     <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                         <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true) }} />

@@ -2,15 +2,15 @@ import React from 'react'
 import {
     Box,
     Grid,
-    Switch,
 } from "@mui/material";
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 import CommonTextField from '../../Components/Common/Fields/TextField';
-import SelectDropDown from '../../Components/Common/SelectDropDown';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
+import AutoCompleteDropDown from '../Common/commonAutoComplete';
 
-const AddUser = ({ data, setData, state, branches, roles, plan, city, error, handleChange, isEdit, onSubmit }) => {
+const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, city, error, handleChange, isEdit, onSubmit }) => {
+    console.log(branches,"branches")
     return (
         <Box>
             <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -51,32 +51,36 @@ const AddUser = ({ data, setData, state, branches, roles, plan, city, error, han
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.country ? error?.country : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <SelectDropDown
-                        fullWidth
-                        width={'100%'}
-                        values={state || []}
-                        value={data?.state}
+                    <AutoCompleteDropDown
                         text="State"
-                        name="state"
-                        onChange={(e) => {
-                            setData({ ...data, state: e.target.value })
-                        }}
+                        options={states || []}
+                        onChange={(e, val) => { setSelectedState(val) }}
+                        value={selectedState?.label}
+                        defaultValue={selectedState?.label}
+                        getOptionLabel={(option) => option?.label}
+                        getOptionSelected={(option, selectedValue) => option === selectedValue}
+                        labelSize="15px"
+                        width={'100%'}
+                        size="small"
+                        placeholder={"Select State"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.state ? error?.state : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedState?.label ? error?.state : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <SelectDropDown
-                        fullWidth
-                        width={'100%'}
-                        values={city || []}
-                        value={data?.city}
+                <AutoCompleteDropDown
                         text="City"
-                        name="city"
-                        onChange={(e) => {
-                            setData({ ...data, city: e.target.value })
-                        }}
+                        options={city || []}
+                        onChange={(e, val) => { setSelectedCity(val) }}
+                        value={selectedCity?.label}
+                        defaultValue={selectedCity?.label}
+                        getOptionLabel={(option) => option?.label}
+                        getOptionSelected={(option, selectedValue) => option === selectedValue}
+                        labelSize="15px"
+                        width={'100%'}
+                        size="small"
+                        placeholder={"Select City"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.city ? error?.city : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedCity?.label ? error?.city : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <CommonTextField
@@ -101,7 +105,6 @@ const AddUser = ({ data, setData, state, branches, roles, plan, city, error, han
                         onChange={(e) => handleChange(e, false)}
                     />
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.mobileNo ? error?.mobileNo : ""} />
-                    <TextLabel fontSize={"12px"} color={"red"} title={data?.mobileNo?.match(Regex.mobileNumberRegex) ? "" : error.mobileNo} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <CommonTextField
@@ -144,57 +147,37 @@ const AddUser = ({ data, setData, state, branches, roles, plan, city, error, han
                     <TextLabel fontSize={"12px"} color={"red"} title={data?.email?.match(Regex.confirmPasswordRegex) ? "" : error.matchPassword} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <SelectDropDown
-                        fullWidth
+                    <AutoCompleteDropDown
+                        text="Branch"
+                        options={branches || []}
+                        onChange={(e, val) => { setSelectedBranch(val) }}
+                        value={selectedBranch?.branchName}
+                        defaultValue={selectedBranch?.branchName}
+                        getOptionLabel={(option) => option?.branchName}
+                        getOptionSelected={(option, selectedValue) => option === selectedValue}
+                        labelSize="15px"
                         width={'100%'}
-                        values={branches?.map((item) => item.branchName) || []}
-                        text="Select Branches"
-                        name="branch"
-                        value={data?.branch}
-                        onChange={(e) => {
-                            setData({ ...data, branch: e.target.value })
-                        }}
+                        size="small"
+                        placeholder={"Select Branch"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.branch ? error?.branch : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedBranch?.branchName ? error?.branchName : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <SelectDropDown
-                        fullWidth
+                    <AutoCompleteDropDown
+                        text="User Type"
+                        options={roles || []}
+                        onChange={(e, val) => { setSelectedRole(val) }}
+                        value={selectedRole?.label}
+                        defaultValue={selectedRole?.label}
+                        getOptionLabel={(option) => option?.label}
+                        getOptionSelected={(option, selectedValue) => option === selectedValue}
+                        labelSize="15px"
                         width={'100%'}
-                        values={roles?.map((role) => role.id) || []}
-                        text="Assign Roles"
-                        name="userType"
-                        value={data?.userType}
-                        onChange={(e) => {
-                            setData({ ...data, userType: e.target.value })
-                        }}
+                        size="small"
+                        placeholder={"Select User Type"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.userType ? error?.userType : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedRole?.label ? error?.userType : ""} />
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <Box display="flex" alignItems="center">
-                        <div style={{ marginRight: '10px' }}>Active</div>
-                        <Switch
-                            checked={data.active} 
-                            onChange={(e) => setData({ ...data, active: e.target.checked })}
-                            color="primary"
-                        />
-                    </Box>
-                </Grid>
-                {/* <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <SelectDropDown
-                        fullWidth
-                        width={'100%'}
-                        values={plan || []}
-                        text="Choose Active Plan"
-                        name="plan"
-                        value={data?.activePlan}
-                        onChange={(e) => {
-                            setData({ ...data, activePlan: e.target.value })
-                        }}
-                    />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.activePlan ? error?.activePlan : ""} />
-                </Grid> */}
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                         <CommonButton

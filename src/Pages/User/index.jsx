@@ -80,36 +80,9 @@ const useStyles = makeStyles()((theme) => {
 const User = () => {
     const { classes } = useStyles();
     const { OnUpdateError, toggleLoader } = useAppContext();
-    const state = ['Gujarat ', 'Maharashtra']
-    const city = ['Surat', 'Ahmadabad']
-    const plan = ['Surat', 'Ahmadabad']
-    const roles = [
-        {
-            label: "admin",
-            id: "0",
-        },
-        {
-            label: "user",
-            id: "1",
-        },
-        {
-            label: "receptionist",
-            id: "2",
-        },
-        {
-            label: "counsellor",
-            id: "3",
-        },
-        {
-            label: "accountant",
-            id: "4",
-        },
-        {
-            label: "marketing",
-            id: "5",
-        },
-    ]
-
+    const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
+    const city = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
+    const roles = [{ label: "admin", id: "0", }, { label: "user", id: "1", }, { label: "receptionist", id: "2", }, { label: "counsellor", id: "3", }, { label: "accountant", id: "4", }, { label: "marketing", id: "5", },]
     //States
     const [model, setModel] = useState(false);
     const [data, setData] = useState({})
@@ -117,9 +90,15 @@ const User = () => {
     const [deleteId, setDeleteId] = useState("")
     const [isEdit, setIsEdit] = useState(false)
     const [userDetails, setUserDetails] = useState([]);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [branchData, setBranchData] = useState({})
-    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [branches, setBranches] = useState([])
+    const [selectedBranch, setSelectedBranch] = useState({});
+    const [selectedState, setSelectedState] = useState({});
+    const [selectedCity, setSelectedCity] = useState({})
+    const [selectedRole, setSelectedRole] = useState({})
+    const [page, setPage] = useState(0);
+    console.log(data, "data")
+    console.log(selectedBranch, "selectedBranch")
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -143,11 +122,11 @@ const User = () => {
             formIsValid = false
             errors['country'] = 'Please enter country.'
         }
-        if (!data?.state) {
+        if (!selectedState) {
             formIsValid = false
             errors['state'] = 'Please select state.'
         }
-        if (!data?.city) {
+        if (!selectedCity) {
             formIsValid = false
             errors['city'] = 'Please select city.'
         }
@@ -158,9 +137,6 @@ const User = () => {
         if (!data?.mobileNo) {
             formIsValid = false
             errors['mobileNo'] = 'Please enter Contact No.'
-        } else if (!data?.mobileNo?.match(Regex.mobileNumberRegex)) {
-            formIsValid = false;
-            errors["mobileNo"] = "Invalid Contact No.";
         }
         if (!data?.email) {
             formIsValid = false;
@@ -183,18 +159,14 @@ const User = () => {
             formIsValid = false;
             errors['matchPassword'] = 'Passwords do not match.';
         }
-        if (!data?.branch) {
+        if (!selectedBranch) {
             formIsValid = false
-            errors['branch'] = 'Please select branch.'
+            errors['branchName'] = 'Please select branchName.'
         }
-        if (!data?.userType) {
+        if (!selectedRole) {
             formIsValid = false
             errors['userType'] = 'Please select Assign Roles.'
         }
-        // if (!data?.activePlan) {
-        //     formIsValid = false
-        //     errors['activePlan'] = 'Please select Active Plan.'
-        // }
         setError(errors)
         return formIsValid
     }
@@ -206,7 +178,6 @@ const User = () => {
             [name]: value
         }))
     }
-    console.log('data❤️', data)
 
     const _getUser = () => {
         toggleLoader();
@@ -225,8 +196,9 @@ const User = () => {
     const _getBranches = () => {
         axios.get("/admin/branch")
             .then((res) => {
-                if (res?.data?.data?.response)
-                    setBranchData(res?.data?.data?.response)
+                if (res?.data?.data?.response) {
+                    setBranches(res?.data?.data?.response)
+                }
             }).catch((err) => {
                 toggleLoader();
                 OnUpdateError(err.data.message);
@@ -257,15 +229,15 @@ const User = () => {
                 "name": data?.name,
                 "address": data?.address,
                 "country": data?.country,
-                "state": data?.state,
-                "city": data?.city,
+                "state": selectedState?.label,
+                "city": selectedCity?.label,
                 "postalCode": data?.postalCode,
                 "mobileNo": data?.mobileNo,
                 "email": data?.email,
                 "password": data?.password,
-                "branch": branchData?.filter((item) => item?.branchName === data?.branch)?.[0]?._id,
-                "userType": data?.userType,
-                // "activePlan": data?.activePlan,
+                "branch": selectedBranch?._id,
+                "userType": selectedRole?.id,
+                "active": data?.active,
             }
             if (data?._id) {
                 body.id = data?._id
@@ -278,7 +250,6 @@ const User = () => {
                     setError({})
                     setIsEdit(false)
                     _getUser()
-                    // navigate("/")
                 }
                 toggleLoader();
             }).catch((err) => {
@@ -288,9 +259,10 @@ const User = () => {
             );
         }
     }
-
     useEffect(() => {
         _getUser()
+    }, [])
+    useEffect(() => {
         _getBranches()
     }, [])
     return (
@@ -318,42 +290,45 @@ const User = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => (
-                                            <StyledTableRow key={index} >
-                                                <StyledTableCell>{index + 1}</StyledTableCell>
-                                                <StyledTableCell className={classes.paddedRow} component="th" scope="row">
-                                                    {row.name}
-                                                </StyledTableCell>
-                                                <StyledTableCell>{row.address}</StyledTableCell>
-                                                <StyledTableCell>{row.mobileNo}</StyledTableCell>
-                                                <StyledTableCell>{row.email}</StyledTableCell>
-                                                <StyledTableCell>{row.activePlan}</StyledTableCell>
-                                                <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
-                                                <StyledTableCell>{row.userType}</StyledTableCell>
-                                                <StyledTableCell>
-                                                    <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                        <Assets
-                                                            className={classes.writeBox}
-                                                            src={"/assets/icons/write.svg"}
-                                                            absolutePath={true}
-                                                            onClick={() => { setData(row); setIsEdit(true); setModel(true) }}
-                                                        />
-                                                        <Assets
-                                                            className={classes.viewBox}
-                                                            src={"/assets/icons/view.svg"}
-                                                            absolutePath={true}
-                                                        />
-                                                        <Assets
-                                                            className={classes.deleteBox}
-                                                            src={"/assets/icons/delete.svg"}
-                                                            absolutePath={true}
-                                                            onClick={() => { setDeleteId(row?._id); _handleDelete(); }}
-                                                        />
-                                                    </Box>
-                                                </StyledTableCell>
+                                        {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => {
+                                            console.log(row, "row")
+                                            return (
+                                                <StyledTableRow key={index} >
+                                                    <StyledTableCell>{index + 1}</StyledTableCell>
+                                                    <StyledTableCell className={classes.paddedRow} component="th" scope="row">
+                                                        {row.name}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell>{row.address}</StyledTableCell>
+                                                    <StyledTableCell>{row.mobileNo}</StyledTableCell>
+                                                    <StyledTableCell>{row.email}</StyledTableCell>
+                                                    <StyledTableCell>{row.activePlan}</StyledTableCell>
+                                                    <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
+                                                    <StyledTableCell>{row.userType}</StyledTableCell>
+                                                    <StyledTableCell>
+                                                        <Box display={"flex"} justifyContent={"end"} gap={1}>
+                                                            <Assets
+                                                                className={classes.writeBox}
+                                                                src={"/assets/icons/write.svg"}
+                                                                absolutePath={true}
+                                                                onClick={() => { setData(row); setSelectedBranch(row?.branchDetails || {}); setIsEdit(true); setModel(true) }}
+                                                            />
+                                                            <Assets
+                                                                className={classes.viewBox}
+                                                                src={"/assets/icons/view.svg"}
+                                                                absolutePath={true}
+                                                            />
+                                                            <Assets
+                                                                className={classes.deleteBox}
+                                                                src={"/assets/icons/delete.svg"}
+                                                                absolutePath={true}
+                                                                onClick={() => { setDeleteId(row?._id); _handleDelete(); }}
+                                                            />
+                                                        </Box>
+                                                    </StyledTableCell>
 
-                                            </StyledTableRow>
-                                        ))}
+                                                </StyledTableRow>
+                                            )
+                                        })}
                                     </TableBody>
                                 </Table> :
                                 <DataNotFound
@@ -380,8 +355,8 @@ const User = () => {
                 open={model}
                 onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
                 title={`${isEdit ? "Update" : "Add"} User`}
-                content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branchData} roles={roles} plan={plan} city={city} state={state} onSubmit={_addUpdateUser} isEdit={isEdit} />}
-            />
+                content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} city={city} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} />}
+            />D
         </>
     )
 }
