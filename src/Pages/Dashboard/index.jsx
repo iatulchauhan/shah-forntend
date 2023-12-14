@@ -286,10 +286,6 @@ const Dashboard = () => {
                                                     </Box>
                                                     <Box display={"flex"} justifyContent={"space-between"} marginTop={2}>
                                                         <Box display={"flex"} gap={1} >
-                                                            {/* <Box height={"25px"} width={'25px'} backgroundColor={"grey"} borderRadius={"50%"}></Box>
-                                                    <Box height={"25px"} width={'25px'} backgroundColor={"grey"} borderRadius={"50%"}></Box>
-                                                    <Box height={"25px"} width={'25px'} backgroundColor={"grey"} borderRadius={"50%"}></Box>
-                                                    <Box height={"25px"} width={'25px'} backgroundColor={"grey"} borderRadius={"50%"}></Box> */}
                                                             <Avatar sx={{ height: "30px", width: "30px" }} />
                                                             <Avatar sx={{ height: "30px", width: "30px" }} />
                                                             <Avatar sx={{ height: "30px", width: "30px" }} />

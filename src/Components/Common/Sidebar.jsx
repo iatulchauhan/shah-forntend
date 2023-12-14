@@ -5,22 +5,16 @@ import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-// import logo from "../Assets/images/logo.png";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-// import sort from "../Assets/images/sort.png";
 import Header from "./Header";
-// import FeatherIcon from "feather-icons-react";
 import { Link, useLocation } from "react-router-dom";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Collapse, Typography } from "@mui/material";
 import Footer from "./Footer";
 import { useAppContext } from "../../Context/context";
 import Swal from "sweetalert2";
-import axios from "../../APiSetUp/axios";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -232,7 +226,9 @@ export default function SideBar(props) {
     <>
       {location?.pathname === "/login" || location?.pathname === "/register" ? <>{props.children}</> : <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar position="fixed" open={open}>
+        <AppBar position="fixed" open={open} style={{
+          boxShadow: '0px 1px 0px 0px rgba(0, 0, 0, 0.05)',
+        }}>
           <Header
             open={open}
             sx={{
@@ -254,7 +250,7 @@ export default function SideBar(props) {
               top: 0,
               background: "#fff",
               zIndex: 999999,
-              width: "275px",
+              // width: "275px",
               display: "flex",
               justifyContent: "center",
               marginTop: '10px'
@@ -285,6 +281,13 @@ export default function SideBar(props) {
               md: theme => theme.spacing(3),
               lg: theme => theme.spacing(3),
             },
+            overflow: "scroll",
+            "::-webkit-scrollbar": {
+              width: "0.5px"
+            },
+            "::-webkit-scrollbar-thumb": {
+              backgroundColor: "transparent"
+            }
           }}>
             {data.map((item, index) => (
               <Link
