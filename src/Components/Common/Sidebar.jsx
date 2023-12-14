@@ -14,7 +14,7 @@ import ListItemText from "@mui/material/ListItemText";
 // import sort from "../Assets/images/sort.png";
 import Header from "./Header";
 // import FeatherIcon from "feather-icons-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Collapse, Typography } from "@mui/material";
 import Footer from "./Footer";
@@ -108,12 +108,14 @@ const useStyles = makeStyles()((theme) => {
 });
 
 export default function SideBar(props) {
-  const classes = useStyles()
   const width = window.innerWidth;
+  const classes = useStyles()
   const location = useLocation();
-  const [open, setOpen] = useState(width > 991 ? true : false);
-  const { user, logout, toggleSideBar } = useAppContext();
+  const navigate = useNavigate();
   const sidebarRef = useRef(null);
+  const { user, logout, toggleSideBar } = useAppContext();
+
+  const [open, setOpen] = useState(width > 991 ? true : false);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -225,6 +227,7 @@ export default function SideBar(props) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         logout();
+        navigate("/login")
       }
     });
   };

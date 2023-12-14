@@ -1,14 +1,16 @@
 import React from 'react'
 import TextLabel from '../../Components/Common/Fields/TextLabel';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, useTheme } from '@mui/material';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import CommonTextField from '../../Components/Common/Fields/TextField';
 import { Image_BASE_URL } from '../../APiSetUp/axios';
 import MUIRichTextEditor from 'mui-rte';
-import { lightTheme } from '../../theme';
-
+import { makeStyles } from "tss-react/mui";
+import TextEditor from '../Common/textEditor';
+import FileUpload from '../Common/uploadButton';
 
 const AddOffer = ({ data, setData, error, handleChange, isEdit, onSubmit, handleImageUpload }) => {
+    const theme = useTheme()
     return (
         <>
             <Box>
@@ -17,22 +19,10 @@ const AddOffer = ({ data, setData, error, handleChange, isEdit, onSubmit, handle
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <TextLabel fontSize={"15px"} color={"#151D48"} fontWeight={"400"} title={'Title for Image Upload'} style={{ padding: '3px' }} />
                         </Grid>
-                        <input
-                            style={{
-                                border: '1px solid #EDF2F6',
-                                padding: '14px',
-                                borderRadius: '10px',
-                                width: '100%',
-                            }}
-                            type="file"
-                            name="image"
-                            accept="image/*"
-                            onChange={(e) => handleImageUpload(e.target.files[0], "Edit")}
+                        <FileUpload
+                            handleFileChange={(e) => handleImageUpload(e.target.files[0], "Edit")}
+                            selectedFile={data?.image}
                         />
-                        {data.image && (
-                            <img src={`${Image_BASE_URL}${data?.image}`} alt="Selected" style={{ maxWidth: '50%', marginTop: '10px' }} />
-                            // <img src={URL.createObjectURL(data?.image)} alt="Selected" style={{ maxWidth: '50%', marginTop: '10px' }} />
-                        )}
                         <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.image ? error?.image : ""} />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -48,17 +38,12 @@ const AddOffer = ({ data, setData, error, handleChange, isEdit, onSubmit, handle
                         <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.title ? error?.title : ""} />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}>
-                        <CommonTextField
-                            fontWeight={400}
-                            text={'Description'}
-                            placeholder={"Enter Description"}
-                            type='text'
-                            name='description'
-                            value={data?.description}
-                            onChange={(e) => handleChange(e, false)}
+                        <TextEditor
+                            category={"Description"}
+                            onChange={(value) => setData({ ...data, description: value })}
+                        // valid={true}
                         />
                         <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.description ? error?.description : ""} />
-                        <MUIRichTextEditor />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}>
                         <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
@@ -75,5 +60,6 @@ const AddOffer = ({ data, setData, error, handleChange, isEdit, onSubmit, handle
         </>
     )
 }
+
 
 export default AddOffer

@@ -93,6 +93,7 @@ const OfferPage = () => {
     };
 
 
+
     const handleImageUpload = async (val, key) => {
         const formData = new FormData();
         formData.append("image", val)
