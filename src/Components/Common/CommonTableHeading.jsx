@@ -5,13 +5,13 @@ import CommonButton from './Button/CommonButton'
 import { lightTheme } from '../../theme';
 import SelectDropDown from './SelectDropDown';
 import CommonSearch from './CommonSearch';
-const TableHeading = ({ title, buttonText, onClick, showSelectDropDown, removeSearchField }) => {
+const TableHeading = ({ title, buttonText, onClick, showSelectDropDown, borderBottom, removeSearchField }) => {
     const [data, setData] = useState({})
     const credit = ['Gujarat ', 'Gujarat']
 
     return (
         <Box style={{
-            borderBottom: '1px solid #e3e1e1',
+            borderBottom: borderBottom ? borderBottom : '1px solid #e3e1e1',
             padding: '10px 13px',
             display: 'flex',
             justifyContent: 'space-between'
@@ -27,7 +27,7 @@ const TableHeading = ({ title, buttonText, onClick, showSelectDropDown, removeSe
             />
             <Box display={'flex'} gap={2}>
                 {!removeSearchField && (
-                <CommonSearch />
+                    <CommonSearch />
                 )}
                 {buttonText && <CommonButton
                     text={buttonText}

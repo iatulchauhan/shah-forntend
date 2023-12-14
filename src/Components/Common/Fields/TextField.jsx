@@ -117,19 +117,6 @@ const CommonTextField = ({
         fullWidth
         name={name}
         value={value}
-        // onChange={(e) => {
-        //   const value = e.target.value;
-        //   const strippedValue = value.replace(regex, '');
-        //   const modifiedEvent = {
-        //     ...e,
-        //     target: {
-        //       ...e.target,
-        //       name: name,
-        //       value: strippedValue,
-        //     },
-        //   };
-        //   onChange(modifiedEvent)
-        // }}
         onChange={onChange}
         type={
           type == "password"
