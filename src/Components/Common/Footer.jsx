@@ -6,7 +6,7 @@ import { makeStyles } from "tss-react/mui";
 const useStyles = makeStyles()((theme) => {
     return {
         footerMain: {
-            padding: '24px',
+            padding: '20px',
             marginTop: '10px',
             position: "fixed",
             bottom: "0",
@@ -17,7 +17,7 @@ const useStyles = makeStyles()((theme) => {
             },
             [theme.breakpoints.down("md")]: {
                 width: `100% !important`,
-                marginLeft:"-16px !important"
+                marginLeft: "-16px !important"
             },
 
         },
@@ -35,7 +35,7 @@ const useStyles = makeStyles()((theme) => {
             textAlign: "center"
         },
         footerLinkText: {
-            fontSize: "16px",
+            fontSize: "14px",
             fontWeight: "600",
             color: theme.palette.bgDarkPrimary.main,
             [theme.breakpoints.down("sm")]: {
