@@ -24,6 +24,7 @@ import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
 import DataNotFound from '../../Components/Common/DataNotFound';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { roles } from '../../Utils/enum';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -37,6 +38,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 14,
         fontFamily: "Poppins",
         fontWeight: 500,
+        padding:'8px'
     },
 }));
 
@@ -83,7 +85,6 @@ const User = () => {
     const { OnUpdateError, toggleLoader } = useAppContext();
     const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
     const city = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
-    const roles = [{ label: "admin", id: "0", }, { label: "user", id: "1", }, { label: "receptionist", id: "2", }, { label: "counsellor", id: "3", }, { label: "accountant", id: "4", }, { label: "marketing", id: "5", },]
     //States
     const [model, setModel] = useState(false);
     const [data, setData] = useState({})
@@ -94,12 +95,11 @@ const User = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [branches, setBranches] = useState([])
     const [selectedBranch, setSelectedBranch] = useState("");
-    const [selectedState, setSelectedState] = useState({});
-    const [selectedCity, setSelectedCity] = useState({})
-    const [selectedRole, setSelectedRole] = useState({})
+    const [selectedState, setSelectedState] = useState("");
+    const [selectedCity, setSelectedCity] = useState("")
+    const [selectedRole, setSelectedRole] = useState("")
     const [page, setPage] = useState(0);
-    console.log(data, "data")
-    console.log(selectedBranch, "selectedBranch")
+
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -146,20 +146,7 @@ const User = () => {
             formIsValid = false;
             errors["invalidEmail"] = "* Invalid email Address";
         }
-        if (!data?.password) {
-            formIsValid = false
-            errors['password'] = 'Please enter password.'
-        } else if (!data.password?.match(Regex.passwordRegex)) {
-            formIsValid = false;
-            errors["strongPassword"] = "Please enter strong password"
-        }
-        if (!data?.confirmPassword) {
-            formIsValid = false;
-            errors['confirmPassword'] = 'Please confirm your password.';
-        } else if (data?.confirmPassword !== data?.password) {
-            formIsValid = false;
-            errors['matchPassword'] = 'Passwords do not match.';
-        }
+
         if (!selectedBranch) {
             formIsValid = false
             errors['branchName'] = 'Please select branchName.'
@@ -167,6 +154,23 @@ const User = () => {
         if (!selectedRole) {
             formIsValid = false
             errors['userType'] = 'Please select Assign Roles.'
+        }
+
+        if (!data?._id) {
+            if (!data?.password) {
+                formIsValid = false
+                errors['password'] = 'Please enter password.'
+            } else if (!data.password?.match(Regex.passwordRegex)) {
+                formIsValid = false;
+                errors["strongPassword"] = "Please enter strong password"
+            }
+            if (!data?.confirmPassword) {
+                formIsValid = false;
+                errors['confirmPassword'] = 'Please confirm your password.';
+            } else if (data?.confirmPassword !== data?.password) {
+                formIsValid = false;
+                errors['matchPassword'] = 'Passwords do not match.';
+            }
         }
         setError(errors)
         return formIsValid
@@ -206,6 +210,27 @@ const User = () => {
             })
     }
 
+    const handleClear = () => {
+        setModel(false);
+        setData({});
+        setError({});
+        setIsEdit(false);
+        setSelectedBranch("");
+        setSelectedCity("");
+        setSelectedRole("");
+        setSelectedState("");
+    }
+    const handleEdit = (row) => {
+        const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0]
+        setData(row);
+        setSelectedBranch(row?.branchDetails?.branchName || "");
+        setSelectedRole(roleConfig?.label)
+        setSelectedCity(row?.city)
+        setSelectedState(row?.state)
+        setIsEdit(true);
+        setModel(true)
+    }
+
     const _handleDelete = () => {
         if (deleteId) {
             toggleLoader();
@@ -230,26 +255,24 @@ const User = () => {
                 "name": data?.name,
                 "address": data?.address,
                 "country": data?.country,
-                "state": selectedState?.label,
-                "city": selectedCity?.label,
+                "state": selectedState,
+                "city": selectedCity,
                 "postalCode": data?.postalCode,
                 "mobileNo": data?.mobileNo,
                 "email": data?.email,
                 "password": data?.password,
-                "branch": selectedBranch?._id,
-                "userType": selectedRole?.id,
+                "branch": branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id,
+                "userType": roles?.filter((e) => e?.label == selectedRole)[0]?.id,
                 "active": data?.active,
             }
             if (data?._id) {
                 body.id = data?._id
+                delete body.password
             }
             axios.post(`admin/users/${data?._id ? "update" : "create"}`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
-                    setModel(false)
-                    setData({})
-                    setError({})
-                    setIsEdit(false)
+                    handleClear()
                     _getUser()
                 }
                 toggleLoader();
@@ -286,13 +309,12 @@ const User = () => {
                                             <StyledTableCell>Email Id</StyledTableCell>
                                             <StyledTableCell>Active Plan</StyledTableCell>
                                             <StyledTableCell>Branch</StyledTableCell>
-                                            <StyledTableCell>Role</StyledTableCell>
+                                            <StyledTableCell align='center'>Role</StyledTableCell>
                                             <StyledTableCell align="right">Action</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => {
-                                            console.log(row, "row")
                                             return (
                                                 <StyledTableRow key={index} >
                                                     <StyledTableCell>{index + 1}</StyledTableCell>
@@ -304,14 +326,14 @@ const User = () => {
                                                     <StyledTableCell>{row.email}</StyledTableCell>
                                                     <StyledTableCell>{row.activePlan}</StyledTableCell>
                                                     <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
-                                                    <StyledTableCell>{row.userType}</StyledTableCell>
-                                                    <StyledTableCell>
+                                                    <StyledTableCell align='center'>{row.userType}</StyledTableCell>
+                                                    <StyledTableCell align="right">
                                                         <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                             <Assets
                                                                 className={classes.writeBox}
                                                                 src={"/assets/icons/write.svg"}
                                                                 absolutePath={true}
-                                                                onClick={() => { setData(row); setSelectedBranch(row?.branchDetails?.branchName || ""); setIsEdit(true); setModel(true) }}
+                                                                onClick={() => { handleEdit(row) }}
                                                             />
                                                             <Assets
                                                                 className={classes.viewBox}
@@ -354,7 +376,7 @@ const User = () => {
 
             <CommonModal
                 open={model}
-                onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
+                onClose={handleClear}
                 title={`${isEdit ? "Update" : "Add"} User`}
                 content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} city={city} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} />}
             />

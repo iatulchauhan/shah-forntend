@@ -41,9 +41,9 @@ const CommonModal = ({ onClose, open, title, content }) => {
                     display={"flex"}
                     alignItems={"center"}
                     justifyContent={"center"}
-                    width={30}
-                    height={30}
-                    borderRadius={2}
+                    width={20}
+                    height={20}
+                    borderRadius={1}
                     sx={{ backgroundColor: lightTheme.palette.bgLightRed.main, cursor: "pointer" }}
                     onClick={() => onClose()}
                 >

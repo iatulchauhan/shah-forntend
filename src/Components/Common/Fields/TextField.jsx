@@ -19,7 +19,8 @@ const useStyles = makeStyles()((theme) => {
       background: theme?.palette?.bgWhite?.main,
       minWidth: "50px",
       ".MuiInputBase-input": {
-        height: "16px"
+        height: "15px",
+        fontSize: '14px',
       },
       "&:hover": {
         borderColor: `${theme?.palette?.primary?.main} !important`,
@@ -126,7 +127,7 @@ const CommonTextField = ({
             : type
         }
         placeholder={placeholder}
-        sx={{ height: height || 52, width: width, bgcolor: bgcolor, borderRadius: "5px" }}
+        sx={{ height: height || 52, width: width, bgcolor: bgcolor, borderRadius: "5px", }}
         multiline={multiline}
         rows={rows}
         className={`${classes?.main} ${className}`}
