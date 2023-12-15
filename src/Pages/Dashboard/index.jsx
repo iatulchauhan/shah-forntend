@@ -29,6 +29,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 14,
         fontFamily: "Poppins",
         fontWeight: 500,
+        padding: '8px'
     },
 }));
 
@@ -51,7 +52,7 @@ const useStyles = makeStyles()((theme) => {
             }
         },
         customTab: {
-            color: "#737791",
+            color: lightTheme.palette.bgLightExtraLightGray.main,
             minHeight: "22px",
             backgroundColor: "#EDF2F6",
             borderRadius: "6px",
@@ -279,10 +280,10 @@ const Dashboard = () => {
                                                             <Avatar />
                                                             <Box>
                                                                 <TextLabel variant={"body1"} fontWeight={600} color={"theme.palette.primary.main"} title={item.name} />
-                                                                <TextLabel variant={"body2"} fontWeight={500} color={'#737791'} title={item.subline} />
+                                                                <TextLabel variant={"body2"} fontWeight={500} color={lightTheme.palette.bgLightExtraLightGray.main} title={item.subline} />
                                                             </Box>
                                                         </Box>
-                                                        <TextLabel variant={"body2"} fontWeight={500} color={'#737791'} title={item.time} />
+                                                        <TextLabel variant={"body2"} fontWeight={500} color={lightTheme.palette.bgLightExtraLightGray.main} title={item.time} />
                                                     </Box>
                                                     <Box display={"flex"} justifyContent={"space-between"} marginTop={2}>
                                                         <Box display={"flex"} gap={1} >
@@ -328,10 +329,10 @@ const Dashboard = () => {
                                                             <Avatar />
                                                             <Box>
                                                                 <TextLabel variant={"body1"} fontWeight={600} color={"theme.palette.primary.main"} title={item.name} />
-                                                                <TextLabel variant={"body2"} fontWeight={500} color={'#737791'} title={item.subline} />
+                                                                <TextLabel variant={"body2"} fontWeight={500} color={lightTheme.palette.bgLightExtraLightGray.main} title={item.subline} />
                                                             </Box>
                                                         </Box>
-                                                        <TextLabel variant={"body2"} fontWeight={500} color={'#737791'} title={item.time} />
+                                                        <TextLabel variant={"body2"} fontWeight={500} color={lightTheme.palette.bgLightExtraLightGray.main} title={item.time} />
                                                     </Box>
                                                     <Box display={"flex"} justifyContent={"space-between"} marginTop={2}>
                                                         <Box display={"flex"} gap={1} >
@@ -375,10 +376,10 @@ const Dashboard = () => {
                                                             <Avatar />
                                                             <Box>
                                                                 <TextLabel variant={"body1"} fontWeight={600} color={"theme.palette.primary.main"} title={item.name} />
-                                                                <TextLabel variant={"body2"} fontWeight={500} color={'#737791'} title={item.subline} />
+                                                                <TextLabel variant={"body2"} fontWeight={500} color={lightTheme.palette.bgLightExtraLightGray.main} title={item.subline} />
                                                             </Box>
                                                         </Box>
-                                                        <TextLabel variant={"body2"} fontWeight={500} color={'#737791'} title={item.time} />
+                                                        <TextLabel variant={"body2"} fontWeight={500} color={lightTheme.palette.bgLightExtraLightGray.main} title={item.time} />
                                                     </Box>
                                                     <Box display={"flex"} justifyContent={"space-between"} marginTop={2}>
                                                         <Box display={"flex"} gap={1} >

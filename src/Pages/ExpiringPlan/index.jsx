@@ -15,6 +15,7 @@ import Assets from '../../Components/Common/ImageContainer';
 import PaperContainer from '../../Components/Common/PaperContainer';
 import TableHeading from '../../Components/Common/CommonTableHeading';
 import CommonPagination from '../../Components/Common/Pagination';
+import { lightTheme } from '../../theme';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -27,6 +28,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 14,
         fontFamily: "Poppins",
         fontWeight: 500,
+        padding: '8px'
     },
 }));
 
@@ -48,22 +50,22 @@ const useStyles = makeStyles()((theme) => {
         writeBox: {
             borderRadius: "6px",
             padding: "8px",
-            backgroundColor: "rgba(93, 95, 239, 0.2)",
-            color: "#5D5FEF",
+            backgroundColor: lightTheme.palette.bgLightExtraPrimary.main,
+            color: lightTheme.palette.primary.main,
             cursor: "pointer",
         },
         viewBox: {
             borderRadius: "6px",
             padding: "8px",
-            color: "#44B631",
-            backgroundColor: "rgba(113, 239, 93, 0.2)",
+            color: lightTheme.palette.bgLightSuccess.main,
+            backgroundColor: lightTheme.palette.bgLightExtraSuccess.main,
             cursor: "pointer",
         },
         deleteBox: {
             borderRadius: "6px",
             padding: "8px",
-            color: "#F14336",
-            backgroundColor: "rgba(235, 87, 87, 0.2)",
+            color: lightTheme.palette.bgLightRed.main,
+            backgroundColor: lightTheme.palette.bgLightExtraRed.main,
             cursor: "pointer",
         },
     };

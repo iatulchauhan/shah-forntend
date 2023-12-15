@@ -5,6 +5,7 @@ import CardMedia from '@mui/material/CardMedia';
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 import { makeStyles } from "tss-react/mui";
 import { Grid } from '@mui/material';
+import { lightTheme } from '../../theme';
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -38,7 +39,7 @@ const ModifyPlan = () => {
                         <CardContent className={classes.CardContent}>
                             <TextLabel fontSize={"18px"} color={"#000"} fontWeight={"600"} title={'42 Days Plan'} />
                             <TextLabel fontSize={"13px"} color={"#000"} fontWeight={"600"} title={'Return Of Investment - 12%'} />
-                            <TextLabel fontSize={"12px"} color={"#737791"} fontWeight={"400"} title={"Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."} />
+                            <TextLabel fontSize={"12px"} color={lightTheme.palette.bgLightExtraLightGray.main} fontWeight={"400"} title={"Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."} />
                         </CardContent>
                     </Card>
                 </Grid>
@@ -51,7 +52,7 @@ const ModifyPlan = () => {
                         <CardContent className={classes.CardContent}>
                             <TextLabel fontSize={"18px"} color={"#000"} fontWeight={"600"} title={'42 Days Plan'} />
                             <TextLabel fontSize={"13px"} color={"#000"} fontWeight={"600"} title={'Return Of Investment - 12%'} />
-                            <TextLabel fontSize={"12px"} color={"#737791"} fontWeight={"400"} title={"Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."} />
+                            <TextLabel fontSize={"12px"} color={lightTheme.palette.bgLightExtraLightGray.main} fontWeight={"400"} title={"Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."} />
                         </CardContent>
                     </Card>
                 </Grid>

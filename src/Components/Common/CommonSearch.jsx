@@ -1,6 +1,7 @@
 import React from 'react';
 import { InputBase, alpha, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { lightTheme } from '../../theme';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -26,11 +27,11 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#5D5FEF'
+    color: lightTheme.palette.bgDarkPrimary.main,
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: '#737791',
+    color: lightTheme.palette.bgLightExtraLightGray.main,
     // width: '100%',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
@@ -52,7 +53,7 @@ const CommonSearch = ({ placeholder, width }) => {
                 <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-            width={width}
+                width={width}
                 placeholder={placeholder ? placeholder : "Search here..."}
                 inputProps={{ 'aria-label': 'search' }}
             />

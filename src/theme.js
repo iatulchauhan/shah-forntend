@@ -30,7 +30,7 @@ export const defaultBgLightSuccess = "#44B631";
 export const defaultBgLightExtraPrimary = "rgba(93, 95, 239, 0.2)";
 export const defaultBgLightExtraSuccess = "rgba(113, 239, 93, 0.2)";
 export const defaultBgLightExtraRed = "rgba(235, 87, 87, 0.2)";
-
+export const defaultBgExtraLightGray = "#737791";
 
 
 export const lightTheme = createTheme({
@@ -121,7 +121,9 @@ export const lightTheme = createTheme({
     bgLightExtraRed: {
       main: defaultBgLightExtraRed,
     },
-
+    bgLightExtraLightGray: {
+      main: defaultBgExtraLightGray,
+    },
     background: { default: "#EFEFEF" },
   },
   typography: {

@@ -188,7 +188,7 @@ const OfferPage = () => {
                                     />
                                     <CardContent>
                                         <TextLabel fontSize={"18px"} color={"#000"} fontWeight={"600"} title={item?.title} />
-                                        <TextLabel fontSize={"12px"} color={"#737791"} fontWeight={"400"} title={item?.description} />
+                                        <TextLabel fontSize={"12px"} color={lightTheme.palette.bgLightExtraLightGray.main} fontWeight={"400"} title={item?.description} />
                                     </CardContent>
                                     <Box display={"flex"} justifyContent={"end"} gap={1}>
                                         <Assets

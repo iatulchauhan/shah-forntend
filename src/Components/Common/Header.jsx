@@ -8,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MenuIcon from '@mui/icons-material/Menu';
 import Logout from '@mui/icons-material/Logout';
+import { lightTheme } from '../../theme'
 
 const Header = ({ onClick }) => {
 
@@ -39,7 +40,7 @@ const Header = ({ onClick }) => {
               <TextLabel title={"John Doe"} fontWeight={"500"} variant={"subtitle2"} />
               <Assets src={"/assets/icons/downArrow.svg"} absolutePath={true} />
             </Box>
-            <TextLabel title={"Admin"} fontWeight={"400"} variant={"body1"} color={"#737791"} />
+            <TextLabel title={"Admin"} fontWeight={"400"} variant={"body1"} color={lightTheme.palette.bgLightExtraLightGray.main} />
           </Box>
         </Box>
       </Box>
