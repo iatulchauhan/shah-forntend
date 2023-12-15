@@ -8,6 +8,7 @@ import CommonTextField from '../../Components/Common/Fields/TextField';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import AutoCompleteDropDown from '../Common/commonAutoComplete';
+import AutoCompleteSearch from '../Common/commonAutoComplete';
 
 const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, city, error, handleChange, isEdit, onSubmit }) => {
     console.log(branches,"branches")
@@ -147,7 +148,7 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                     <TextLabel fontSize={"12px"} color={"red"} title={data?.email?.match(Regex.confirmPasswordRegex) ? "" : error.matchPassword} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <AutoCompleteDropDown
+                    {/* <AutoCompleteDropDown
                         text="Branch"
                         options={branches || []}
                         onChange={(e, val) => { setSelectedBranch(val) }}
@@ -159,7 +160,33 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                         width={'100%'}
                         size="small"
                         placeholder={"Select Branch"}
-                    />
+                    /> */}
+                     <AutoCompleteSearch
+                        backgroundColor="white"
+                        width={"300px"}
+                        text="Branch"
+                        placeholder={"Select"}
+                        handleChange={(e,newValue) => setSelectedBranch(newValue)}
+                        // handleSearch={(ev) => {
+                        //   let val = (ev.target.value || "").trim();
+                        //   clearTimeout(timer);
+                        //   setTimer(
+                        //     setTimeout(() => {
+                        //       getEmployeeList(limit, val);
+                        //     }, WAIT_INTERVAL)
+                        //   );
+                        // }}
+                        // searchValue={searchManager ? searchManager : ""}
+                        options={
+                            branches?.map(
+                            (e) => e?.branchName
+                          ) || []
+                        }
+                        name="branchName"
+                        defaultValue={selectedBranch || ""}
+                        freeSolo
+                        blurOnSelect
+                      />
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedBranch?.branchName ? error?.branchName : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>

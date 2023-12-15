@@ -93,7 +93,7 @@ const User = () => {
     const [userDetails, setUserDetails] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [branches, setBranches] = useState([])
-    const [selectedBranch, setSelectedBranch] = useState({});
+    const [selectedBranch, setSelectedBranch] = useState("");
     const [selectedState, setSelectedState] = useState({});
     const [selectedCity, setSelectedCity] = useState({})
     const [selectedRole, setSelectedRole] = useState({})
@@ -311,7 +311,7 @@ const User = () => {
                                                                 className={classes.writeBox}
                                                                 src={"/assets/icons/write.svg"}
                                                                 absolutePath={true}
-                                                                onClick={() => { setData(row); setSelectedBranch(row?.branchDetails || {}); setIsEdit(true); setModel(true) }}
+                                                                onClick={() => { setData(row); setSelectedBranch(row?.branchDetails?.branchName || ""); setIsEdit(true); setModel(true) }}
                                                             />
                                                             <Assets
                                                                 className={classes.viewBox}
@@ -357,7 +357,7 @@ const User = () => {
                 onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
                 title={`${isEdit ? "Update" : "Add"} User`}
                 content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} city={city} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} />}
-            />D
+            />
         </>
     )
 }
