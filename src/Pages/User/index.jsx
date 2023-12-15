@@ -38,7 +38,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 14,
         fontFamily: "Poppins",
         fontWeight: 500,
-        padding:'8px'
+        padding: '8px'
     },
 }));
 
@@ -315,6 +315,7 @@ const User = () => {
                                     </TableHead>
                                     <TableBody>
                                         {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => {
+                                            const getRoleName = (type) => { return roles.filter((e) => e?.id == type)?.[0]?.label }
                                             return (
                                                 <StyledTableRow key={index} >
                                                     <StyledTableCell>{index + 1}</StyledTableCell>
@@ -326,7 +327,7 @@ const User = () => {
                                                     <StyledTableCell>{row.email}</StyledTableCell>
                                                     <StyledTableCell>{row.activePlan}</StyledTableCell>
                                                     <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
-                                                    <StyledTableCell align='center'>{row.userType}</StyledTableCell>
+                                                    <StyledTableCell align='center'>{getRoleName(row.userType)}</StyledTableCell>
                                                     <StyledTableCell align="right">
                                                         <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                             <Assets

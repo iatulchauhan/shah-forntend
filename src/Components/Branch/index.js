@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Box, Grid, } from "@mui/material";
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 import CommonTextField from '../../Components/Common/Fields/TextField';
-import SelectDropDown from '../../Components/Common/SelectDropDown';
 import CommonButton from '../../Components/Common/Button/CommonButton';
-import AutoCompleteDropDown from '../Common/commonAutoComplete';
+import AutoCompleteSearch from '../Common/commonAutoComplete';
 
 const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error, handleChange, isEdit, onSubmit, setSelectedState, selectedState }) => {
     return (
@@ -47,33 +46,31 @@ const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error,
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.country ? error?.country : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <AutoCompleteDropDown
+                    <AutoCompleteSearch
+                        backgroundColor="white"
+                        width={"300px"}
                         text="State"
-                        options={states || []}
-                        onChange={(e, val) => { setSelectedState(val) }}
-                        value={selectedState?.label}
-                        defaultValue={selectedState?.label }
-                        getOptionLabel={(option) => option?.label}
-                        getOptionSelected={(option, selectedValue) => option === selectedValue}
-                        labelSize="15px"
-                        width={'100%'}
-                        size="small"
+                        handleChange={(e, newValue) => setSelectedState(newValue)}
+                        options={states?.map((e) => e?.label) || []}
+                        name="label"
+                        defaultValue={selectedState || ""}
+                        freeSolo
+                        blurOnSelect
                         placeholder={"Select State"}
                     />
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedState?.label ? error?.state : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <AutoCompleteDropDown
+                    <AutoCompleteSearch
+                        backgroundColor="white"
+                        width={"300px"}
                         text="City"
-                        options={cities || []}
-                        onChange={(e, val) => { setSelectedCity(val) }}
-                        value={selectedCity?.label}
-                        defaultValue={selectedCity?.label}
-                        getOptionLabel={(option) => option?.label}
-                        getOptionSelected={(option, selectedValue) => option === selectedValue}
-                        labelSize="15px"
-                        width={'100%'}
-                        size="small"
+                        handleChange={(e, newValue) => setSelectedCity(newValue)}
+                        options={cities?.map((e) => e?.label) || []}
+                        name="label"
+                        defaultValue={selectedCity || ""}
+                        freeSolo
+                        blurOnSelect
                         placeholder={"Select City"}
                     />
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedCity?.label ? error?.city : ""} />

@@ -36,6 +36,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 14,
         fontFamily: "Poppins",
         fontWeight: 500,
+        padding: '8px'
     },
 }));
 
@@ -95,8 +96,8 @@ const Branches = () => {
     const [page, setPage] = useState(0);
     const [brancesDetails, setBrancheDetails] = useState([]);
     const [isActiveDeactive, setIsActiveDeactive] = useState();
-    const [selectedCity, setSelectedCity] = useState({});
-    const [selectedState, setSelectedState] = useState({});
+    const [selectedCity, setSelectedCity] = useState("");
+    const [selectedState, setSelectedState] = useState("");
 
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -138,7 +139,6 @@ const Branches = () => {
         setError(errors)
         return formIsValid
     }
-    console.log(error, "erorrrrrrrrrrr")
     const handleChange = (e) => {
         const { name, value } = e.target
         setData((prevState) => ({
@@ -149,7 +149,6 @@ const Branches = () => {
 
     const _getBranches = () => {
         toggleLoader();
-
         axios.get("admin/branch").then((res) => {
             if (res?.data?.data) {
                 setBrancheDetails(res?.data?.data)
@@ -178,6 +177,14 @@ const Branches = () => {
             });
     };
 
+    const handleClear = () => {
+        setModel(false)
+        setData({})
+        setError({})
+        setIsEdit(false)
+        setSelectedCity("")
+        setSelectedState("")
+    }
 
     const _addUpdateBranch = () => {
         if (handleValidation()) {
@@ -186,8 +193,8 @@ const Branches = () => {
                 "branchName": data?.branchName,
                 "address": data?.address,
                 "country": data?.country,
-                "state": selectedState?.label,
-                "city": selectedCity?.label,
+                "state": selectedState,
+                "city": selectedCity,
                 "postalCode": data?.postalCode
             }
             if (data?._id) {
@@ -196,10 +203,7 @@ const Branches = () => {
             axios.post(`admin/branch/${data?._id ? "update" : "create"}`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
-                    setModel(false)
-                    setData({})
-                    setError({})
-                    setIsEdit(false)
+                    handleClear()
                     _getBranches()
                     // navigate("/")
                 }
@@ -261,7 +265,7 @@ const Branches = () => {
                                                 </StyledTableCell>
                                                 <StyledTableCell>
                                                     <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                        <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true) }} />
+                                                        <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true); setSelectedCity(row?.city); setSelectedState(row?.state) }} />
                                                         <Assets className={classes.deleteBox} src={"/assets/icons/delete.svg"} absolutePath={true} />
                                                     </Box>
                                                 </StyledTableCell>
@@ -290,7 +294,7 @@ const Branches = () => {
 
             {model && <CommonModal
                 open={model}
-                onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
+                onClose={handleClear}
                 title={`${isEdit ? "Update" : "Add"} Branch`}
                 content={<AddBranch data={data} setData={setData} error={error} handleChange={handleChange} cities={cities} states={states} onSubmit={_addUpdateBranch} isEdit={isEdit} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState} />}
             />}
