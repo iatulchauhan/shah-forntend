@@ -6,10 +6,7 @@ import TextLabel from '../../Components/Common/Fields/TextLabel';
 import { makeStyles } from "tss-react/mui";
 import { Box, Grid, Typography } from '@mui/material';
 import TableHeading from '../../Components/Common/CommonTableHeading';
-import CommonButton from '../../Components/Common/Button/CommonButton';
-import CommonTextField from '../../Components/Common/Fields/TextField';
 import CommonModal from '../../Components/Common/CommonModel';
-import PaperContainer from '../../Components/Common/PaperContainer';
 import axios, { Image_BASE_URL } from "../../APiSetUp/axios";
 import swal from 'sweetalert';
 import { useAppContext } from '../../Context/context';
@@ -46,8 +43,7 @@ const useStyles = makeStyles()((theme) => {
 
 const OfferPage = () => {
     const { classes } = useStyles();
-    const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
-
+    const { OnUpdateError, toggleLoader } = useAppContext();
     const [model, setModel] = useState(false);
     const [data, setData] = useState({})
     const [error, setError] = useState({})
@@ -82,17 +78,6 @@ const OfferPage = () => {
             [name]: value
         }))
     }
-    const handleInputChange = (e, isImage) => {
-        const { name, value, files } = e.target;
-
-        setData((prevData) => ({
-            ...prevData,
-            [name]: isImage ? files[0] : value,
-        }));
-        handleImageUpload(files[0])
-    };
-
-
 
     const handleImageUpload = async (val, key) => {
         const formData = new FormData();
@@ -157,7 +142,6 @@ const OfferPage = () => {
                 "image": data?._id ? data?.image : offerDetails?.image,
                 "title": data?.title,
                 "description": data?.description,
-
             }
             console.log("body", body);
             if (data?._id) {

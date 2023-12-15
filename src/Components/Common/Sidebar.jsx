@@ -262,7 +262,6 @@ export default function SideBar(props) {
               marginTop: '10px'
             }}
           >
-            {/* <Typography fontSize={'30px'} fontWeight={600}>Logo</Typography> */}
             <IconButton
               onClick={handleDrawerOpen}
               sx={{

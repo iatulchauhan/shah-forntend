@@ -50,7 +50,15 @@ const CommonModal = ({ onClose, open, title, content }) => {
                     <CloseOutlinedIcon sx={{ color: lightTheme.palette.bgWhite.main, fontSize: "18px" }} />
                 </Box>
             </DialogTitle>
-            <Box sx={{ overflow: 'auto' }}>
+            <Box sx={{
+                overflow: "scroll",
+                "::-webkit-scrollbar": {
+                    width: "0.5px"
+                },
+                "::-webkit-scrollbar-thumb": {
+                    backgroundColor: "transparent"
+                }
+            }}>
                 {content}
             </Box>
         </Dialog>

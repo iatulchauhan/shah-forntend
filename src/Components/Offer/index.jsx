@@ -3,9 +3,6 @@ import TextLabel from '../../Components/Common/Fields/TextLabel';
 import { Box, Grid, useTheme } from '@mui/material';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import CommonTextField from '../../Components/Common/Fields/TextField';
-import { Image_BASE_URL } from '../../APiSetUp/axios';
-import MUIRichTextEditor from 'mui-rte';
-import { makeStyles } from "tss-react/mui";
 import TextEditor from '../Common/textEditor';
 import FileUpload from '../Common/uploadButton';
 
