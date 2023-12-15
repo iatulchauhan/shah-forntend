@@ -80,8 +80,11 @@ const useStyles = makeStyles()((theme) => {
 const Visitor = () => {
     const { classes } = useStyles();
     const { OnUpdateError, toggleLoader } = useAppContext();
-    const state = ['Gujarat ', 'Maharashtra']
-    const city = ['Surat', 'Ahmadabad']
+
+
+    const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
+    const cities = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
+
 
     //States
     const [model, setModel] = useState(false);
@@ -90,8 +93,10 @@ const Visitor = () => {
     const [deleteId, setDeleteId] = useState("")
     const [isEdit, setIsEdit] = useState(false)
     const [visitorDetails, setVisitorDetails] = useState([]);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [page, setPage] = React.useState(0);
+    const [selectedCity, setSelectedCity] = useState({});
+    const [selectedState, setSelectedState] = useState({});
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [page, setPage] = useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -115,11 +120,11 @@ const Visitor = () => {
             formIsValid = false
             errors['country'] = 'Please enter country.'
         }
-        if (!data?.state) {
+        if (!selectedState) {
             formIsValid = false
             errors['state'] = 'Please select state.'
         }
-        if (!data?.city) {
+        if (!selectedCity) {
             formIsValid = false
             errors['city'] = 'Please select city.'
         }
@@ -188,8 +193,8 @@ const Visitor = () => {
                 "name": data?.name,
                 "address": data?.address,
                 "country": data?.country,
-                "state": data?.state,
-                "city": data?.city,
+                "state": selectedState?.label,
+                "city": selectedCity?.label,
                 "postalCode": data?.postalCode,
                 "mobileNo": data?.mobileNo,
                 "email": data?.email,
@@ -300,7 +305,7 @@ const Visitor = () => {
                 open={model}
                 onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
                 title={`${isEdit ? "Update" : "Add"} Visitor`}
-                content={<AddVisitor data={data} setData={setData} error={error} handleChange={handleChange} city={city} state={state} onSubmit={_addUpdateUser} isEdit={isEdit} />}
+                content={<AddVisitor data={data} setData={setData} error={error} handleChange={handleChange} cities={cities} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState} />}
             />
         </>
     )

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { alpha, styled } from "@mui/material/styles";
+import React, { useState } from 'react'
+import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
 import {
     Table,
@@ -81,7 +81,7 @@ const useStyles = makeStyles()((theme) => {
 const Branches = () => {
     const { classes } = useStyles();
     const navigate = useNavigate();
-    const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
+    const { OnUpdateError, toggleLoader } = useAppContext();
 
     const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
     const cities = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
@@ -91,11 +91,12 @@ const Branches = () => {
     const [data, setData] = useState({})
     const [error, setError] = useState({})
     const [isEdit, setIsEdit] = useState(false)
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [page, setPage] = React.useState(0);
-    const [brancesDetails, setBrancheDetails] = React.useState([]);
-    const [selectedCity, setSelectedCity] = React.useState({});
-    const [selectedState, setSelectedState] = React.useState({});
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [page, setPage] = useState(0);
+    const [brancesDetails, setBrancheDetails] = useState([]);
+    const [isActiveDeactive, setIsActiveDeactive] = useState();
+    const [selectedCity, setSelectedCity] = useState({});
+    const [selectedState, setSelectedState] = useState({});
 
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -161,13 +162,15 @@ const Branches = () => {
         );
     }
     const _activeDeactive = (userId, isActive) => {
+        setIsActiveDeactive(isActive);
         toggleLoader();
         const body = {
-            userId: userId,
+            id: userId,
             isActive: isActive,
         };
-        axios.post("admin/users/activeInactive", body)
+        axios.post("admin/branch/activeInactive", body)
             .then((res) => {
+                toggleLoader();
             })
             .catch((err) => {
                 toggleLoader();
@@ -191,7 +194,6 @@ const Branches = () => {
                 body.id = data?._id
             }
             axios.post(`admin/branch/${data?._id ? "update" : "create"}`, body).then((res) => {
-                console.log("resasdasd", res);
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     setModel(false)
@@ -212,7 +214,6 @@ const Branches = () => {
 
     React.useEffect(() => {
         _getBranches()
-        _activeDeactive()
     }, [])
 
     return (
@@ -251,7 +252,9 @@ const Branches = () => {
                                                 <StyledTableCell>{row.city}</StyledTableCell>
                                                 <StyledTableCell align='center'>
                                                     <Switch
-                                                        checked={row.isActive}
+                                                        defaultChecked={row.isActive}
+                                                        // checked={row.isActive}
+                                                        value={isActiveDeactive}
                                                         onChange={(e) => _activeDeactive(row._id, e.target.checked)}
                                                         color="primary"
                                                     />
@@ -289,7 +292,7 @@ const Branches = () => {
                 open={model}
                 onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
                 title={`${isEdit ? "Update" : "Add"} Branch`}
-                content={<AddBranch data={data} setData={setData} error={error} handleChange={handleChange} cities={cities} states={states} onSubmit={_addUpdateBranch} isEdit={isEdit} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState}/>}
+                content={<AddBranch data={data} setData={setData} error={error} handleChange={handleChange} cities={cities} states={states} onSubmit={_addUpdateBranch} isEdit={isEdit} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState} />}
             />}
         </>
     )
