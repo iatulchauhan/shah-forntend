@@ -34,7 +34,7 @@ const AuthLayout = ({ children, logo, login, account, newAccount, register }) =>
             <Box className={classes?.loginBox}>
                 <Typography style={{ fontSize: '22px', fontWeight: 600, textAlign: 'center', marginTop: '40px' }}>{logo}</Typography>
                 <Typography style={{ fontSize: '35px', fontWeight: 600, textAlign: 'center', marginTop: '30px' }}>{login}</Typography>
-                <Typography style={{ fontSize: '16px', fontWeight: 400, textAlign: 'center', color: lightTheme.palette.bgLightExtraLightGray.main, marginTop: '20px', marginBottom: '20px' }}>{account}</Typography>
+                <Typography style={{ fontSize: '16px', fontWeight: 400, textAlign: 'center', color: lightTheme.palette.bgLightExtraLightGray.main, marginTop: '20px', marginBottom: '25px' }}>{account}</Typography>
                 <Box paddingX={2}>
                     <ShowMessage />
                 </Box>
