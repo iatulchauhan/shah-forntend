@@ -85,8 +85,8 @@ const Branches = () => {
     const navigate = useNavigate();
     const { OnUpdateError, toggleLoader } = useAppContext();
 
-    const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
-    const cities = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
+    // const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
+    // const cities = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
 
     //States
     const [model, setModel] = useState(false);
@@ -96,10 +96,13 @@ const Branches = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(0);
     const [brancesDetails, setBrancheDetails] = useState([]);
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
     const [isActiveDeactive, setIsActiveDeactive] = useState();
+    const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
     const [selectedState, setSelectedState] = useState("");
-
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -120,7 +123,7 @@ const Branches = () => {
             formIsValid = false
             errors['address'] = 'Please enter address.'
         }
-        if (!data?.country) {
+        if (!selectedCountry) {
             formIsValid = false
             errors['country'] = 'Please enter country.'
         }
@@ -148,6 +151,11 @@ const Branches = () => {
         }))
     }
 
+    const _getDefaultId = (data, name) => {
+        return data?.length > 0 && data?.filter((e) => e.name == name)?.[0]?.id
+    }
+    console.log(states, _getDefaultId(countries?.response, selectedCountry), "states")
+
     const _getBranches = () => {
         toggleLoader();
         axios.get("admin/branch").then((res) => {
@@ -161,6 +169,49 @@ const Branches = () => {
         }
         );
     }
+
+    const _getCountries = () => {
+        toggleLoader();
+        axios.get("/countries").then((res) => {
+            if (res?.data?.data) {
+                setCountries(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+    const _getStates = () => {
+        toggleLoader();
+        axios.post("/states", { country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
+            if (res?.data?.data) {
+                setStates(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+    const _getCities = () => {
+        toggleLoader();
+        axios.post("/cities", { state_id: _getDefaultId(states?.response, selectedState), country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
+            if (res?.data?.data) {
+                setCities(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
     const _activeDeactive = (userId, isActive) => {
         setIsActiveDeactive(isActive);
         toggleLoader();
@@ -183,6 +234,7 @@ const Branches = () => {
         setData({})
         setError({})
         setIsEdit(false)
+        setSelectedCountry("")
         setSelectedCity("")
         setSelectedState("")
     }
@@ -193,9 +245,9 @@ const Branches = () => {
             let body = {
                 "branchName": data?.branchName,
                 "address": data?.address,
-                "country": data?.country,
-                "state": selectedState,
-                "city": selectedCity,
+                "country": _getDefaultId(countries?.response, selectedCountry),
+                "state": _getDefaultId(states?.response, selectedState),
+                "city": _getDefaultId(cities?.response, selectedCity),
                 "postalCode": data?.postalCode
             }
             if (data?._id) {
@@ -216,6 +268,23 @@ const Branches = () => {
             );
         }
     }
+
+
+    React.useEffect(() => {
+        _getCountries()
+    }, [])
+
+    React.useEffect(() => {
+        if (selectedCountry) {
+            _getStates()
+        }
+    }, [selectedCountry])
+
+    React.useEffect(() => {
+        if (selectedCountry && selectedState) {
+            _getCities()
+        }
+    }, [selectedState])
 
     React.useEffect(() => {
         _getBranches()
@@ -245,33 +314,36 @@ const Branches = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {brancesDetails?.response?.length > 0 && brancesDetails?.response?.map((row, index) => (
-                                            <StyledTableRow key={index} >
-                                                <StyledTableCell className={classes.paddedRow}>{index + 1}</StyledTableCell>
-                                                <StyledTableCell component="th" scope="row">
-                                                    {row.branchName}
-                                                </StyledTableCell>
-                                                <StyledTableCell>{row.address}</StyledTableCell>
-                                                <StyledTableCell>{row.country}</StyledTableCell>
-                                                <StyledTableCell>{row.state}</StyledTableCell>
-                                                <StyledTableCell>{row.city}</StyledTableCell>
-                                                <StyledTableCell align='center'>
-                                                    <Switch
-                                                        defaultChecked={row.isActive}
-                                                        // checked={row.isActive}
-                                                        value={isActiveDeactive}
-                                                        onChange={(e) => _activeDeactive(row._id, e.target.checked)}
-                                                        color="primary"
-                                                    />
-                                                </StyledTableCell>
-                                                <StyledTableCell>
-                                                    <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                        <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true); setSelectedCity(row?.city); setSelectedState(row?.state) }} />
-                                                        <Assets className={classes.deleteBox} src={"/assets/icons/delete.svg"} absolutePath={true} />
-                                                    </Box>
-                                                </StyledTableCell>
-                                            </StyledTableRow>
-                                        ))}
+                                        {brancesDetails?.response?.length > 0 && brancesDetails?.response?.map((row, index) => {
+                                            console.log(row, "rowwwwwwwwwwwwwww")
+                                            return (
+                                                <StyledTableRow key={index} >
+                                                    <StyledTableCell className={classes.paddedRow}>{index + 1}</StyledTableCell>
+                                                    <StyledTableCell component="th" scope="row">
+                                                        {row.branchName}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell>{row.address}</StyledTableCell>
+                                                    <StyledTableCell>{row.country}</StyledTableCell>
+                                                    <StyledTableCell>{row.state}</StyledTableCell>
+                                                    <StyledTableCell>{row.city}</StyledTableCell>
+                                                    <StyledTableCell align='center'>
+                                                        <Switch
+                                                            defaultChecked={row.isActive}
+                                                            // checked={row.isActive}
+                                                            value={isActiveDeactive}
+                                                            onChange={(e) => _activeDeactive(row._id, e.target.checked)}
+                                                            color="primary"
+                                                        />
+                                                    </StyledTableCell>
+                                                    <StyledTableCell>
+                                                        <Box display={"flex"} justifyContent={"end"} gap={1}>
+                                                            <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true); setSelectedCountry(row?.countryDetail?.name); setSelectedCity(row?.cityDetail?.name); setSelectedState(row?.stateDetail?.name) }} />
+                                                            <Assets className={classes.deleteBox} src={"/assets/icons/delete.svg"} absolutePath={true} />
+                                                        </Box>
+                                                    </StyledTableCell>
+                                                </StyledTableRow>
+                                            )
+                                        })}
                                     </TableBody>
                                 </Table> :
                                 <DataNotFound
@@ -297,7 +369,7 @@ const Branches = () => {
                 open={model}
                 onClose={handleClear}
                 title={`${isEdit ? "Update" : "Add"} Branch`}
-                content={<AddBranch data={data} setData={setData} error={error} handleChange={handleChange} cities={cities} states={states} onSubmit={_addUpdateBranch} isEdit={isEdit} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState} />}
+                content={<AddBranch data={data} setData={setData} error={error} handleChange={handleChange} cities={cities} states={states} onSubmit={_addUpdateBranch} isEdit={isEdit} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState} countries={countries} setSelectedCountry={setSelectedCountry} selectedCountry={selectedCountry} />}
             />}
         </>
     )

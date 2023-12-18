@@ -5,7 +5,7 @@ import CommonTextField from '../../Components/Common/Fields/TextField';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
 
-const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error, handleChange, isEdit, onSubmit, setSelectedState, selectedState }) => {
+const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error, handleChange, isEdit, onSubmit, setSelectedState, selectedState, countries, selectedCountry, setSelectedCountry }) => {
     return (
         <Box>
             <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -34,31 +34,45 @@ const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error,
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.address ? error?.address : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <CommonTextField
-                        fontWeight={400}
-                        text={'Country'}
-                        placeholder={"Enter Country"}
-                        type='text'
-                        name='country'
-                        value={data?.country}
-                        onChange={(e) => handleChange(e, false)}
+                    <AutoCompleteSearch
+                        backgroundColor="white"
+                        width={"300px"}
+                        text="Country"
+                        handleChange={(e, newValue) => {
+                            setSelectedCountry(newValue)
+                            if (isEdit && selectedCountry !== newValue) {
+                                setSelectedCity("")
+                                setSelectedState("")
+                            }
+                        }}
+                        options={countries?.response?.map((e) => e?.name) || []}
+                        name="label"
+                        defaultValue={selectedCountry || ""}
+                        freeSolo
+                        blurOnSelect
+                        placeholder={"Select Country"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.country ? error?.country : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedCountry ? error?.country : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <AutoCompleteSearch
                         backgroundColor="white"
                         width={"300px"}
                         text="State"
-                        handleChange={(e, newValue) => setSelectedState(newValue)}
-                        options={states?.map((e) => e?.label) || []}
+                        handleChange={(e, newValue) => {
+                            setSelectedState(newValue)
+                            if (isEdit && selectedState !== newValue) {
+                                setSelectedCity("")
+                            }
+                        }}
+                        options={states?.response?.map((e) => e?.name) || []}
                         name="label"
                         defaultValue={selectedState || ""}
                         freeSolo
                         blurOnSelect
                         placeholder={"Select State"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedState?.label ? error?.state : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedState ? error?.state : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <AutoCompleteSearch
@@ -66,14 +80,14 @@ const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error,
                         width={"300px"}
                         text="City"
                         handleChange={(e, newValue) => setSelectedCity(newValue)}
-                        options={cities?.map((e) => e?.label) || []}
+                        options={cities?.response?.map((e) => e?.name) || []}
                         name="label"
                         defaultValue={selectedCity || ""}
                         freeSolo
                         blurOnSelect
                         placeholder={"Select City"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedCity?.label ? error?.city : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedCity ? error?.city : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <CommonTextField
