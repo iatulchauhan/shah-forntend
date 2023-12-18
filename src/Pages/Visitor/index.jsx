@@ -83,11 +83,6 @@ const Visitor = () => {
     const { classes } = useStyles();
     const { OnUpdateError, toggleLoader } = useAppContext();
 
-
-    const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
-    const cities = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
-
-
     //States
     const [model, setModel] = useState(false);
     const [data, setData] = useState({})
@@ -95,8 +90,12 @@ const Visitor = () => {
     const [deleteId, setDeleteId] = useState("")
     const [isEdit, setIsEdit] = useState(false)
     const [visitorDetails, setVisitorDetails] = useState([]);
-    const [selectedCity, setSelectedCity] = useState({});
-    const [selectedState, setSelectedState] = useState({});
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [selectedCountry, setSelectedCountry] = useState("");
+    const [selectedCity, setSelectedCity] = useState("");
+    const [selectedState, setSelectedState] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(0);
     const handleChangePage = (newPage) => {
@@ -118,7 +117,7 @@ const Visitor = () => {
             formIsValid = false
             errors['address'] = 'Please enter address.'
         }
-        if (!data?.country) {
+        if (!selectedCountry) {
             formIsValid = false
             errors['country'] = 'Please enter country.'
         }
@@ -157,11 +156,16 @@ const Visitor = () => {
         }))
     }
 
+    const _getDefaultId = (data, name) => {
+        return data?.length > 0 && data?.filter((e) => e.name == name)?.[0]?.id
+    }
+
     const _getVisitor = () => {
         toggleLoader();
         axios.get("receptionist/visitor").then((res) => {
             if (res?.data?.data) {
                 setVisitorDetails(res?.data?.data)
+                console.log('res?.data?.data👌', res?.data?.data)
             }
             toggleLoader();
         }).catch((err) => {
@@ -171,6 +175,58 @@ const Visitor = () => {
         );
     }
 
+    const _getCountries = () => {
+        toggleLoader();
+        axios.get("/countries").then((res) => {
+            if (res?.data?.data) {
+                setCountries(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+    const _getStates = () => {
+        toggleLoader();
+        axios.post("/states", { country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
+            if (res?.data?.data) {
+                setStates(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+    const _getCities = () => {
+        toggleLoader();
+        axios.post("/cities", { state_id: _getDefaultId(states?.response, selectedState), country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
+            if (res?.data?.data) {
+                setCities(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+    const handleEdit = (row) => {
+        console.log('row👌', row)
+        setData(row);
+        setSelectedCountry(row?.countryDetail?.name || "");
+        setSelectedState(row?.stateDetail?.name || "");
+        setSelectedCity(row?.cityDetail?.name || "");
+        setIsEdit(true);
+        setModel(true);
+    }
+    
     const _handleDelete = () => {
         if (deleteId) {
             toggleLoader();
@@ -188,15 +244,25 @@ const Visitor = () => {
         }
     };
 
+    const handleClear = () => {
+        setModel(false)
+        setData({})
+        setError({})
+        setIsEdit(false)
+        setSelectedCountry("")
+        setSelectedCity("")
+        setSelectedState("")
+    }
+
     const _addUpdateUser = () => {
         if (handleValidation()) {
             toggleLoader();
             let body = {
                 "name": data?.name,
                 "address": data?.address,
-                "country": data?.country,
-                "state": selectedState?.label,
-                "city": selectedCity?.label,
+                "country": _getDefaultId(countries?.response, selectedCountry),
+                "state": _getDefaultId(states?.response, selectedState),
+                "city": _getDefaultId(cities?.response, selectedCity),
                 "postalCode": data?.postalCode,
                 "mobileNo": data?.mobileNo,
                 "email": data?.email,
@@ -207,12 +273,8 @@ const Visitor = () => {
             axios.post(`receptionist/visitor/${data?._id ? "update" : "create"}`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
-                    setModel(false)
-                    setData({})
-                    setError({})
-                    setIsEdit(false)
+                    handleClear()
                     _getVisitor()
-                    // navigate("/")
                 }
                 toggleLoader();
             }).catch((err) => {
@@ -225,7 +287,20 @@ const Visitor = () => {
 
     useEffect(() => {
         _getVisitor()
+        _getCountries()
     }, [])
+
+    useEffect(() => {
+        if (selectedCountry) {
+            _getStates()
+        }
+    }, [selectedCountry])
+
+    useEffect(() => {
+        if (selectedCountry && selectedState) {
+            _getCities()
+        }
+    }, [selectedState])
 
     return (
         <>
@@ -264,7 +339,7 @@ const Visitor = () => {
                                                             className={classes.writeBox}
                                                             src={"/assets/icons/write.svg"}
                                                             absolutePath={true}
-                                                            onClick={() => { setData(row); setIsEdit(true); setModel(true) }}
+                                                            onClick={() => { handleEdit(row) }}
                                                         />
                                                         <Assets
                                                             className={classes.viewBox}
@@ -303,12 +378,12 @@ const Visitor = () => {
                 </Box>
             </PaperContainer>
 
-            <CommonModal
+            {model && <CommonModal
                 open={model}
-                onClose={() => { setModel(false); setData({}); setError({}); setIsEdit(false) }}
+                onClose={handleClear}
                 title={`${isEdit ? "Update" : "Add"} Visitor`}
-                content={<AddVisitor data={data} setData={setData} error={error} handleChange={handleChange} cities={cities} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState} />}
-            />
+                content={<AddVisitor data={data} setData={setData} error={error} handleChange={handleChange} onSubmit={_addUpdateUser} isEdit={isEdit} cities={cities} states={states} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState} countries={countries} setSelectedCountry={setSelectedCountry} selectedCountry={selectedCountry} />}
+            />}
         </>
     )
 }

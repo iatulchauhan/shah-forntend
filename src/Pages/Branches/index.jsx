@@ -323,9 +323,9 @@ const Branches = () => {
                                                         {row.branchName}
                                                     </StyledTableCell>
                                                     <StyledTableCell>{row.address}</StyledTableCell>
-                                                    <StyledTableCell>{row.country}</StyledTableCell>
-                                                    <StyledTableCell>{row.state}</StyledTableCell>
-                                                    <StyledTableCell>{row.city}</StyledTableCell>
+                                                    <StyledTableCell>{row.countryDetail.name}</StyledTableCell>
+                                                    <StyledTableCell>{row.stateDetail.name}</StyledTableCell>
+                                                    <StyledTableCell>{row.cityDetail.name}</StyledTableCell>
                                                     <StyledTableCell align='center'>
                                                         <Switch
                                                             defaultChecked={row.isActive}

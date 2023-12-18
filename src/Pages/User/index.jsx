@@ -83,8 +83,6 @@ const useStyles = makeStyles()((theme) => {
 const User = () => {
     const { classes } = useStyles();
     const { OnUpdateError, toggleLoader } = useAppContext();
-    const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
-    const city = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
     //States
     const [model, setModel] = useState(false);
     const [data, setData] = useState({})
@@ -95,8 +93,12 @@ const User = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [branches, setBranches] = useState([])
     const [selectedBranch, setSelectedBranch] = useState("");
+    const [countries, setCountries] = useState([])
+    const [selectedCountry, setSelectedCountry] = useState("");
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [selectedCity, setSelectedCity] = useState("");
     const [selectedState, setSelectedState] = useState("");
-    const [selectedCity, setSelectedCity] = useState("")
     const [selectedRole, setSelectedRole] = useState("")
     const [page, setPage] = useState(0);
 
@@ -111,6 +113,7 @@ const User = () => {
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
+        const isAnyInvestmentFieldFilled = data?.investment || data?.investmentDays || data?.returnOfInvestment;
         if (!data?.name) {
             formIsValid = false
             errors['name'] = 'Please enter name.'
@@ -119,9 +122,9 @@ const User = () => {
             formIsValid = false
             errors['address'] = 'Please enter address.'
         }
-        if (!data?.country) {
+        if (!selectedCountry) {
             formIsValid = false
-            errors['country'] = 'Please enter country.'
+            errors['country'] = 'Please select country.'
         }
         if (!selectedState) {
             formIsValid = false
@@ -146,7 +149,6 @@ const User = () => {
             formIsValid = false;
             errors["invalidEmail"] = "* Invalid email Address";
         }
-
         if (!selectedBranch) {
             formIsValid = false
             errors['branchName'] = 'Please select branchName.'
@@ -172,8 +174,26 @@ const User = () => {
                 errors['matchPassword'] = 'Passwords do not match.';
             }
         }
+        if (isAnyInvestmentFieldFilled) {
+            if (!data?.investment) {
+                formIsValid = false;
+                errors['investment'] = 'Please enter Investment.';
+            }
+            if (!data?.investmentDays) {
+                formIsValid = false;
+                errors['investmentDays'] = 'Please enter Investment Days.';
+            }
+            if (!data?.returnOfInvestment) {
+                formIsValid = false;
+                errors['returnOfInvestment'] = 'Please enter Return Of Investment.';
+            }
+        }
         setError(errors)
         return formIsValid
+    }
+
+    const _getDefaultId = (data, name) => {
+        return data?.length > 0 && data?.filter((e) => e.name == name)?.[0]?.id
     }
 
     const handleChange = (e) => {
@@ -210,25 +230,69 @@ const User = () => {
             })
     }
 
+    const _getCountries = () => {
+        axios.get("/countries")
+            .then((res) => {
+                if (res?.data?.data) {
+                    setCountries(res?.data?.data)
+                }
+            }).catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            })
+    }
+
+    const _getStates = () => {
+        toggleLoader();
+        axios.post("/states", { country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
+            if (res?.data?.data) {
+                setStates(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+    const _getCities = () => {
+        toggleLoader();
+        axios.post("/cities", { state_id: _getDefaultId(states?.response, selectedState), country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
+            if (res?.data?.data) {
+                setCities(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+
     const handleClear = () => {
         setModel(false);
         setData({});
         setError({});
         setIsEdit(false);
         setSelectedBranch("");
+        setSelectedCountry("");
+        setSelectedState("");
         setSelectedCity("");
         setSelectedRole("");
-        setSelectedState("");
     }
     const handleEdit = (row) => {
+        console.log('row👌', row)
         const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0]
         setData(row);
         setSelectedBranch(row?.branchDetails?.branchName || "");
-        setSelectedRole(roleConfig?.label)
-        setSelectedCity(row?.city)
-        setSelectedState(row?.state)
+        setSelectedCountry(row?.countryDetail?.name || "");
+        setSelectedState(row?.stateDetail?.name || "");
+        setSelectedCity(row?.cityDetail?.name || "");
+        setSelectedRole(roleConfig?.label);
         setIsEdit(true);
-        setModel(true)
+        setModel(true);
     }
 
     const _handleDelete = () => {
@@ -254,16 +318,18 @@ const User = () => {
             let body = {
                 "name": data?.name,
                 "address": data?.address,
-                "country": data?.country,
-                "state": selectedState,
-                "city": selectedCity,
+                "country": _getDefaultId(countries?.response, selectedCountry),
+                "state": _getDefaultId(states?.response, selectedState),
+                "city": _getDefaultId(cities?.response, selectedCity),
                 "postalCode": data?.postalCode,
                 "mobileNo": data?.mobileNo,
                 "email": data?.email,
                 "password": data?.password,
                 "branch": branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id,
                 "userType": roles?.filter((e) => e?.label == selectedRole)[0]?.id,
-                "active": data?.active,
+                "investment": data?.investment,
+                "investmentDays": data?.investmentDays,
+                "returnOfInvestment": data?.returnOfInvestment,
             }
             if (data?._id) {
                 body.id = data?._id
@@ -285,10 +351,23 @@ const User = () => {
     }
     useEffect(() => {
         _getUser()
-    }, [])
-    useEffect(() => {
         _getBranches()
+        _getCountries()
     }, [])
+
+    React.useEffect(() => {
+        if (selectedCountry) {
+            _getStates()
+        }
+    }, [selectedCountry])
+
+    React.useEffect(() => {
+        if (selectedCountry && selectedState) {
+            _getCities()
+        }
+    }, [selectedState])
+
+
     return (
         <>
             <PaperContainer elevation={0} square={false}>
@@ -379,7 +458,7 @@ const User = () => {
                 open={model}
                 onClose={handleClear}
                 title={`${isEdit ? "Update" : "Add"} User`}
-                content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} city={city} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} />}
+                content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} countries={countries} />}
             />
         </>
     )
