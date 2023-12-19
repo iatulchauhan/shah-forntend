@@ -38,7 +38,7 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                     backgroundColor="white"
                     width={"300px"}
                     text="Country"
-                    handleChange={(e, newValue) =>{
+                    handleChange={(e, newValue) => {
                         setSelectedCountry(newValue)
                         if (isEdit && selectedCountry !== newValue) {
                             setSelectedCity("")
@@ -187,7 +187,7 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedRole?.label ? error?.userType : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            {/* <Grid item xs={12} sm={12} md={6} lg={6}>
                 <CommonTextField
                     fontWeight={400}
                     text={'Investment'}
@@ -222,7 +222,7 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                     onChange={(e) => handleChange(e, false)}
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
