@@ -113,7 +113,7 @@ const User = () => {
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
-        const isAnyInvestmentFieldFilled = data?.investment || data?.investmentDays || data?.returnOfInvestment;
+        // const isAnyInvestmentFieldFilled = data?.investment || data?.investmentDays || data?.returnOfInvestment;
         if (!data?.name) {
             formIsValid = false
             errors['name'] = 'Please enter name.'
@@ -174,20 +174,20 @@ const User = () => {
                 errors['matchPassword'] = 'Passwords do not match.';
             }
         }
-        if (isAnyInvestmentFieldFilled) {
-            if (!data?.investment) {
-                formIsValid = false;
-                errors['investment'] = 'Please enter Investment.';
-            }
-            if (!data?.investmentDays) {
-                formIsValid = false;
-                errors['investmentDays'] = 'Please enter Investment Days.';
-            }
-            if (!data?.returnOfInvestment) {
-                formIsValid = false;
-                errors['returnOfInvestment'] = 'Please enter Return Of Investment.';
-            }
-        }
+        // if (isAnyInvestmentFieldFilled) {
+        //     if (!data?.investment) {
+        //         formIsValid = false;
+        //         errors['investment'] = 'Please enter Investment.';
+        //     }
+        //     if (!data?.investmentDays) {
+        //         formIsValid = false;
+        //         errors['investmentDays'] = 'Please enter Investment Days.';
+        //     }
+        //     if (!data?.returnOfInvestment) {
+        //         formIsValid = false;
+        //         errors['returnOfInvestment'] = 'Please enter Return Of Investment.';
+        //     }
+        // }
         setError(errors)
         return formIsValid
     }
@@ -327,9 +327,6 @@ const User = () => {
                 "password": data?.password,
                 "branch": branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id,
                 "userType": roles?.filter((e) => e?.label == selectedRole)[0]?.id,
-                "investment": data?.investment,
-                "investmentDays": data?.investmentDays,
-                "returnOfInvestment": data?.returnOfInvestment,
             }
             if (data?._id) {
                 body.id = data?._id
@@ -386,7 +383,6 @@ const User = () => {
                                             <StyledTableCell>Address</StyledTableCell>
                                             <StyledTableCell>Contact No.</StyledTableCell>
                                             <StyledTableCell>Email Id</StyledTableCell>
-                                            <StyledTableCell>Active Plan</StyledTableCell>
                                             <StyledTableCell>Branch</StyledTableCell>
                                             <StyledTableCell align='center'>Role</StyledTableCell>
                                             <StyledTableCell align="right">Action</StyledTableCell>
@@ -394,6 +390,7 @@ const User = () => {
                                     </TableHead>
                                     <TableBody>
                                         {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => {
+                                            console.log('row👍', row)
                                             const getRoleName = (type) => { return roles.filter((e) => e?.id == type)?.[0]?.label }
                                             return (
                                                 <StyledTableRow key={index} >
@@ -404,7 +401,6 @@ const User = () => {
                                                     <StyledTableCell>{row.address}</StyledTableCell>
                                                     <StyledTableCell>{row.mobileNo}</StyledTableCell>
                                                     <StyledTableCell>{row.email}</StyledTableCell>
-                                                    <StyledTableCell>{row.activePlan}</StyledTableCell>
                                                     <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
                                                     <StyledTableCell align='center'>{getRoleName(row.userType)}</StyledTableCell>
                                                     <StyledTableCell align="right">
