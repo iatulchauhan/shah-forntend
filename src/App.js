@@ -23,6 +23,7 @@ import Profile from "./Pages/Profile";
 import Dashboard from "./Pages/Dashboard";
 import Layout from "./Components/Layout";
 import { ProtectedRoutes } from "./Routes/ProtectedRoutes";
+import Clients from "./Pages/Clients";
 
 function App() {
   return (
@@ -51,6 +52,8 @@ function App() {
               <Route path="/new-file" element={<NewFile />} />
               <Route path="/investment" element={<Investment />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/client" element={<Clients />} />
+
             </Route>
           </Routes>
         </Layout>

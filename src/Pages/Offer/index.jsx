@@ -80,13 +80,11 @@ const OfferPage = () => {
     }
 
     const handleImageUpload = async (val, key) => {
-        console.log(val, "val")
         const formData = new FormData();
         formData.append("image", val)
         toggleLoader();
         axios.post("/upload/image/attachment", formData).then((res) => {
             if (res?.data?.data) {
-                console.log(res?.data?.data, "res?.data?.data")
                 if (key === "Edit") {
                     setData((prevData) => ({
                         ...prevData,

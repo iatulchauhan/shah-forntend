@@ -18,13 +18,13 @@ import CommonModal from '../../Components/Common/CommonModel';
 import { Regex } from '../../Utils/regex';
 import CommonPagination from '../../Components/Common/Pagination';
 import { lightTheme } from '../../theme';
-import AddUser from '../../Components/User';
 import { useAppContext } from '../../Context/context';
 import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
 import DataNotFound from '../../Components/Common/DataNotFound';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { roles } from '../../Utils/enum';
+import AddClient from '../../Components/Client';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -80,7 +80,7 @@ const useStyles = makeStyles()((theme) => {
     };
 });
 
-const User = () => {
+const Clients = () => {
     const { classes } = useStyles();
     const { OnUpdateError, toggleLoader } = useAppContext();
     //States
@@ -102,17 +102,21 @@ const User = () => {
     const [selectedRole, setSelectedRole] = useState("")
     const [page, setPage] = useState(0);
 
-    const handleChangePage = (newPage) => { setPage(newPage); };
-    const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
-
+    const handleChangePage = (newPage) => {
+        setPage(newPage);
+    };
+    const handleChangeRowsPerPage = (value) => {
+        setRowsPerPage(value);
+        setPage(0);
+    };
     //Validation
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
-        // const isAnyInvestmentFieldFilled = data?.investment || data?.investmentDays || data?.returnOfInvestment;
+        const isAnyInvestmentFieldFilled = data?.investment || data?.investmentDays || data?.returnOfInvestment;
         if (!data?.name) {
             formIsValid = false
-            errors['name'] = 'Please enter name.'
+            errors['name'] = 'Please enter client name.'
         }
         if (!data?.address) {
             formIsValid = false
@@ -170,20 +174,20 @@ const User = () => {
                 errors['matchPassword'] = 'Passwords do not match.';
             }
         }
-        // if (isAnyInvestmentFieldFilled) {
-        //     if (!data?.investment) {
-        //         formIsValid = false;
-        //         errors['investment'] = 'Please enter Investment.';
-        //     }
-        //     if (!data?.investmentDays) {
-        //         formIsValid = false;
-        //         errors['investmentDays'] = 'Please enter Investment Days.';
-        //     }
-        //     if (!data?.returnOfInvestment) {
-        //         formIsValid = false;
-        //         errors['returnOfInvestment'] = 'Please enter Return Of Investment.';
-        //     }
-        // }
+        if (isAnyInvestmentFieldFilled) {
+            if (!data?.investment) {
+                formIsValid = false;
+                errors['investment'] = 'Please enter Investment.';
+            }
+            if (!data?.investmentDays) {
+                formIsValid = false;
+                errors['investmentDays'] = 'Please enter Investment Days.';
+            }
+            if (!data?.returnOfInvestment) {
+                formIsValid = false;
+                errors['returnOfInvestment'] = 'Please enter Return Of Investment.';
+            }
+        }
         setError(errors)
         return formIsValid
     }
@@ -202,8 +206,7 @@ const User = () => {
 
     const _getUser = () => {
         toggleLoader();
-        let body = `admin/users?limit=${rowsPerPage}&page=${page + 1}`
-        axios.get(body).then((res) => {
+        axios.get(`admin/users/?userType=${1}`).then((res) => {
             if (res?.data?.data) {
                 setUserDetails(res?.data?.data)
             }
@@ -267,7 +270,6 @@ const User = () => {
         );
     }
 
-
     const handleClear = () => {
         setModel(false);
         setData({});
@@ -279,6 +281,7 @@ const User = () => {
         setSelectedCity("");
         setSelectedRole("");
     }
+
     const handleEdit = (row) => {
         console.log('row👌', row)
         const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0]
@@ -324,6 +327,9 @@ const User = () => {
                 "password": data?.password,
                 "branch": branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id,
                 "userType": roles?.filter((e) => e?.label == selectedRole)[0]?.id,
+                "investment": data?.investment,
+                "investmentDays": data?.investmentDays,
+                "returnOfInvestment": data?.returnOfInvestment,
             }
             if (data?._id) {
                 body.id = data?._id
@@ -343,11 +349,9 @@ const User = () => {
             );
         }
     }
-    useEffect(() => {
-        _getUser()
-    }, [page, rowsPerPage])
 
     useEffect(() => {
+        _getUser()
         _getBranches()
         _getCountries()
     }, [])
@@ -363,14 +367,12 @@ const User = () => {
             _getCities()
         }
     }, [selectedState])
-
-
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="User List" buttonText={'Add User'} onClick={() => setModel(true)} />
+                        <TableHeading title="Client List" buttonText={'Add Client'} onClick={() => setModel(true)} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -383,6 +385,7 @@ const User = () => {
                                             <StyledTableCell>Address</StyledTableCell>
                                             <StyledTableCell>Contact No.</StyledTableCell>
                                             <StyledTableCell>Email Id</StyledTableCell>
+                                            <StyledTableCell>Active Plan</StyledTableCell>
                                             <StyledTableCell>Branch</StyledTableCell>
                                             <StyledTableCell align='center'>Role</StyledTableCell>
                                             <StyledTableCell align="right">Action</StyledTableCell>
@@ -390,7 +393,6 @@ const User = () => {
                                     </TableHead>
                                     <TableBody>
                                         {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => {
-                                            console.log('row👍', row)
                                             const getRoleName = (type) => { return roles.filter((e) => e?.id == type)?.[0]?.label }
                                             return (
                                                 <StyledTableRow key={index} >
@@ -401,6 +403,7 @@ const User = () => {
                                                     <StyledTableCell>{row.address}</StyledTableCell>
                                                     <StyledTableCell>{row.mobileNo}</StyledTableCell>
                                                     <StyledTableCell>{row.email}</StyledTableCell>
+                                                    <StyledTableCell>{row.activePlan}</StyledTableCell>
                                                     <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
                                                     <StyledTableCell align='center'>{getRoleName(row.userType)}</StyledTableCell>
                                                     <StyledTableCell align="right">
@@ -440,7 +443,7 @@ const User = () => {
                 </Grid>
                 <Box p={1}>
                     <CommonPagination
-                        count={userDetails?.count}
+                        count={100}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onRowsPerPageChange={handleChangeRowsPerPage}
@@ -448,15 +451,14 @@ const User = () => {
                     />
                 </Box>
             </PaperContainer>
-
             <CommonModal
                 open={model}
                 onClose={handleClear}
-                title={`${isEdit ? "Update" : "Add"} User`}
-                content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} countries={countries} />}
+                title={`${isEdit ? "Update" : "Add"} Client`}
+                content={<AddClient data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} countries={countries} />}
             />
         </>
     )
 }
 
-export default User
+export default Clients

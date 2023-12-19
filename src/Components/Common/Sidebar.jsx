@@ -161,6 +161,12 @@ export default function SideBar(props) {
       activeLinks: ["user"],
     },
     {
+      title: "Clients",
+      icon: <Assets src="/assets/icons/client.svg" absolutePath={true} />,
+      link: "/client",
+      activeLinks: ["client"],
+    },
+    {
       title: "Create Branches",
       icon: <Assets src="/assets/icons/branches.svg" absolutePath={true} />,
       link: "/branches",

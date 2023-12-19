@@ -1,19 +1,19 @@
 import React from 'react'
 import { Box, Grid, } from "@mui/material";
-import TextLabel from '../../Components/Common/Fields/TextLabel';
-import CommonTextField from '../../Components/Common/Fields/TextField';
-import CommonButton from '../../Components/Common/Button/CommonButton';
+import TextLabel from '../Common/Fields/TextLabel';
+import CommonTextField from '../Common/Fields/TextField';
+import CommonButton from '../Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
 
-const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit, onSubmit, setSelectedCountry, selectedCountry, countries }) => {
+const AddClient = ({ data, setData, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit, onSubmit, setSelectedCountry, selectedCountry, countries }) => {
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <CommonTextField
                     fontWeight={400}
-                    text={'Name'}
-                    placeholder={"Enter User Name"}
+                    text={'Client Name'}
+                    placeholder={"Client Name"}
                     type='text'
                     name='name'
                     value={data?.name}
@@ -187,7 +187,7 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedRole?.label ? error?.userType : ""} />
             </Grid>
-            {/* <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
                 <CommonTextField
                     fontWeight={400}
                     text={'Investment'}
@@ -222,12 +222,12 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                     onChange={(e) => handleChange(e, false)}
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
-            </Grid> */}
+            </Grid>
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
                         width={'60%'}
-                        text={`${isEdit ? "Update" : "Create"} User`}
+                        text={`${isEdit ? "Update" : "Create"} Client`}
                         type="submit"
                         onClick={onSubmit}
                     />
@@ -237,4 +237,4 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
     )
 }
 
-export default AddUser;
+export default AddClient;
