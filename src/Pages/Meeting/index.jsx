@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { alpha, styled } from "@mui/material/styles";
+import React, { useState } from 'react'
+import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
 import {
     Table,
@@ -8,15 +8,25 @@ import {
     TableContainer,
     Box,
     Grid,
+    Switch,
 } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import Assets from '../../Components/Common/ImageContainer';
 import PaperContainer from '../../Components/Common/PaperContainer';
 import TableHeading from '../../Components/Common/CommonTableHeading';
+import CommonModal from '../../Components/Common/CommonModel';
 import CommonPagination from '../../Components/Common/Pagination';
+import { useAppContext } from '../../Context/context';
+import axios from "../../APiSetUp/axios";
+import swal from 'sweetalert';
+import { useNavigate } from 'react-router-dom';
+import AddBranch from '../../Components/Branch';
+import DataNotFound from '../../Components/Common/DataNotFound';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { lightTheme } from '../../theme';
 import CommonButton from '../../Components/Common/Button/CommonButton';
+import AddMeeting from '../../Components/Meeting';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -104,12 +114,17 @@ const rows = [
 ];
 const MeetingList = () => {
     const { classes } = useStyles();
+    const { OnUpdateError, toggleLoader } = useAppContext();
     const statusColors = {
         'Pending Approval': '#EB5757',
         'Accepted': '#2391C1',
         'Completed': '#4CC123',
     };
     //States
+    const [model, setModel] = useState(false);
+    const [data, setData] = useState({})
+    const [error, setError] = useState({})
+    const [isEdit, setIsEdit] = useState(false)
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     const [page, setPage] = React.useState(0);
@@ -120,12 +135,68 @@ const MeetingList = () => {
         setRowsPerPage(value);
         setPage(0);
     };
+
+    const handleValidation = () => {
+        let formIsValid = true
+        let errors = {}
+        if (!data?.branchName) {
+            formIsValid = false
+            errors['branchName'] = 'Please enter name.'
+        }
+        setError(errors)
+        return formIsValid
+    }
+
+
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setData((prevState) => ({
+            ...prevState,
+            [name]: value
+        }))
+    }
+
+
+    const handleClear = () => {
+        setModel(false)
+        setData({})
+        setError({})
+        setIsEdit(false)
+    }
+
+    const _addUpdateBranch = () => {
+        if (handleValidation()) {
+            toggleLoader();
+            let body = {
+                "branchName": data?.branchName,
+                "address": data?.address,
+                "postalCode": data?.postalCode
+            }
+            if (data?._id) {
+                body.id = data?._id
+            }
+            axios.post(`admin/branch/${data?._id ? "update" : "create"}`, body).then((res) => {
+                if (res?.data?.data) {
+                    swal(res?.data?.message, { icon: "success", timer: 5000, })
+                    handleClear()
+                }
+                toggleLoader();
+            }).catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            }
+            );
+        }
+    }
+
+
+
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Meeting List" showSelectDropDown />
+                        <TableHeading title="Meeting List" buttonText={"Schedule Meeting"} onClick={() => setModel(true)} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -169,6 +240,11 @@ const MeetingList = () => {
                                                         absolutePath={true}
                                                     />
                                                     <Assets
+                                                        className={classes.viewBox}
+                                                        src={"/assets/icons/view.svg"}
+                                                        absolutePath={true}
+                                                    />
+                                                    <Assets
                                                         className={classes.deleteBox}
                                                         src={"/assets/icons/delete.svg"}
                                                         absolutePath={true}
@@ -193,6 +269,12 @@ const MeetingList = () => {
                     />
                 </Box>
             </PaperContainer>
+            <CommonModal
+                open={model}
+                onClose={handleClear}
+                title={`${isEdit ? "Update" : "Add"} User`}
+                content={<AddMeeting data={data} setData={setData} error={error} handleChange={handleChange} onSubmit={_addUpdateBranch} isEdit={isEdit}  />}
+            />
         </>
     )
 }
