@@ -1,10 +1,11 @@
 import React from 'react';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, useTheme } from '@mui/material';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import { lightTheme } from '../../theme';
 
-const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPageChange }) => {
+const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPageChange, data }) => {
+    const theme = useTheme()
+
     const handlePageChange = (newPage) => {
         onPageChange(newPage);
     };
@@ -43,7 +44,7 @@ const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPag
                 >
                     <FirstPageIcon />
                 </IconButton>
-                <Box sx={{ backgroundColor: lightTheme.palette.primary.main, padding: { xs: '0px 8px', sm: '6px 11px' }, borderRadius: "5px", color: 'white', fontSize: '13px' }}>{page + 1}</Box>
+                <Box sx={{ backgroundColor: theme.palette.primary.main, padding: { xs: '0px 8px', sm: '6px 11px' }, borderRadius: "5px", color: 'white', fontSize: '13px' }}>{page + 1}</Box>
                 <IconButton
                     onClick={() => handlePageChange(page + 1)}
                     disabled={page >= maxPage}
@@ -53,7 +54,7 @@ const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPag
                 </IconButton>
             </Box>
             <Box>
-                <Box fontSize={"13px"} p={1}>
+                <Box fontSize={"12px"} p={1}>
                     Showing {Math.min(rowsPerPage * page + 1, count)} to{" "}
                     {Math.min(rowsPerPage * (page + 1), count)} of {count} entries
                 </Box>
