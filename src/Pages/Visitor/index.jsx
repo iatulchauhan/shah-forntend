@@ -98,13 +98,10 @@ const Visitor = () => {
     const [selectedState, setSelectedState] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(0);
-    const handleChangePage = (newPage) => {
-        setPage(newPage);
-    };
-    const handleChangeRowsPerPage = (value) => {
-        setRowsPerPage(value);
-        setPage(0);
-    };
+
+
+    const handleChangePage = (newPage) => { setPage(newPage); };
+    const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
     //Validation
     const handleValidation = () => {
         let formIsValid = true
@@ -162,7 +159,7 @@ const Visitor = () => {
 
     const _getVisitor = () => {
         toggleLoader();
-        axios.get("receptionist/visitor").then((res) => {
+        axios.get(`receptionist/visitor?limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
             if (res?.data?.data) {
                 setVisitorDetails(res?.data?.data)
                 console.log('res?.data?.data👌', res?.data?.data)
@@ -218,7 +215,6 @@ const Visitor = () => {
     }
 
     const handleEdit = (row) => {
-        console.log('row👌', row)
         setData(row);
         setSelectedCountry(row?.countryDetail?.name || "");
         setSelectedState(row?.stateDetail?.name || "");
@@ -226,7 +222,7 @@ const Visitor = () => {
         setIsEdit(true);
         setModel(true);
     }
-    
+
     const _handleDelete = () => {
         if (deleteId) {
             toggleLoader();
@@ -287,6 +283,9 @@ const Visitor = () => {
 
     useEffect(() => {
         _getVisitor()
+    }, [page, rowsPerPage])
+
+    useEffect(() => {
         _getCountries()
     }, [])
 
@@ -369,7 +368,7 @@ const Visitor = () => {
                 </Grid>
                 <Box p={1}>
                     <CommonPagination
-                        count={100}
+                        count={visitorDetails?.count}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onRowsPerPageChange={handleChangeRowsPerPage}

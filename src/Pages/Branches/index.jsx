@@ -93,8 +93,6 @@ const Branches = () => {
     const [data, setData] = useState({})
     const [error, setError] = useState({})
     const [isEdit, setIsEdit] = useState(false)
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [page, setPage] = useState(0);
     const [brancesDetails, setBrancheDetails] = useState([]);
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
@@ -103,13 +101,12 @@ const Branches = () => {
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
     const [selectedState, setSelectedState] = useState("");
-    const handleChangePage = (newPage) => {
-        setPage(newPage);
-    };
-    const handleChangeRowsPerPage = (value) => {
-        setRowsPerPage(value);
-        setPage(0);
-    };
+    const [rowsPerPage, setRowsPerPage] = useState(5);          
+    const [page, setPage] = useState(0);     
+
+
+    const handleChangePage = (newPage) => { setPage(newPage); };
+    const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
 
     //Validation
     const handleValidation = () => {
@@ -158,7 +155,7 @@ const Branches = () => {
 
     const _getBranches = () => {
         toggleLoader();
-        axios.get("admin/branch").then((res) => {
+        axios.get(`admin/branch?limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
             if (res?.data?.data) {
                 setBrancheDetails(res?.data?.data)
             }
@@ -288,7 +285,7 @@ const Branches = () => {
 
     React.useEffect(() => {
         _getBranches()
-    }, [])
+    }, [page, rowsPerPage])
 
     return (
         <>
@@ -356,7 +353,7 @@ const Branches = () => {
                 </Grid>
                 <Box p={1}>
                     <CommonPagination
-                        count={100}
+                        count={brancesDetails?.count}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onRowsPerPageChange={handleChangeRowsPerPage}
