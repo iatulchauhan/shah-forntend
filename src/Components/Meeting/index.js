@@ -17,7 +17,6 @@ const useStyles = makeStyles()((theme) => {
         dateBox: {
             "& .MuiOutlinedInput-root": {
                 borderRadius: '10px',
-                // backgroundColor: "red"
             },
             "& .MuiOutlinedInput-input": {
                 padding: "16.5px 14px",
@@ -105,18 +104,17 @@ const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, co
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <TextLabel fontSize={"15px"} color={"#151D48"} fontWeight={"400"} title={'Start Time'} style={{ padding: '3px' }} />
                 </Grid>
-                <Grid item xs={4} sm={4} md={12} lg={12} display={"flex"} flexWrap={"wrap"} gap={2}>
+                <Grid item xs={12} sm={12} md={12} lg={12} display={"flex"} flexWrap={"wrap"} gap={2}>
                     {slotTimes?.map((e) => {
-                        console.log(e, "eeeeeeeeeee")
                         return (
                             <Chip
                                 label={`${convertToAmPm(e?.startTime)}`}
                                 style={{
                                     borderRadius: '10px',
-                                    border: `1px solid ${e.isSelected === true ? 'var(--selected, #4285F4)' : 'var(--border, #EDF2F6)'}`,
-                                    background: e.isSelected === true ? 'var(--selected, #4285F4)' : 'var(--White, #FFF)',
+                                    border: `1px solid ${e.isSelected === true ? 'var(--selected, #EDF2F6)' : 'var(--border, #EDF2F6)'}`,
+                                    background: e.isSelected === true ? 'var(--border, #EDF2F6)' : 'var(--White, #FFF)',
                                     height: '42px',
-                                    color: e.isSelected === true ? 'var(--White, #FFF)' : 'var(--text, #000)',
+                                    color: e.isSelected === true ? 'var(--White, #000)' : 'var(--text, #000)',
                                 }}
                                 onClick={() => handleSlotClick(e.startTime)}
                             />

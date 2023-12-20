@@ -11,7 +11,7 @@ const useStyles = makeStyles()((theme) => {
   return {
     root: {
       width: "100%",
-      backgroundColor: '#f7f7f7',
+      backgroundColor: '#fffcfc',
       borderRadius: '5px',
       border: `1px solid ${theme.palette.bgLightExtraGray.main}`,
       fontSize: "12px",

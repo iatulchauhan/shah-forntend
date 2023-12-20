@@ -109,7 +109,7 @@ const User = () => {
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
-        // const isAnyInvestmentFieldFilled = data?.investment || data?.investmentDays || data?.returnOfInvestment;
+        const isAnyInvestmentFieldFilled = data?.investment || data?.investmentDays || data?.returnOfInvestment;
         if (!data?.name) {
             formIsValid = false
             errors['name'] = 'Please enter name.'
@@ -153,6 +153,14 @@ const User = () => {
             formIsValid = false
             errors['userType'] = 'Please select Assign Roles.'
         }
+        if (!data?.meeting) {
+            formIsValid = false
+            errors['meeting'] = 'Please enter Meeting With.'
+        }
+        if (!data?.reason) {
+            formIsValid = false
+            errors['reason'] = 'Please enter reason.'
+        }
 
         if (!data?._id) {
             if (!data?.password) {
@@ -171,18 +179,18 @@ const User = () => {
             }
         }
         // if (isAnyInvestmentFieldFilled) {
-        //     if (!data?.investment) {
-        //         formIsValid = false;
-        //         errors['investment'] = 'Please enter Investment.';
-        //     }
-        //     if (!data?.investmentDays) {
-        //         formIsValid = false;
-        //         errors['investmentDays'] = 'Please enter Investment Days.';
-        //     }
-        //     if (!data?.returnOfInvestment) {
-        //         formIsValid = false;
-        //         errors['returnOfInvestment'] = 'Please enter Return Of Investment.';
-        //     }
+        if (!data?.investment) {
+            formIsValid = false;
+            errors['investment'] = 'Please enter Investment.';
+        }
+        if (!data?.investmentDays) {
+            formIsValid = false;
+            errors['investmentDays'] = 'Please enter Investment Days.';
+        }
+        if (!data?.returnOfInvestment) {
+            formIsValid = false;
+            errors['returnOfInvestment'] = 'Please enter Return Of Investment.';
+        }
         // }
         setError(errors)
         return formIsValid
@@ -267,7 +275,6 @@ const User = () => {
         );
     }
 
-
     const handleClear = () => {
         setModel(false);
         setData({});
@@ -308,6 +315,7 @@ const User = () => {
                 });
         }
     };
+
     const _addUpdateUser = () => {
         if (handleValidation()) {
             toggleLoader();
@@ -328,6 +336,7 @@ const User = () => {
                 body.id = data?._id
                 delete body.password
             }
+
             axios.post(`admin/users/${data?._id ? "update" : "create"}`, body).then((res) => {
                 console.log(res, "resres")
                 if (res?.data?.data) {
@@ -466,13 +475,6 @@ const User = () => {
                     </Grid> */}
                 </Grid>}
             </PaperContainer>
-
-            {/* <CommonModal
-                open={model}
-                onClose={handleClear}
-                title={`${isEdit ? "Update" : "Add"} User`}
-                content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} countries={countries} />}
-            /> */}
 
         </>
     )
