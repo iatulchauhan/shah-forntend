@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Grid, Paper, Table, TableBody, TableContainer, TableHead, TableRow, } from "@mui/material";
+import { Box, Button, Grid, Paper, Table, TableBody, TableContainer, TableHead, TableRow, } from "@mui/material";
 import TextLabel from '../Common/Fields/TextLabel';
 import CommonTextField from '../Common/Fields/TextField';
 import CommonButton from '../Common/Button/CommonButton';
@@ -37,6 +37,25 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch,
     setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
     onSubmit, setSelectedCountry, selectedCountry, countries, selectedMeeting }) => {
+
+    const [tableData, setTableData] = React.useState([
+        // Initial data, you can have an empty array or pre-populate with existing data
+        { id: 1, reason: '', meeting: '' },
+    ]);
+
+    const addRow = () => {
+        // Create a new row object with a unique ID
+        const newRow = { id: tableData.length + 1, reason: '', meeting: '' };
+
+        // Update the state with the new row
+        setTableData([...tableData, newRow]);
+    };
+
+    const handleChangetable = (e, id) => {
+        // Implement your handleChange logic here
+        // You may want to update the specific row in the state
+    };
+
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
             <Grid item xs={12} sm={12} md={12} lg={4}>
@@ -285,55 +304,77 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                     </Grid>
                 </>
             )}
-            {selectedRole == 'Visitor' && (
-                <Grid item xs={12} marginTop={"15px"}>
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 550 }} aria-label="customized table">
-                            <TableHead >
-                                <TableRow>
-                                    <StyledTableCell>No</StyledTableCell>
-                                    <StyledTableCell align='left'>Reason</StyledTableCell>
-                                    <StyledTableCell align='left'>Meeting With</StyledTableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <StyledTableRow>
-                                    <StyledTableCell>{'1'}</StyledTableCell>
-                                    <StyledTableCell align='center'>
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
-                                            <CommonTextField
-                                                fontWeight={400}
-                                                placeholder={"Enter Reason"}
-                                                type='text'
-                                                name='reason'
-                                                value={data?.reason}
-                                                onChange={(e) => handleChange(e, false)}
-                                            />
-                                            <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.reason ? error?.reason : ""} />
-                                        </Grid>
-                                    </StyledTableCell>
-                                    <StyledTableCell align='center'>
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
-                                            <CommonTextField
-                                                fontWeight={400}
-                                                placeholder={"Meeting With"}
-                                                type='text'
-                                                name='meeting'
-                                                value={data?.meeting}
-                                                onChange={(e) => handleChange(e, false)}
-                                            />
-                                            <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.meeting ? error?.meeting : ""} />
-                                        </Grid>
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                            </TableBody>
-                        </Table>
-                        {/* <DataNotFound
-                          icon={<ErrorOutlineIcon color="primary" style={{ fontSize: '3rem' }} />}
-                          elevation={2}
-                      /> */}
-                    </TableContainer>
-                </Grid>
+            {selectedRole === 'Visitor' && (
+                <>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} marginTop={'15px'}>
+                            <TableContainer component={Paper}>
+                                <Table sx={{ minWidth: 550 }} aria-label="customized table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell>No</StyledTableCell>
+                                            <StyledTableCell align="left">Reason</StyledTableCell>
+                                            <StyledTableCell align="left">Meeting With</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {tableData.map((row) => (
+                                            <StyledTableRow key={row.id}>
+                                                <StyledTableCell>{row.id}</StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                                                        <CommonTextField
+                                                            fontWeight={400}
+                                                            placeholder={'Enter Reason'}
+                                                            type="text"
+                                                            name={`reason-${row.id}`}
+                                                            value={row.reason}
+                                                            onChange={(e) => handleChangetable(e, row.id)}
+                                                        />
+                                                        <TextLabel
+                                                            fontSize={'12px'}
+                                                            color={'red'}
+                                                            fontWeight={'400'}
+                                                            title={!row.reason ? error?.reason : ''}
+                                                        />
+                                                    </Grid>
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                                                        <CommonTextField
+                                                            fontWeight={400}
+                                                            placeholder={'Meeting With'}
+                                                            type="text"
+                                                            name={`meeting-${row.id}`}
+                                                            value={row.meeting}
+                                                            onChange={(e) => handleChangetable(e, row.id)}
+                                                        />
+                                                        <TextLabel
+                                                            fontSize={'12px'}
+                                                            color={'red'}
+                                                            fontWeight={'400'}
+                                                            title={!row.meeting ? error?.meeting : ''}
+                                                        />
+                                                    </Grid>
+                                                </StyledTableCell>
+                                            </StyledTableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Box style={{ display: 'flex', justifyContent: 'end', marginTop: '5px' }}>
+                                <CommonButton
+                                    width={'10%'}
+                                    text={"Add Row"}
+                                    type="submit"
+                                    onClick={addRow}
+                                />
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </>
             )}
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
