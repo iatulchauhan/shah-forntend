@@ -104,7 +104,6 @@ const Clients = () => {
 
     const handleChangePage = (newPage) => { setPage(newPage); };
     const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
-
     //Validation
     const handleValidation = () => {
         let formIsValid = true
@@ -367,6 +366,7 @@ const Clients = () => {
             _getCities()
         }
     }, [selectedState])
+
     return (
         <>
             <PaperContainer elevation={0} square={false}>

@@ -110,6 +110,7 @@ export default function AutoCompleteSearch({
     searchValue,
     handleSearch,
     multiple = false,
+    fullWidth,
     className
 }) {
     const { classes, cx } = useStyles();
@@ -149,6 +150,7 @@ export default function AutoCompleteSearch({
                 borderRadius={1}
             >
                 <Autocomplete
+                    fullWidth={fullWidth}
                     // multiple={multiple}
                     className={cx(classes.main, className)}
                     disabled={disabled ? disabled : ""}

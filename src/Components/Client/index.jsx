@@ -5,8 +5,11 @@ import CommonTextField from '../Common/Fields/TextField';
 import CommonButton from '../Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
+import CommonSlider from '../Common/commonSlider';
+
 
 const AddClient = ({ data, setData, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit, onSubmit, setSelectedCountry, selectedCountry, countries }) => {
+
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
             <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -199,18 +202,7 @@ const AddClient = ({ data, setData, branches, roles, selectedRole, setSelectedRo
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investment ? error?.investment : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-                <CommonTextField
-                    fontWeight={400}
-                    text={'Investment Days'}
-                    placeholder={"Enter investment days"}
-                    type='number'
-                    name='investmentDays'
-                    value={data?.investmentDays}
-                    onChange={(e) => handleChange(e, false)}
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investmentDays ? error?.investmentDays : ""} />
-            </Grid>
+
             <Grid item xs={12} sm={12} md={6} lg={6}>
                 <CommonTextField
                     fontWeight={400}
@@ -223,6 +215,7 @@ const AddClient = ({ data, setData, branches, roles, selectedRole, setSelectedRo
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
             </Grid>
+
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton

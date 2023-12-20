@@ -308,7 +308,6 @@ const User = () => {
                 });
         }
     };
-
     const _addUpdateUser = () => {
         if (handleValidation()) {
             toggleLoader();
@@ -322,7 +321,7 @@ const User = () => {
                 "mobileNo": data?.mobileNo,
                 "email": data?.email,
                 "password": data?.password,
-                "branch": branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id,
+                "branch": [branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id],
                 "userType": roles?.filter((e) => e?.label == selectedRole)[0]?.id,
             }
             if (data?._id) {
@@ -330,7 +329,12 @@ const User = () => {
                 delete body.password
             }
             axios.post(`admin/users/${data?._id ? "update" : "create"}`, body).then((res) => {
+                console.log(res, "resres")
                 if (res?.data?.data) {
+                    console.log(model, "model")
+                    setModel(false)
+                    console.log(model, "model")
+
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     handleClear()
                     _getUser()
@@ -369,93 +373,107 @@ const User = () => {
     return (
         <>
             <PaperContainer elevation={0} square={false}>
-                <Grid container >
-                    <Grid item xs={12}>
-                        <TableHeading title="User List" buttonText={'Add User'} onClick={() => setModel(true)} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TableContainer>
-                            {userDetails?.response?.length > 0 ?
-                                <Table sx={{ minWidth: 600 }} aria-label="customized table">
-                                    <TableHead >
-                                        <TableRow>
-                                            <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
-                                            <StyledTableCell>Name</StyledTableCell>
-                                            <StyledTableCell>Address</StyledTableCell>
-                                            <StyledTableCell>Contact No.</StyledTableCell>
-                                            <StyledTableCell>Email Id</StyledTableCell>
-                                            <StyledTableCell>Branch</StyledTableCell>
-                                            <StyledTableCell align='center'>Role</StyledTableCell>
-                                            <StyledTableCell align="right">Action</StyledTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => {
-                                            console.log('row👍', row)
-                                            const getRoleName = (type) => { return roles.filter((e) => e?.id == type)?.[0]?.label }
-                                            return (
-                                                <StyledTableRow key={index} >
-                                                    <StyledTableCell>{index + 1}</StyledTableCell>
-                                                    <StyledTableCell className={classes.paddedRow} component="th" scope="row">
-                                                        {row.name}
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>{row.address}</StyledTableCell>
-                                                    <StyledTableCell>{row.mobileNo}</StyledTableCell>
-                                                    <StyledTableCell>{row.email}</StyledTableCell>
-                                                    <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
-                                                    <StyledTableCell align='center'>{getRoleName(row.userType)}</StyledTableCell>
-                                                    <StyledTableCell align="right">
-                                                        <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                            <Assets
-                                                                className={classes.writeBox}
-                                                                src={"/assets/icons/write.svg"}
-                                                                absolutePath={true}
-                                                                onClick={() => { handleEdit(row) }}
-                                                            />
-                                                            <Assets
-                                                                className={classes.viewBox}
-                                                                src={"/assets/icons/view.svg"}
-                                                                absolutePath={true}
-                                                            />
-                                                            <Assets
-                                                                className={classes.deleteBox}
-                                                                src={"/assets/icons/delete.svg"}
-                                                                absolutePath={true}
-                                                                onClick={() => { setDeleteId(row?._id); _handleDelete(); }}
-                                                            />
-                                                        </Box>
-                                                    </StyledTableCell>
+                {!model &&
+                    <>
+                        <Grid container >
+                            <Grid item xs={12}>
+                                <TableHeading title="User List" buttonText={'Add User'} onClick={() => setModel(true)} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TableContainer>
+                                    {userDetails?.response?.length > 0 ?
+                                        <Table sx={{ minWidth: 600 }} aria-label="customized table">
+                                            <TableHead >
+                                                <TableRow>
+                                                    <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
+                                                    <StyledTableCell>Name</StyledTableCell>
+                                                    <StyledTableCell>Address</StyledTableCell>
+                                                    <StyledTableCell>Contact No.</StyledTableCell>
+                                                    <StyledTableCell>Email Id</StyledTableCell>
+                                                    <StyledTableCell>Branch</StyledTableCell>
+                                                    <StyledTableCell align='center'>Role</StyledTableCell>
+                                                    <StyledTableCell align="right">Action</StyledTableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => {
+                                                    console.log('row👍', row)
+                                                    const getRoleName = (type) => { return roles.filter((e) => e?.id == type)?.[0]?.label }
+                                                    return (
+                                                        <StyledTableRow key={index} >
+                                                            <StyledTableCell>{index + 1}</StyledTableCell>
+                                                            <StyledTableCell className={classes.paddedRow} component="th" scope="row">
+                                                                {row.name}
+                                                            </StyledTableCell>
+                                                            <StyledTableCell>{row.address}</StyledTableCell>
+                                                            <StyledTableCell>{row.mobileNo}</StyledTableCell>
+                                                            <StyledTableCell>{row.email}</StyledTableCell>
+                                                            <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
+                                                            <StyledTableCell align='center'>{getRoleName(row.userType)}</StyledTableCell>
+                                                            <StyledTableCell align="right">
+                                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
+                                                                    <Assets
+                                                                        className={classes.writeBox}
+                                                                        src={"/assets/icons/write.svg"}
+                                                                        absolutePath={true}
+                                                                        onClick={() => { handleEdit(row) }}
+                                                                    />
+                                                                    <Assets
+                                                                        className={classes.viewBox}
+                                                                        src={"/assets/icons/view.svg"}
+                                                                        absolutePath={true}
+                                                                    />
+                                                                    <Assets
+                                                                        className={classes.deleteBox}
+                                                                        src={"/assets/icons/delete.svg"}
+                                                                        absolutePath={true}
+                                                                        onClick={() => { setDeleteId(row?._id); _handleDelete(); }}
+                                                                    />
+                                                                </Box>
+                                                            </StyledTableCell>
 
-                                                </StyledTableRow>
-                                            )
-                                        })}
-                                    </TableBody>
-                                </Table> :
-                                <DataNotFound
-                                    icon={<ErrorOutlineIcon color="primary" style={{ fontSize: '3rem' }} />}
-                                    elevation={2}
-                                />
-                            }
-                        </TableContainer>
+                                                        </StyledTableRow>
+                                                    )
+                                                })}
+                                            </TableBody>
+                                        </Table> :
+                                        <DataNotFound
+                                            icon={<ErrorOutlineIcon color="primary" style={{ fontSize: '3rem' }} />}
+                                            elevation={2}
+                                        />
+                                    }
+                                </TableContainer>
+                            </Grid>
+                        </Grid>
+                        <Box p={1}>
+                            <CommonPagination
+                                count={userDetails?.count}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                onPageChange={handleChangePage}
+                            />
+                        </Box>
+                    </>
+                }
+                {model && <Grid container >
+                    <Grid item xs={12}>
+                        <TableHeading title={`${isEdit ? "Update" : "Add"} User`} handleBack={() => { setModel(false); handleClear() }} removeSearchField={true} />
                     </Grid>
-                </Grid>
-                <Box p={1}>
-                    <CommonPagination
-                        count={userDetails?.count}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
+                    <AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} countries={countries} />
+
+                    {/* <Grid item xs={12}>
+                    </Grid> */}
+                </Grid>}
             </PaperContainer>
 
-            <CommonModal
+            {/* <CommonModal
                 open={model}
                 onClose={handleClear}
                 title={`${isEdit ? "Update" : "Add"} User`}
                 content={<AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} countries={countries} />}
-            />
+            /> */}
+
         </>
     )
 }

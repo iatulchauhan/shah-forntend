@@ -5,11 +5,11 @@ import CommonTextField from '../Common/Fields/TextField';
 import CommonButton from '../Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
-
+import CommonSlider from '../Common/commonSlider';
 const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit, onSubmit, setSelectedCountry, selectedCountry, countries }) => {
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
-            <Grid item xs={12} sm={12} md={12} lg={12}>
+            <Grid item xs={12} sm={12} md={12} lg={4}>
                 <CommonTextField
                     fontWeight={400}
                     text={'Name'}
@@ -21,7 +21,7 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.name ? error?.name : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={12}>
+            <Grid item xs={12} sm={12} md={12} lg={4}>
                 <CommonTextField
                     fontWeight={400}
                     text={'Address'}
@@ -33,11 +33,50 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.address ? error?.address : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <CommonTextField
+                    fontWeight={400}
+                    text={'Email'}
+                    placeholder={"Enter Email"}
+                    type='text'
+                    name='email'
+                    value={data?.email}
+                    onChange={(e) => handleChange(e, false)}
+                />
+                <TextLabel fontSize={"12px"} color={"red"} title={!data?.email ? error?.email : ""} />
+                <TextLabel fontSize={"12px"} color={"red"} title={data?.email?.match(Regex.emailRegex) ? "" : error.invalidEmail} />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <CommonTextField
+                    fontWeight={400}
+                    text={'Contact No.'}
+                    placeholder={"Enter Contact No."}
+                    type='number'
+                    name='mobileNo'
+                    value={data?.mobileNo}
+                    onChange={(e) => handleChange(e, false)}
+                />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.mobileNo ? error?.mobileNo : ""} />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <CommonTextField
+                    fontWeight={400}
+                    text={'Postal Code'}
+                    placeholder={"Enter Postal Code"}
+                    type='number'
+                    name='postalCode'
+                    value={data?.postalCode}
+                    onChange={(e) => handleChange(e, false)}
+                />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.postalCode ? error?.postalCode : ""} />
+            </Grid>
+
+
+            <Grid item xs={12} sm={12} md={6} lg={4}>
                 <AutoCompleteSearch
-                    backgroundColor="white"
-                    width={"300px"}
                     text="Country"
+                    fullWidth
+                    backgroundColor="white"
                     handleChange={(e, newValue) => {
                         setSelectedCountry(newValue)
                         if (isEdit && selectedCountry !== newValue) {
@@ -54,11 +93,12 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedCountry ? error?.country : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
                 <AutoCompleteSearch
-                    backgroundColor="white"
-                    width={"300px"}
                     text="State"
+                    fullWidth
+                    backgroundColor="white"
+                    // width={"300px"}
                     handleChange={(e, newValue) => {
                         setSelectedState(newValue)
                         if (isEdit && selectedState !== newValue) {
@@ -74,11 +114,12 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedState ? error?.state : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
                 <AutoCompleteSearch
-                    backgroundColor="white"
-                    width={"300px"}
                     text="City"
+                    fullWidth
+                    backgroundColor="white"
+                    // width={"300px"}
                     handleChange={(e, newValue) => setSelectedCity(newValue)}
                     options={cities?.response?.map((e) => e?.name) || []}
                     name="label"
@@ -89,46 +130,42 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedCity ? error?.city : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-                <CommonTextField
-                    fontWeight={400}
-                    text={'Postal Code'}
-                    placeholder={"Enter Postal Code"}
-                    type='number'
-                    name='postalCode'
-                    value={data?.postalCode}
-                    onChange={(e) => handleChange(e, false)}
+
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <AutoCompleteSearch
+                    fullWidth
+                    backgroundColor="white"
+                    // width={"300px"}
+                    text="User Type"
+                    handleChange={(e, newValue) => setSelectedRole(newValue)}
+                    options={roles?.map((e) => e?.label) || []}
+                    name="label"
+                    defaultValue={selectedRole || ""}
+                    freeSolo
+                    blurOnSelect
+                    placeholder={"Select User Type"}
                 />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.postalCode ? error?.postalCode : ""} />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedRole?.label ? error?.userType : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-                <CommonTextField
-                    fontWeight={400}
-                    text={'Contact No.'}
-                    placeholder={"Enter Contact No."}
-                    type='number'
-                    name='mobileNo'
-                    value={data?.mobileNo}
-                    onChange={(e) => handleChange(e, false)}
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <AutoCompleteSearch
+                    fullWidth
+                    backgroundColor="white"
+                    // width={"300px"}
+                    text="Branch"
+                    placeholder={"Select Branch"}
+                    handleChange={(e, newValue) => setSelectedBranch(newValue)}
+                    options={branches?.map((e) => e?.branchName) || []}
+                    name="branchName"
+                    defaultValue={selectedBranch || ""}
+                    freeSolo
+                    blurOnSelect
                 />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.mobileNo ? error?.mobileNo : ""} />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-                <CommonTextField
-                    fontWeight={400}
-                    text={'Email'}
-                    placeholder={"Enter Email"}
-                    type='text'
-                    name='email'
-                    value={data?.email}
-                    onChange={(e) => handleChange(e, false)}
-                />
-                <TextLabel fontSize={"12px"} color={"red"} title={!data?.email ? error?.email : ""} />
-                <TextLabel fontSize={"12px"} color={"red"} title={data?.email?.match(Regex.emailRegex) ? "" : error.invalidEmail} />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedBranch?.branchName ? error?.branchName : ""} />
             </Grid>
             {!data?._id &&
                 <>
-                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <Grid item xs={12} sm={12} md={6} lg={4}>
                         <CommonTextField
                             fontWeight={400}
                             placeholder={"Password"}
@@ -141,7 +178,7 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                         <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.password ? error?.password : ""} />
                         <TextLabel fontSize={"12px"} color={"red"} title={data?.password?.match(Regex.passwordRegex) ? "" : error.strongPassword} />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <Grid item xs={12} sm={12} md={6} lg={4}>
                         <CommonTextField
                             fontWeight={400}
                             text={'Confirm Password'}
@@ -157,76 +194,65 @@ const AddUser = ({ data, setData, branches, roles, selectedRole, setSelectedRole
                     </Grid>
                 </>
             }
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-                <AutoCompleteSearch
-                    backgroundColor="white"
-                    width={"300px"}
-                    text="Branch"
-                    placeholder={"Select Branch"}
-                    handleChange={(e, newValue) => setSelectedBranch(newValue)}
-                    options={branches?.map((e) => e?.branchName) || []}
-                    name="branchName"
-                    defaultValue={selectedBranch || ""}
-                    freeSolo
-                    blurOnSelect
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedBranch?.branchName ? error?.branchName : ""} />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-                <AutoCompleteSearch
-                    backgroundColor="white"
-                    width={"300px"}
-                    text="User Type"
-                    handleChange={(e, newValue) => setSelectedRole(newValue)}
-                    options={roles?.map((e) => e?.label) || []}
-                    name="label"
-                    defaultValue={selectedRole || ""}
-                    freeSolo
-                    blurOnSelect
-                    placeholder={"Select User Type"}
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedRole?.label ? error?.userType : ""} />
-            </Grid>
-            {/* <Grid item xs={12} sm={12} md={6} lg={6}>
-                <CommonTextField
-                    fontWeight={400}
-                    text={'Investment'}
-                    placeholder={"Enter Investment"}
-                    type='number'
-                    name='investment'
-                    value={data?.investment}
-                    onChange={(e) => handleChange(e, false)}
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investment ? error?.investment : ""} />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-                <CommonTextField
-                    fontWeight={400}
-                    text={'Investment Days'}
-                    placeholder={"Enter investment days"}
-                    type='number'
-                    name='investmentDays'
-                    value={data?.investmentDays}
-                    onChange={(e) => handleChange(e, false)}
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investmentDays ? error?.investmentDays : ""} />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-                <CommonTextField
-                    fontWeight={400}
-                    text={'Return Of Investment'}
-                    placeholder={"Enter Return Of Investment"}
-                    type='number'
-                    name='returnOfInvestment'
-                    value={data?.returnOfInvestment}
-                    onChange={(e) => handleChange(e, false)}
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
-            </Grid> */}
+            {selectedRole === "User" &&
+                <>
+                    <Grid container spacing={4} item xs={12} sm={12} md={12} lg={12}>
+                        <Grid item xs={12} sm={12} md={6} lg={4}>
+                            <CommonTextField
+                                fontWeight={400}
+                                text={'Investment'}
+                                placeholder={"Enter investment amount."}
+                                type='number'
+                                name='investmentAmount'
+                                value={data?.investmentAmount}
+                                onChange={(e) => handleChange(e, false)}
+                            />
+                            <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investmentAmount ? error?.investmentAmount : ""} />
+                        </Grid>
+                        {/* <Grid item xs={12} sm={12} md={6} lg={4}>
+                            <CommonSlider
+                                text={'Select Investment Year'}
+                                aria-label="ios slider"
+                                defaultValue={1}
+                                marks={[{ value: 0 }, { value: 2 }, { value: 4 }, { value: 8 },]}
+                                valueLabelDisplay="on"
+                                onChange={(e) => setData({ ...data, investmentYear: e?.target.value })}
+                                min={0}
+                                max={10}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={4}>
+                            <CommonSlider
+                                text={'Select Investment Days'}
+                                aria-label="ios slider"
+                                defaultValue={0}
+                                marks={[{ value: 0 }, { value: 40 }, { value: 80 }, { value: 120 }, { value: 180 }, { value: 240 }, { value: 280 }, { value: 320 },]}
+                                valueLabelDisplay="on"
+                                onChange={(e) => setData({ ...data, investmentDays: e?.target.value })}
+                                min={0}
+                                max={365}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={4}>
+                            <CommonSlider
+                                text={'Return Of Investment (%)'}
+                                aria-label="ios slider"
+                                defaultValue={0}
+                                marks={[{ value: 0 }, { value: 40 }, { value: 80 }, { value: 120 }, { value: 180 }, { value: 240 }, { value: 280 }, { value: 320 },]}
+                                valueLabelDisplay="on"
+                                onChange={(e) => setData({ ...data, returnOfInvestment: e?.target.value })}
+                                min={0}
+                                max={50}
+                            />
+                        </Grid> */}
+                    </Grid>
+
+                </>
+            }
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
-                        width={'60%'}
+                        width={'10%'}
                         text={`${isEdit ? "Update" : "Create"} User`}
                         type="submit"
                         onClick={onSubmit}
