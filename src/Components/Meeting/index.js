@@ -3,9 +3,53 @@ import { Box, Grid, TextField, } from "@mui/material";
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 import CommonTextField from '../../Components/Common/Fields/TextField';
 import CommonButton from '../../Components/Common/Button/CommonButton';
+import dayjs from 'dayjs';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import { makeStyles } from "tss-react/mui";
 
-const AddMeeting = ({ data, setData, error, handleChange, isEdit, onSubmit, }) => {
-    const [selectedDate, setSelectedDate] = useState(null);
+const useStyles = makeStyles()((theme) => {
+    return {
+        dateBox: {
+            "& .MuiOutlinedInput-root": {
+                borderRadius: '10px',
+                // backgroundColor: "red"
+            },
+            "& .MuiOutlinedInput-input": {
+                padding: "16.5px 14px",
+                fontSize: "14px !important",
+
+            },
+            "&:hover": {
+                borderColor: `${theme?.palette?.primary?.main} !important`,
+            },
+            ".MuiInputBase-formControl:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: `${theme?.palette?.primary?.main} !important`,
+            },
+            ".MuiOutlinedInput-notchedOutline": {
+                borderColor: "#EDF2F6",
+                borderRadius: '12px',
+            },
+            ".Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: `${theme?.palette?.primary?.main} !important`,
+                borderWidth: "1px !important",
+            },
+        },
+        customLabel: {
+            "& .MuiTypography-root": {
+                fontSize: '15px',
+                color: "#151D48",
+            }
+        }
+    };
+});
+
+const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, convertToAmPm, setSelectedSlot, selectedSlot, handleSlotClick }) => {
+    const { classes } = useStyles();
     return (
         <Box>
             <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -24,14 +68,60 @@ const AddMeeting = ({ data, setData, error, handleChange, isEdit, onSubmit, }) =
                 <Grid item xs={12} sm={12} md={12} lg={6}>
                     <CommonTextField
                         fontWeight={400}
-                        text={'Title'}
-                        placeholder={"Enter Title"}
+                        text={'Client Name'}
+                        placeholder={"Enter Name"}
                         type='text'
                         name='Title'
                         value={data?.title}
                         onChange={(e) => handleChange(e, false)}
                     />
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.title ? error?.title : ""} />
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={6} className={classes.customLabel}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} >
+                        <DemoContainer
+
+                            components={['DesktopDatePicker']}
+                        >
+                            <DemoItem label="Date" >
+                                <DesktopDatePicker className={classes.dateBox} defaultValue={dayjs('2022-04-17')} />
+                            </DemoItem>
+                        </DemoContainer>
+                    </LocalizationProvider>
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.title ? error?.title : ""} />
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <CommonTextField
+                        fontWeight={400}
+                        text={'Invite to'}
+                        placeholder={"Enter People to invite"}
+                        type='text'
+                        name='Title'
+                        value={data?.title}
+                        onChange={(e) => handleChange(e, false)}
+                    />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.title ? error?.title : ""} />
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <TextLabel fontSize={"15px"} color={"#151D48"} fontWeight={"400"} title={'Start Time'} style={{ padding: '3px' }} />
+                </Grid>
+                <Grid item xs={4} sm={4} md={12} lg={12} display={"flex"} flexWrap={"wrap"} gap={2}>
+                    {slotTimes?.map((e) => {
+                        console.log(e, "eeeeeeeeeee")
+                        return (
+                            <Chip
+                                label={`${convertToAmPm(e?.startTime)}`}
+                                style={{
+                                    borderRadius: '10px',
+                                    border: `1px solid ${e.isSelected === true ? 'var(--selected, #4285F4)' : 'var(--border, #EDF2F6)'}`,
+                                    background: e.isSelected === true ? 'var(--selected, #4285F4)' : 'var(--White, #FFF)',
+                                    height: '42px',
+                                    color: e.isSelected === true ? 'var(--White, #FFF)' : 'var(--text, #000)',
+                                }}
+                                onClick={() => handleSlotClick(e.startTime)}
+                            />
+                        )
+                    })}
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
@@ -44,7 +134,7 @@ const AddMeeting = ({ data, setData, error, handleChange, isEdit, onSubmit, }) =
                     </Box>
                 </Grid>
             </Grid>
-        </Box>
+        </Box >
     )
 }
 

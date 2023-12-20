@@ -8,7 +8,6 @@ import {
     TableContainer,
     Box,
     Grid,
-    Switch,
 } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -20,13 +19,10 @@ import CommonPagination from '../../Components/Common/Pagination';
 import { useAppContext } from '../../Context/context';
 import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
-import { useNavigate } from 'react-router-dom';
-import AddBranch from '../../Components/Branch';
-import DataNotFound from '../../Components/Common/DataNotFound';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { lightTheme } from '../../theme';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import AddMeeting from '../../Components/Meeting';
+import { useEffect } from 'react';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -82,6 +78,7 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
+
 const rows = [
     {
         key: '1',
@@ -126,8 +123,9 @@ const MeetingList = () => {
     const [error, setError] = useState({})
     const [isEdit, setIsEdit] = useState(false)
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+    const [slotTimes, setSlotTimes] = useState([]);
     const [page, setPage] = React.useState(0);
+    const [selectedSlots, setSelectedSlots] = useState([]);
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -135,6 +133,60 @@ const MeetingList = () => {
         setRowsPerPage(value);
         setPage(0);
     };
+    console.log(selectedSlots, "selectedSlots")
+    const convertToAmPm = (timeInMinutes) => {
+        console.log(timeInMinutes, "timeInMinutes")
+        const hours = Math.floor(timeInMinutes / 60);
+        const minutes = timeInMinutes % 60;
+        const period = hours < 12 ? 'AM' : 'PM';
+        const formattedHours = hours % 12 || 12;
+        return `${formattedHours}:${minutes < 10 ? '0' : ''}${minutes} ${period}`;
+    };
+
+
+    const _getSlotTimes = () => {
+        toggleLoader();
+        let body = '/slotTimes'
+        axios.get(body).then((res) => {
+            if (res?.data?.data) {
+                setSlotTimes(res?.data?.data?.slot_time)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+    console.log(slotTimes, 'response')
+
+    const handleSlotClick = (clickedSlot) => {
+        // Initialize selectedSlots as an empty array if it's undefined
+        const currentSelectedSlots = selectedSlots || [];
+        let updatedSlots;
+        const isSlotSelected = currentSelectedSlots.includes(clickedSlot);
+
+        // Toggle the selected state
+        if (isSlotSelected) {
+            updatedSlots = currentSelectedSlots.filter((slot) => slot !== clickedSlot);
+            setSelectedSlots(updatedSlots);
+        } else {
+            updatedSlots = [...currentSelectedSlots, clickedSlot];
+            setSelectedSlots(updatedSlots);
+        }
+
+        // Update the isBooked property in the state
+        const updatedData = slotTimes.map((slot) => {
+            if (updatedSlots.includes(slot.startTime)) {
+                return { ...slot, isSelected: true };
+            } else {
+                return { ...slot, isSelected: false };
+            }
+        });
+
+        setSlotTimes(updatedData);
+    }
+
 
     const handleValidation = () => {
         let formIsValid = true
@@ -188,6 +240,10 @@ const MeetingList = () => {
             );
         }
     }
+
+    useEffect(() => {
+        _getSlotTimes()
+    }, [])
 
 
 
@@ -273,7 +329,9 @@ const MeetingList = () => {
                 open={model}
                 onClose={handleClear}
                 title={`${isEdit ? "Update" : "Add"} User`}
-                content={<AddMeeting data={data} setData={setData} error={error} handleChange={handleChange} onSubmit={_addUpdateBranch} isEdit={isEdit}  />}
+                content={<AddMeeting data={data} setData={setData} error={error} handleChange={handleChange}
+                    onSubmit={_addUpdateBranch} isEdit={isEdit} slotTimes={slotTimes} setSlotTimes={setSlotTimes}
+                    convertToAmPm={convertToAmPm} setSelectedSlot={setSelectedSlots} selectedSlot={selectedSlots} handleSlotClick={handleSlotClick} />}
             />
         </>
     )

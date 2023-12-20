@@ -102,13 +102,9 @@ const Clients = () => {
     const [selectedRole, setSelectedRole] = useState("")
     const [page, setPage] = useState(0);
 
-    const handleChangePage = (newPage) => {
-        setPage(newPage);
-    };
-    const handleChangeRowsPerPage = (value) => {
-        setRowsPerPage(value);
-        setPage(0);
-    };
+    const handleChangePage = (newPage) => { setPage(newPage); };
+    const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
+
     //Validation
     const handleValidation = () => {
         let formIsValid = true
@@ -206,7 +202,7 @@ const Clients = () => {
 
     const _getUser = () => {
         toggleLoader();
-        axios.get(`admin/users/?userType=${1}`).then((res) => {
+        axios.get(`admin/users/?userType=${1} limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
             if (res?.data?.data) {
                 setUserDetails(res?.data?.data)
             }
@@ -352,6 +348,10 @@ const Clients = () => {
 
     useEffect(() => {
         _getUser()
+    }, [page, rowsPerPage])
+
+    useEffect(() => {
+        _getUser()
         _getBranches()
         _getCountries()
     }, [])
@@ -443,7 +443,7 @@ const Clients = () => {
                 </Grid>
                 <Box p={1}>
                     <CommonPagination
-                        count={100}
+                        count={userDetails?.count}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onRowsPerPageChange={handleChangeRowsPerPage}

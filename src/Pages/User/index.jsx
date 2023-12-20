@@ -343,6 +343,7 @@ const User = () => {
             );
         }
     }
+
     useEffect(() => {
         _getUser()
     }, [page, rowsPerPage])
