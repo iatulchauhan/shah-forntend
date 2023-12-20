@@ -9,6 +9,9 @@ import axios from "../../APiSetUp/axios";
 import { useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
 import { makeStyles } from "tss-react/mui";
+import OTPInput from 'react-otp-input'
+import { useLocation } from 'react-router-dom';
+import TextLabel from '../../Components/Common/Fields/TextLabel'
 
 
 const useStyles = makeStyles()((theme) => {
@@ -16,9 +19,10 @@ const useStyles = makeStyles()((theme) => {
         otpBox: {
             borderRadius: '12px',
             border: '1px solid var(--border, #EDF2F6)',
-            background: '#FFF',
-            width: '50px',
+            // background: '#FFF',
+            width: '50px !important',
             height: '50px',
+            margin: "10px",
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -29,74 +33,53 @@ const useStyles = makeStyles()((theme) => {
 const OTPverification = () => {
     const navigate = useNavigate();
     const { classes } = useStyles();
+    const { state } = useLocation();
 
     //States 
+    const emailId = state?.email || '';
     const [data, setData] = useState({})
+    const [otp, setOtp] = useState('')
     const [error, setError] = useState({})
-    const [isSubmit, setIsSubmit] = useState(false)
-    const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
+    const { OnUpdateError, toggleLoader} = useAppContext();
 
     //Validation
     const handleValidation = () => {
-        let formIsValid = true
-        let errors = {}
-        if (!data?.email) {
+        let formIsValid = true;
+        let errors = {};
+        if (!otp) {
             formIsValid = false;
-            errors["email"] = "Please enter email.";
-        } else if (!data?.email?.match(Regex.emailRegex)) {
-            formIsValid = false;
-            errors["invalidEmail"] = "* Invalid email Address";
+            errors['otp'] = 'Please enter OTP.';
         }
-        if (!data?.password) {
-            formIsValid = false;
-            errors['password'] = 'Please enter password.';
-        } else if (data.password.length < 8) {
-            formIsValid = false;
-            errors['password'] = 'Password must be at least 8 characters.';
-        }
-        setError(errors)
-        return formIsValid
-    }
+        setError(errors);
+        return formIsValid;
+    };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target
-        setData((prevState) => ({
-            ...prevState,
-            [name]: value
-        }))
+    const handleChange = (otpValue) => {
+        setOtp(otpValue);
+    };
 
-        if (isSubmit) {
-            handleValidation()
-        }
-    }
 
     const handleLoginClick = () => {
-        setIsSubmit(true)
         if (handleValidation()) {
             toggleLoader();
-            axios.post("/login", {
-                email: data?.email,
-                password: data?.password
-            }).then((res) => {
-                console.log("res", res);
-                if (res?.data?.data) {
-                    onUpdateUser(res?.data?.data);
-                    updateToken(res?.data?.data?.token)
-                    swal(res?.data?.message, {
-                        icon: "success",
-                        timer: 5000,
-                    })
-                    navigate("/")
-                }
-                toggleLoader();
-            }).catch((err) => {
-                toggleLoader();
-                OnUpdateError(err.data.message);
+            let body = {
+                "otp": parseInt(otp, 10),
+                "email": emailId,
             }
-            );
+            axios.post("/otp_verification", body)
+                .then((res) => {
+                    if (res?.data?.data) {
+                        swal(res?.data?.message, { icon: "success", timer: 5000, })
+                        navigate('/reset-password', { state: { otp: otp } });
+                    }
+                    toggleLoader();
+                }).catch((err) => {
+                    toggleLoader();
+                    OnUpdateError(err.data.message);
+                }
+                );
         }
     }
-
 
     return (
         <>
@@ -105,34 +88,23 @@ const OTPverification = () => {
                 login={"Enter OTP"}
                 account={
                     <>
-                        An 4 digit code has been send to <br /> +91 8554965498
+                        An 4 digit code has been send to <br /> {emailId}
                     </>
                 }
-
             >
-                <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Grid item xs={2} sm={2} md={2} lg={2} >
-                        <Box className={classes.otpBox}>
-                            1
-                        </Box>
+                <Grid container spacing={2} display={"flex"} flexDirection={"column"} alignItems={"center"}>
+                    <Grid item xs={12} sm={12} md={12} lg={12} >
+                        <OTPInput
+                            value={otp}
+                            numInputs={6}
+                            isInputNum={(value) => /^\d+$/.test(value)}
+                            onChange={handleChange}
+                            renderInput={(props, index) => <input {...props} className={classes.otpBox} />}
+                        />
+                         <TextLabel fontSize={"12px"} color={"red"} title={!data?.otp ? error?.otp : ""} />
                     </Grid>
-                    <Grid item xs={2} sm={2} md={2} lg={2}>
-                        <Box className={classes.otpBox}>
-                            1
-                        </Box>
-                    </Grid>
-                    <Grid item xs={2} sm={2} md={2} lg={2}>
-                        <Box className={classes.otpBox}>
-                            1
-                        </Box>
-                    </Grid>
-                    <Grid item xs={2} sm={2} md={2} lg={2}>
-                        <Box className={classes.otpBox}>
-                            1
-                        </Box>
-                    </Grid>
-                    <Grid item xs={10} sm={10} md={10} lg={10}>
-                        <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', marginTop: '40px', color: lightTheme.palette.primary.main }}>{'Resend OTP'}</Typography>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', color: lightTheme.palette.primary.main }}>{'Resend OTP'}</Typography>
                         <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '7rem' }}>
                             <CommonButton
                                 width={'25%'}
@@ -145,7 +117,6 @@ const OTPverification = () => {
                 </Grid>
             </AuthLayout>
         </>
-
     )
 }
 

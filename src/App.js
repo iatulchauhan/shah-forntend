@@ -24,6 +24,9 @@ import Dashboard from "./Pages/Dashboard";
 import Layout from "./Components/Layout";
 import { ProtectedRoutes } from "./Routes/ProtectedRoutes";
 import Clients from "./Pages/Clients";
+import OTPverification from "./Pages/OTPverification";
+import ForgetPassword from "./Pages/ForgetPassword";
+import Resetpassword from "./Pages/Resetpassword";
 
 function App() {
   return (
@@ -53,6 +56,9 @@ function App() {
               <Route path="/investment" element={<Investment />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/client" element={<Clients />} />
+              <Route path="/forgot-password" element={<ForgetPassword />} />
+              <Route path="/otp-verification" element={<OTPverification />} />
+              <Route path="/reset-password" element={<Resetpassword />} />
 
             </Route>
           </Routes>

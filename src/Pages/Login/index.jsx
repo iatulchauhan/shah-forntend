@@ -18,7 +18,7 @@ const Login = () => {
   const [data, setData] = useState({})
   const [error, setError] = useState({})
   const [isSubmit, setIsSubmit] = useState(false)
-  const { OnUpdateError, toggleLoader,onUpdateUser,updateToken } = useAppContext();
+  const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
 
   //Validation
   const handleValidation = () => {
@@ -59,23 +59,23 @@ const Login = () => {
     if (handleValidation()) {
       toggleLoader();
       axios.post("/login", {
-          email: data?.email,
-          password: data?.password
+        email: data?.email,
+        password: data?.password
       }).then((res) => {
-          console.log("res",res);
-          if (res?.data?.data) {
-            onUpdateUser(res?.data?.data);
-            updateToken(res?.data?.data?.token)
-              swal(res?.data?.message, {
-                  icon: "success",
-                  timer: 5000,
-              })
-              navigate("/")
-          }
-          toggleLoader();
-      }).catch((err) =>{
-          toggleLoader();
-          OnUpdateError(err.data.message);
+        console.log("res", res);
+        if (res?.data?.data) {
+          onUpdateUser(res?.data?.data);
+          updateToken(res?.data?.data?.token)
+          swal(res?.data?.message, {
+            icon: "success",
+            timer: 5000,
+          })
+          navigate("/")
+        }
+        toggleLoader();
+      }).catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
       }
       );
     }
@@ -114,7 +114,7 @@ const Login = () => {
             <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={error?.password} />
           </Grid>
           <Grid item xs={10} sm={10} md={10} lg={10}>
-            <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', marginTop: '40px', color: lightTheme.palette.primary.main }}>{'Forgot Password ?'}</Typography>
+            <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', marginTop: '40px', color: lightTheme.palette.primary.main, cursor: "pointer" }} onClick={() => navigate("/forgot-password")}>{'Forgot Password ?'}</Typography >
             <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
               <CommonButton
                 width={'25%'}

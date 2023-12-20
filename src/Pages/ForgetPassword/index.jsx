@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import AuthLayout from '../../Components/AuthLayout'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { Regex } from '../../Utils/regex'
 import CommonTextField from '../../Components/Common/Fields/TextField'
 import TextLabel from '../../Components/Common/Fields/TextLabel'
 import CommonButton from '../../Components/Common/Button/CommonButton'
-import { lightTheme } from '../../theme'
 import { useAppContext } from '../../Context/context'
 import axios from "../../APiSetUp/axios";
 import { useNavigate } from 'react-router-dom'
@@ -18,7 +17,7 @@ const ForgetPassword = () => {
     const [data, setData] = useState({})
     const [error, setError] = useState({})
     const [isSubmit, setIsSubmit] = useState(false)
-    const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
+    const { OnUpdateError, toggleLoader} = useAppContext();
 
     //Validation
     const handleValidation = () => {
@@ -47,22 +46,16 @@ const ForgetPassword = () => {
     }
 
     const handleLoginClick = () => {
-        setIsSubmit(true)
         if (handleValidation()) {
             toggleLoader();
-            axios.post("/login", {
+            let body = {
                 email: data?.email,
-                password: data?.password
-            }).then((res) => {
-                console.log("res", res);
+            }
+            axios.post("/forgetPassword", body)
+                .then((res) => {
                 if (res?.data?.data) {
-                    onUpdateUser(res?.data?.data);
-                    updateToken(res?.data?.data?.token)
-                    swal(res?.data?.message, {
-                        icon: "success",
-                        timer: 5000,
-                    })
-                    navigate("/")
+                    swal(res?.data?.message, { icon: "success", timer: 5000, })
+                    navigate("/otp-verification", { state: { email: data?.email } });
                 }
                 toggleLoader();
             }).catch((err) => {
@@ -72,7 +65,6 @@ const ForgetPassword = () => {
             );
         }
     }
-
 
     return (
         <>
@@ -84,7 +76,6 @@ const ForgetPassword = () => {
                         Please enter your email address  for the <br />verification process
                     </>
                 }
-
             >
                 <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center' }}>
                     <Grid item xs={10} sm={10} md={10} lg={10} style={{ marginTop: '20px' }}>

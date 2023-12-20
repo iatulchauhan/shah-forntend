@@ -2,19 +2,20 @@ import React, { useState } from 'react'
 import AuthLayout from '../../Components/AuthLayout'
 import { Box, Grid } from '@mui/material'
 import CommonTextField from '../../Components/Common/Fields/TextField'
-import { Regex } from '../../Utils/regex'
 import TextLabel from '../../Components/Common/Fields/TextLabel'
 import CommonButton from '../../Components/Common/Button/CommonButton'
 import { useAppContext } from '../../Context/context'
 import axios from "../../APiSetUp/axios";
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
 
 
 const Resetpassword = () => {
     const navigate = useNavigate();
+    const { state } = useLocation();
 
     //States 
+    const otpFromVerification = state?.otp || '';
     const [data, setData] = useState({})
     const [error, setError] = useState({})
     const [isSubmit, setIsSubmit] = useState(false)
@@ -53,29 +54,24 @@ const Resetpassword = () => {
         }
     }
     const handleLoginClick = () => {
-        setIsSubmit(true)
         if (handleValidation()) {
             toggleLoader();
-            axios.post("admin/signUp", {
-                name: data?.name,
-                email: data?.email,
-                password: data?.password
-            }).then((res) => {
-                console.log("res", res);
-                if (res?.data?.message) {
-
-                    swal(res?.data?.message, {
-                        icon: "success",
-                        timer: 5000,
-                    })
-                    navigate("/login")
-                }
-                toggleLoader();
-            }).catch((err) => {
-                toggleLoader();
-                OnUpdateError(err.data.message);
+            let body = {
+                "otp": parseInt(otpFromVerification, 10),
+                "password": data?.password,
             }
-            );
+            axios.post("/change_password", body)
+                .then((res) => {
+                    if (res?.data?.data) {
+                        swal(res?.data?.message, { icon: "success", timer: 5000, })
+                        navigate("/login")
+                    }
+                    toggleLoader();
+                }).catch((err) => {
+                    toggleLoader();
+                    OnUpdateError(err.data.message);
+                }
+                );
         }
     }
 
