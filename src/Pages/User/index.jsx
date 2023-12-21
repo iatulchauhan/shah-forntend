@@ -403,14 +403,14 @@ const User = () => {
                     <Grid item xs={12}>
                         <Box style={{ display: 'flex', justifyContent: 'end', padding: '15px', gap: 5 }}>
                             <CommonButton
-                                width={'10%'}
-                                text={'Add Visitor'}
-                                onClick={() => setVisitorModel(true)}
+                                width={'12%'}
+                                text={'Add Customer'}
+                                onClick={() => setCustomerModel(true)}
                             />
                             <CommonButton
                                 width={'10%'}
-                                text={'Add Customer'}
-                                onClick={() => setCustomerModel(true)}
+                                text={'Add Visitor'}
+                                onClick={() => setVisitorModel(true)}
                             />
                             <CommonButton
                                 width={'10%'}
@@ -488,11 +488,10 @@ const User = () => {
                                             </TableHead>
                                             <TableBody>
                                                 {userDetails?.response?.length > 0 && userDetails?.response?.map((row, index) => {
-                                                    console.log('row👍', row)
                                                     const getRoleName = (type) => { return roles.filter((e) => e?.id == type)?.[0]?.label }
                                                     return (
                                                         <StyledTableRow key={index} >
-                                                            <StyledTableCell>{index + 1}</StyledTableCell>
+                                                            <StyledTableCell style={{ paddingLeft: '13px' }}>{index + 1}</StyledTableCell>
                                                             <StyledTableCell className={classes.paddedRow} component="th" scope="row">
                                                                 {row.name}
                                                             </StyledTableCell>

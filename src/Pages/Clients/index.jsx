@@ -372,7 +372,9 @@ const Clients = () => {
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Client List" buttonText={'Add Client'} onClick={() => setModel(true)} />
+                        <TableHeading title="Client List"
+                            //  buttonText={'Add Client'} 
+                            onClick={() => setModel(true)} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
