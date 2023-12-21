@@ -6,7 +6,7 @@ import { lightTheme } from '../../theme';
 import SelectDropDown from './SelectDropDown';
 import CommonSearch from './CommonSearch';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-const TableHeading = ({ title, buttonText, onClick, showSelectDropDown, borderBottom, removeSearchField, handleBack }) => {
+const TableHeading = ({ title, buttonText, onClick, showSelectDropDown, borderBottom, removeSearchField, handleBack, }) => {
     const [data, setData] = useState({})
     const credit = ['Gujarat ', 'Gujarat']
 
@@ -36,7 +36,6 @@ const TableHeading = ({ title, buttonText, onClick, showSelectDropDown, borderBo
                     fontSize="13px"
                     onClick={onClick}
                 />}
-
                 {showSelectDropDown && (
                     <SelectDropDown
                         fullWidth

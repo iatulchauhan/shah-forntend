@@ -58,21 +58,16 @@ const CommonTextField = ({
   inputProps,
   defaultValue,
   fontWeight,
-  labelSize,
-  labelColor,
   showPasswordToggle,
-  maxValue,
-  error,
   className,
-  format,
   bgcolor,
   onKeyDown,
   onPaste,
   onBlur,
   disabled,
-  onKeyDownCapture,
-  shrink,
-  onDrag
+  onDrag,
+  border,
+  background
 }) => {
   const { classes } = useStyles();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -127,7 +122,7 @@ const CommonTextField = ({
             : type
         }
         placeholder={placeholder}
-        sx={{ height: height || 52, width: width, bgcolor: bgcolor, borderRadius: "5px", }}
+        sx={{ height: height || 52, width: width, bgcolor: bgcolor, borderRadius: "5px", border: border, background: background }}
         multiline={multiline}
         rows={rows}
         className={`${classes?.main} ${className}`}

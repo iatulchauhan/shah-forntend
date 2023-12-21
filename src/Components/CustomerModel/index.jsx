@@ -14,15 +14,17 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         fontWeight: 400,
         fontSize: 15,
-        color: '#151D48',
+        color: '#ffff',
         fontFamily: "Poppins",
         whiteSpace: 'nowrap',
+        background: '#92929c',
+        padding: '8px',
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
         fontFamily: "Poppins",
         fontWeight: 500,
-        padding: '7px',
+        padding: '4px',
     },
 }));
 
@@ -34,13 +36,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         border: 0,
     },
 }));
-const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch,
+const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch,
     setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
     onSubmit, setSelectedCountry, selectedCountry, countries, handleChangetable, addRow, tableData }) => {
 
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
-            <Grid item xs={12} sm={12} md={12} lg={4}>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
                 <CommonTextField
                     fontWeight={400}
                     text={'Name'}
@@ -52,7 +54,7 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setSele
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.name ? error?.name : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={4}>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
                 <CommonTextField
                     fontWeight={400}
                     text={'Address'}
@@ -164,22 +166,6 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setSele
                     fullWidth
                     backgroundColor="white"
                     // width={"300px"}
-                    text="User Type"
-                    handleChange={(e, newValue) => setSelectedRole(newValue)}
-                    options={roles?.map((e) => e?.label) || []}
-                    name="label"
-                    defaultValue={selectedRole || ""}
-                    freeSolo
-                    blurOnSelect
-                    placeholder={"Select User Type"}
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedRole?.label ? error?.userType : ""} />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4}>
-                <AutoCompleteSearch
-                    fullWidth
-                    backgroundColor="white"
-                    // width={"300px"}
                     text="Branch"
                     placeholder={"Select Branch"}
                     handleChange={(e, newValue) => setSelectedBranch(newValue)}
@@ -222,139 +208,103 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setSele
                     </Grid>
                 </>
             }
-            {selectedRole == "User" && (
-                <>
-                    <Grid item xs={12} sm={12} md={6} lg={4}>
-                        <CommonTextField
-                            fontWeight={400}
-                            text={'Investment'}
-                            placeholder={"Enter Investment"}
-                            type='number'
-                            name='investment'
-                            value={data?.investment}
-                            onChange={(e) => handleChange(e, false)}
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <CommonTextField
+                    fontWeight={400}
+                    text={'Investment'}
+                    placeholder={"Enter Investment"}
+                    type='number'
+                    name='investment'
+                    value={data?.investment}
+                    onChange={(e) => handleChange(e, false)}
+                />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investment ? error?.investment : ""} />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <CommonTextField
+                    fontWeight={400}
+                    text={'Investment Days'}
+                    placeholder={"Enter investment days"}
+                    type='number'
+                    name='investmentDays'
+                    value={data?.investmentDays}
+                    onChange={(e) => handleChange(e, false)}
+                />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investmentDays ? error?.investmentDays : ""} />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <CommonTextField
+                    fontWeight={400}
+                    text={'Return Of Investment'}
+                    placeholder={"Enter Return Of Investment"}
+                    type='number'
+                    name='returnOfInvestment'
+                    value={data?.returnOfInvestment}
+                    onChange={(e) => handleChange(e, false)}
+                />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
+            </Grid>
+            <Grid item xs={12} marginTop={'20px'}>
+                <TableContainer component={Paper}>
+                    <Table aria-label="customized table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell>No</StyledTableCell>
+                                <StyledTableCell align="left">Reason</StyledTableCell>
+                                <StyledTableCell align="left">Meeting With</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {tableData.map((row) => (
+                                <StyledTableRow key={row.id}>
+                                    <StyledTableCell style={{ paddingLeft: '10px' }}>{row.id}</StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                                            <CommonTextField
+                                                width={200}
+                                                fontWeight={400}
+                                                placeholder={"Enter Reason"}
+                                                type='text'
+                                                name='reason'
+                                                value={data?.reason}
+                                                onChange={(e) => handleChange(e, false)}
+                                            />
+                                        </Grid>
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                                            <CommonTextField
+                                                width={200}
+                                                fontWeight={400}
+                                                placeholder={"Meeting With"}
+                                                type='text'
+                                                name='meeting'
+                                                value={data?.meeting}
+                                                onChange={(e) => handleChange(e, false)}
+                                            />
+                                        </Grid>
+                                    </StyledTableCell>
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Box style={{ display: 'flex', justifyContent: 'end', marginTop: '10px' }}>
+                        <CommonButton
+                            width={'10%'}
+                            text={"Add Row"}
+                            type="submit"
+                            onClick={addRow}
                         />
-                        <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investment ? error?.investment : ""} />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={6} lg={4}>
-                        <CommonTextField
-                            fontWeight={400}
-                            text={'Investment Days'}
-                            placeholder={"Enter investment days"}
-                            type='number'
-                            name='investmentDays'
-                            value={data?.investmentDays}
-                            onChange={(e) => handleChange(e, false)}
-                        />
-                        <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investmentDays ? error?.investmentDays : ""} />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={6} lg={4}>
-                        <CommonTextField
-                            fontWeight={400}
-                            text={'Return Of Investment'}
-                            placeholder={"Enter Return Of Investment"}
-                            type='number'
-                            name='returnOfInvestment'
-                            value={data?.returnOfInvestment}
-                            onChange={(e) => handleChange(e, false)}
-                        />
-                        <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={6} lg={4}>
-                        <CommonTextField
-                            fontWeight={400}
-                            text={'Meeting with'}
-                            placeholder={"Meeting With"}
-                            type='text'
-                            name='meeting'
-                            value={data?.meeting}
-                            onChange={(e) => handleChange(e, false)}
-                        />
-                        <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.meeting ? error?.meeting : ""} />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={6} lg={4}>
-                        <CommonTextField
-                            fontWeight={400}
-                            text={'Reason'}
-                            placeholder={"Enter Reason"}
-                            type='text'
-                            name='reason'
-                            value={data?.reason}
-                            onChange={(e) => handleChange(e, false)}
-                        />
-                        <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.reason ? error?.reason : ""} />
-                    </Grid>
-                </>
-            )}
-            {/* {selectedRole === 'Visitor' && (
-                <>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} marginTop={'15px'}>
-                            <TableContainer component={Paper}>
-                                <Table sx={{ minWidth: 550 }} aria-label="customized table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <StyledTableCell>No</StyledTableCell>
-                                            <StyledTableCell align="left">Reason</StyledTableCell>
-                                            <StyledTableCell align="left">Meeting With</StyledTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {tableData.map((row) => (
-                                            <StyledTableRow key={row.id}>
-                                                <StyledTableCell>{row.id}</StyledTableCell>
-                                                <StyledTableCell align="center">
-                                                    <Grid item xs={12} sm={12} md={6} lg={6}>
-                                                        <CommonTextField
-                                                            border="1px solid #d6d6d6"
-                                                            background='none'
-                                                            fontWeight={400}
-                                                            placeholder={'Enter Reason'}
-                                                            type="text"
-                                                            name={`reason-${row.id}`}
-                                                            value={row.reason}
-                                                            onChange={(e) => handleChangetable(e, row.id)}
-                                                        />
-                                                    </Grid>
-                                                </StyledTableCell>
-                                                <StyledTableCell align="center">
-                                                    <Grid item xs={12} sm={12} md={6} lg={6}>
-                                                        <CommonTextField
-                                                            border="1px solid #d6d6d6"
-                                                            background='none'
-                                                            fontWeight={400}
-                                                            placeholder={'Meeting With'}
-                                                            type="text"
-                                                            name={`meeting-${row.id}`}
-                                                            value={row.meeting}
-                                                            onChange={(e) => handleChangetable(e, row.id)}
-                                                        />
-                                                    </Grid>
-                                                </StyledTableCell>
-                                            </StyledTableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12}>
-                            <Box style={{ display: 'flex', justifyContent: 'end', marginTop: '5px' }}>
-                                <CommonButton
-                                    width={'10%'}
-                                    text={"Add Row"}
-                                    type="submit"
-                                    onClick={addRow}
-                                />
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </>
-            )} */}
+                    </Box>
+                </Grid>
+            </Grid>
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
-                        width={'10%'}
-                        text={`${isEdit ? "Update" : "Create"} User`}
+                        width={'15%'}
+                        text={`${isEdit ? "Update" : "Create"} Customer`}
                         type="submit"
                         onClick={onSubmit}
                     />
@@ -364,4 +314,4 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setSele
     )
 }
 
-export default AddUser;
+export default CustomerModel;

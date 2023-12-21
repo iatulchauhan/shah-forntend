@@ -25,6 +25,9 @@ import swal from 'sweetalert';
 import DataNotFound from '../../Components/Common/DataNotFound';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { roles } from '../../Utils/enum';
+import VisitorModel from '../../Components/VisitorModel';
+import CommonButton from '../../Components/Common/Button/CommonButton';
+import CustomerModel from '../../Components/CustomerModel';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -85,6 +88,8 @@ const User = () => {
     const { OnUpdateError, toggleLoader } = useAppContext();
     //States
     const [model, setModel] = useState(false);
+    const [visitorModel, setVisitorModel] = useState(false);
+    const [customerModel, setCustomerModel] = useState(false);
     const [data, setData] = useState({})
     const [error, setError] = useState({})
     const [deleteId, setDeleteId] = useState("")
@@ -101,10 +106,21 @@ const User = () => {
     const [selectedState, setSelectedState] = useState("");
     const [selectedRole, setSelectedRole] = useState("")
     const [page, setPage] = useState(0);
-
+    const [tableData, setTableData] = React.useState([
+        { id: 1, reason: '', meeting: '' },
+    ]);
     const handleChangePage = (newPage) => { setPage(newPage); };
     const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
 
+    const addRow = () => {
+        const newRow = { id: tableData.length + 1, reason: '', meeting: '' };
+        setTableData([...tableData, newRow]);
+    };
+
+    const handleChangetable = (e, id) => {
+        // Implement your handleChange logic here
+        // You may want to update the specific row in the state
+    }
     //Validation
     const handleValidation = () => {
         let formIsValid = true
@@ -277,6 +293,8 @@ const User = () => {
 
     const handleClear = () => {
         setModel(false);
+        setVisitorModel(false);
+        setCustomerModel(false);
         setData({});
         setError({});
         setIsEdit(false);
@@ -287,7 +305,6 @@ const User = () => {
         setSelectedRole("");
     }
     const handleEdit = (row) => {
-        console.log('row👌', row)
         const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0]
         setData(row);
         setSelectedBranch(row?.branchDetails?.branchName || "");
@@ -337,6 +354,7 @@ const User = () => {
                 delete body.password
             }
 
+
             axios.post(`admin/users/${data?._id ? "update" : "create"}`, body).then((res) => {
                 console.log(res, "resres")
                 if (res?.data?.data) {
@@ -378,15 +396,79 @@ const User = () => {
         }
     }, [selectedState])
 
-
     return (
         <>
             <PaperContainer elevation={0} square={false}>
-                {!model &&
+                <Grid container >
+                    <Grid item xs={12}>
+                        <Box style={{ display: 'flex', justifyContent: 'end', padding: '15px', gap: 5 }}>
+                            <CommonButton
+                                width={'10%'}
+                                text={'Add Visitor'}
+                                onClick={() => setVisitorModel(true)}
+                            />
+                            <CommonButton
+                                width={'10%'}
+                                text={'Add Customer'}
+                                onClick={() => setCustomerModel(true)}
+                            />
+                            <CommonButton
+                                width={'10%'}
+                                text={'Add Role'}
+                                onClick={() => setModel(true)}
+                            />
+                        </Box>
+                    </Grid>
+                    {visitorModel &&
+                        <Grid item xs={12}>
+                            <TableHeading title={`${isEdit ? "Update" : "Add"} Visitor`} handleBack={() => { setVisitorModel(false); handleClear() }} removeSearchField={true} />
+                        </Grid>}
+                    {customerModel &&
+                        <Grid item xs={12}>
+                            <TableHeading title={`${isEdit ? "Update" : "Add"} Customer`} handleBack={() => { setCustomerModel(false); handleClear() }} removeSearchField={true} />
+                        </Grid>
+                    }
+                    {model &&
+                        <Grid item xs={12}>
+                            <TableHeading title={`${isEdit ? "Update" : "Add"} User`} handleBack={() => { setModel(false); handleClear() }} removeSearchField={true} />
+                        </Grid>
+                    }
+                </Grid>
+
+                {visitorModel &&
+                    <VisitorModel data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
+                        selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
+                        states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
+                        selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
+                        setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
+                        setSelectedCountry={setSelectedCountry} countries={countries} tableData={tableData} addRow={addRow} handleChangetable={handleChangetable} />
+                }
+                {customerModel &&
+                    <CustomerModel data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
+                        selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
+                        states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
+                        selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
+                        setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
+                        setSelectedCountry={setSelectedCountry} countries={countries} tableData={tableData} addRow={addRow} handleChangetable={handleChangetable} />
+                }
+                {model &&
+                    <AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
+                        selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
+                        states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
+                        selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
+                        setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
+                        setSelectedCountry={setSelectedCountry} countries={countries} tableData={tableData} addRow={addRow} handleChangetable={handleChangetable} />
+
+                }
+            </PaperContainer>
+            <PaperContainer elevation={0} square={false}>
+                {!model && !visitorModel && !customerModel &&
                     <>
                         <Grid container >
                             <Grid item xs={12}>
-                                <TableHeading title="User List" buttonText={'Add User'} onClick={() => setModel(true)} />
+                                <TableHeading title="User List"
+                                    // buttonText={'Add User'}
+                                    onClick={() => { setModel(true) }} />
                             </Grid>
                             <Grid item xs={12}>
                                 <TableContainer>
@@ -465,15 +547,6 @@ const User = () => {
                         </Box>
                     </>
                 }
-                {model && <Grid container >
-                    <Grid item xs={12}>
-                        <TableHeading title={`${isEdit ? "Update" : "Add"} User`} handleBack={() => { setModel(false); handleClear() }} removeSearchField={true} />
-                    </Grid>
-                    <AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches} selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities} states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState} selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} countries={countries} />
-
-                    {/* <Grid item xs={12}>
-                    </Grid> */}
-                </Grid>}
             </PaperContainer>
 
         </>
