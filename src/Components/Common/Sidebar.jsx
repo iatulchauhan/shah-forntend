@@ -418,7 +418,7 @@ export default function SideBar(props) {
             </Link>
           </List>
         </Drawer>
-        <Box sx={{ marginTop: 8, width: "100%", overflow: "auto" }}>
+        <Box sx={{ marginTop: 8, width: "100%", overflow: "auto", marginBottom: '64px' }}>
           <Box style={{ width: "100%" }}>
             {props.children}
           </Box>

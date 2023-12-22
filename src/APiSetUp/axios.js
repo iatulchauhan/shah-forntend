@@ -68,25 +68,10 @@ const onResponseFailure = (error) => {
         removeLSItem("user_type");
         window.location.reload(false);
       });
-    } else if (
-      error.response.status === 400 &&
-      error.response.data.token_exp_invalid
-    ) {
-      swal(error.response.data.token_exp_invalid, {
-        icon: "warning",
-        timer: 5000,
-      }).then(() => {
-        removeLSItem("user");
-        removeLSItem("auth_token");
-        removeLSItem("profileImagePath");
-        removeLSItem("cart");
-        removeLSItem("wishlist");
-        removeLSItem("user_type");
-        window.location.reload(false);
-      });
     }
     return Promise.reject(error.response);
-  } else {
+  }
+  else {
     const customMsg =
       "Server is taking longer time to respond, please try again later.";
     swal(customMsg, {

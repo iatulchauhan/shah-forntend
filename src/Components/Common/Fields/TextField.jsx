@@ -5,6 +5,7 @@ import {
   InputAdornment,
   IconButton,
   TextField,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import { makeStyles } from "tss-react/mui";
@@ -17,6 +18,8 @@ const useStyles = makeStyles()((theme) => {
   return {
     main: {
       background: theme?.palette?.bgWhite?.main,
+      borderRadius: '12px',
+      height: "47px",
       minWidth: "50px",
       ".MuiInputBase-input": {
         height: "15px",
@@ -70,6 +73,7 @@ const CommonTextField = ({
   background
 }) => {
   const { classes } = useStyles();
+  const theme = useTheme()
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -96,7 +100,7 @@ const CommonTextField = ({
               marginRight: "3px",
               fontWeight: fontWeight,
               fontSize: "15px",
-              color: lightTheme.palette.bgDarkPrimary.main,
+              color: theme.palette.bgDarkPrimary.main,
               padding: '3px',
             }}
           >
@@ -122,7 +126,7 @@ const CommonTextField = ({
             : type
         }
         placeholder={placeholder}
-        sx={{ height: height || 52, width: width, bgcolor: bgcolor, borderRadius: "5px", border: border, background: background }}
+        sx={{ height: height || 52, width: width, bgcolor: bgcolor, borderRadius: "5px", border: border, background: background || "tranparent" }}
         multiline={multiline}
         rows={rows}
         className={`${classes?.main} ${className}`}

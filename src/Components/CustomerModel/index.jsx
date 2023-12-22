@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Grid, Paper, Table, TableBody, TableContainer, TableHead, TableRow, } from "@mui/material";
+import { Box, Button, Fab, Grid, Paper, Table, TableBody, TableContainer, TableHead, TableRow, Typography, useTheme, } from "@mui/material";
 import TextLabel from '../Common/Fields/TextLabel';
 import CommonTextField from '../Common/Fields/TextField';
 import CommonButton from '../Common/Button/CommonButton';
@@ -9,6 +9,8 @@ import DataNotFound from '../Common/DataNotFound';
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -38,8 +40,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch,
     setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
-    onSubmit, setSelectedCountry, selectedCountry, countries, handleChangetable, addRow, tableData }) => {
-
+    onSubmit, setSelectedCountry, selectedCountry, countries, handleChangetable, addRow, visitorHistory, setUserPurchasePlanDelete, setUserPurchasePlanAdd }) => {
+    console.log(data, "dataaaa")
+    const theme = useTheme()
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
             <Grid item xs={12} sm={12} md={6} lg={4}>
@@ -208,88 +211,123 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                     </Grid>
                 </>
             }
-            <Grid item xs={12} sm={12} md={6} lg={4}>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
                 <CommonTextField
                     fontWeight={400}
-                    text={'Investment'}
-                    placeholder={"Enter Investment"}
-                    type='number'
-                    name='investment'
-                    value={data?.investment}
+                    text={'Reason'}
+                    placeholder={"Please enter reason"}
+                    type='text'
+                    name='reason'
+                    value={data?.reason}
                     onChange={(e) => handleChange(e, false)}
+                // rows={5}
+                // multiline
                 />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investment ? error?.investment : ""} />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.reason ? error?.reason : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4}>
+            <Grid item xs={12} sm={12} md={6} lg={6} marginBottom={1}>
                 <CommonTextField
                     fontWeight={400}
-                    text={'Investment Days'}
-                    placeholder={"Enter investment days"}
-                    type='number'
-                    name='investmentDays'
-                    value={data?.investmentDays}
+                    text={'Referance'}
+                    placeholder={"Please enter reference name"}
+                    type='text'
+                    name='reference'
+                    value={data?.reference}
                     onChange={(e) => handleChange(e, false)}
+                // rows={5}
+                // multiline
                 />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investmentDays ? error?.investmentDays : ""} />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.reference ? error?.reference : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4}>
-                <CommonTextField
-                    fontWeight={400}
-                    text={'Return Of Investment'}
-                    placeholder={"Enter Return Of Investment"}
-                    type='number'
-                    name='returnOfInvestment'
-                    value={data?.returnOfInvestment}
-                    onChange={(e) => handleChange(e, false)}
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
+            <Grid item xs={12} sm={12} md={12} lg={12} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", }} >
+                <Typography fontSize={"20px"} color={"black"} fontWeight={"400"} >Enter Investment Details</Typography>
+                <Box display={'flex'} gap={2} alignItems={'center'} >
+                    <CommonButton
+                        // width={'15%'}
+                        text={'Add Plan'}
+                        onClick={() => setUserPurchasePlanAdd()}
+                        startIcon={<AddIcon />}
+                    />
+                </Box>
             </Grid>
+            {data?.userPurchasePlan?.map((e, i) => {
+                console.log(e, "eee")
+                return (
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Box bgcolor={'#d6d7ff'} width={'100%'} border={`1px solid ${'#d6d7ff'}`} borderRadius={"10px"}>
+                            {i > 0 && (
+                                <Box display={"flex"} sx={{ cursor: "pointer" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
+                                    <CloseIcon sx={{ color: "#fff", borderRadius: 1, fontSize: "18px", marginRight: "1px", backgroundColor: "#F14336", }} />
+                                </Box>
+                            )}
+                            <Grid container item padding={'0px 15px 15px 15px'} spacing={2}>
+                                <Grid item xs={12} sm={12} md={6} lg={4}>
+                                    <CommonTextField
+                                        fontWeight={400}
+                                        text={'Investment'}
+                                        placeholder={"Enter Investment"}
+                                        type='number'
+                                        name='investment'
+                                        value={e?.investment}
+                                        onChange={(e) => handleChange(e, true, i)}
+                                    />
+                                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!e?.investment ? error?.investment : ""} />
+                                </Grid>
+                                <Grid item xs={12} sm={12} md={6} lg={4}>
+                                    <CommonTextField
+                                        fontWeight={400}
+                                        text={'Investment Days'}
+                                        placeholder={"Enter Investment Days"}
+                                        type='number'
+                                        name='investmentDays'
+                                        value={e?.investmentDays}
+                                        onChange={(e) => handleChange(e, true, i)}
+                                    />
+                                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!e?.investmentDays ? error?.investmentDays : ""} />
+                                </Grid>
+                                <Grid item xs={12} sm={12} md={6} lg={4}>
+                                    <CommonTextField
+                                        fontWeight={400}
+                                        text={'Return Of Investment'}
+                                        placeholder={"Enter Return Of Investment"}
+                                        type='number'
+                                        name='returnOfInvestment'
+                                        value={e?.returnOfInvestment}
+                                        onChange={(e) => handleChange(e, true, i)}
+                                    />
+                                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!e?.returnOfInvestment ? error?.returnOfInvestment : ""} />
+                                </Grid>
+
+                            </Grid>
+                        </Box>
+                    </Grid>
+                );
+            })}
+
+
+
             <Grid item xs={12} marginTop={'20px'}>
                 <TableContainer component={Paper}>
                     <Table aria-label="customized table">
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
-                                <StyledTableCell align="left">Reason</StyledTableCell>
-                                <StyledTableCell align="left">Meeting With</StyledTableCell>
+                                <StyledTableCell align="center">Reason</StyledTableCell>
+                                <StyledTableCell align="center">Meeting With</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableData.map((row) => (
+                            {visitorHistory.map((row, index) => (
                                 <StyledTableRow key={row.id}>
-                                    <StyledTableCell style={{ paddingLeft: '10px' }}>{row.id}</StyledTableCell>
-                                    <StyledTableCell align="center">
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
-                                            <CommonTextField
-                                                width={200}
-                                                fontWeight={400}
-                                                placeholder={"Enter Reason"}
-                                                type='text'
-                                                name='reason'
-                                                value={data?.reason}
-                                                onChange={(e) => handleChange(e, false)}
-                                            />
-                                        </Grid>
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
-                                            <CommonTextField
-                                                width={200}
-                                                fontWeight={400}
-                                                placeholder={"Meeting With"}
-                                                type='text'
-                                                name='meeting'
-                                                value={data?.meeting}
-                                                onChange={(e) => handleChange(e, false)}
-                                            />
-                                        </Grid>
-                                    </StyledTableCell>
+                                    <StyledTableCell style={{ paddingLeft: '10px' }}>{index + 1}</StyledTableCell>
+                                    <StyledTableCell align="center">{row?.reason}</StyledTableCell>
+                                    <StyledTableCell align="center">{row?.meeting} </StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
+                {/* <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box style={{ display: 'flex', justifyContent: 'end', marginTop: '10px' }}>
                         <CommonButton
                             width={'10%'}
@@ -298,7 +336,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                             onClick={addRow}
                         />
                     </Box>
-                </Grid>
+                </Grid> */}
             </Grid>
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>

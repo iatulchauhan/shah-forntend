@@ -201,7 +201,11 @@ const Clients = () => {
 
     const _getUser = () => {
         toggleLoader();
-        axios.get(`admin/users/?userType=${1} limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
+        let body = {
+            limit: rowsPerPage,
+            page: page + 1
+        }
+        axios.post(`admin/users`, body).then((res) => {
             if (res?.data?.data) {
                 setUserDetails(res?.data?.data)
             }
@@ -350,7 +354,6 @@ const Clients = () => {
     }, [page, rowsPerPage])
 
     useEffect(() => {
-        _getUser()
         _getBranches()
         _getCountries()
     }, [])

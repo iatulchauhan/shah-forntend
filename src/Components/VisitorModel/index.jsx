@@ -39,7 +39,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 const VisitorModel = ({ data, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch,
     setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
-    onSubmit, setSelectedCountry, selectedCountry, countries, handleChangetable, addRow, tableData }) => {
+    onSubmit, setSelectedCountry, selectedCountry, countries, handleChangetable, addRow, visitorHistory, referanceList, setSelectedReferance, selectedReferance }) => {
 
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -178,64 +178,59 @@ const VisitorModel = ({ data, branches, roles, selectedRole, setSelectedRole, se
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedBranch?.branchName ? error?.branchName : ""} />
             </Grid>
-            <Grid item xs={12} marginTop={'20px'}>
-                <TableContainer component={Paper}>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+                <CommonTextField
+                    fontWeight={400}
+                    text={'Reason'}
+                    placeholder={"Please enter reason"}
+                    type='text'
+                    name='reason'
+                    value={data?.reason}
+                    onChange={(e) => handleChange(e, false)}
+                // rows={5}
+                // multiline
+                />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.reason ? error?.reason : ""} />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+                <CommonTextField
+                    fontWeight={400}
+                    text={'Referance'}
+                    placeholder={"Please enter reference name"}
+                    type='text'
+                    name='reference'
+                    value={data?.reference}
+                    onChange={(e) => handleChange(e, false)}
+                // rows={5}
+                // multiline
+                />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.reference ? error?.reference : ""} />
+            </Grid>
+            {data?._id && <Grid item xs={12} sm={12} md={12} lg={12} >
+                <TextLabel fontSize={"20px"} fontWeight={"400"} title={'Meeting History'} />
+                <TableContainer component={Paper} sx={{ marginTop: 2 }}>
                     <Table aria-label="customized table">
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
-                                <StyledTableCell align="left">Reason</StyledTableCell>
-                                <StyledTableCell align="left">Meeting With</StyledTableCell>
+                                <StyledTableCell align="center">Reason</StyledTableCell>
+                                <StyledTableCell align="center">Meeting With</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableData.map((row) => (
+                            {visitorHistory.map((row, index) => (
                                 <StyledTableRow key={row.id}>
-                                    <StyledTableCell style={{ paddingLeft: '10px' }}>{row.id}</StyledTableCell>
-                                    <StyledTableCell align="center">
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
-                                            <CommonTextField
-                                                width={200}
-                                                fontWeight={400}
-                                                placeholder={"Enter Reason"}
-                                                type='text'
-                                                name='reason'
-                                                value={data?.reason}
-                                                onChange={(e) => handleChange(e, false)}
-                                            />
-                                        </Grid>
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
-                                            <CommonTextField
-                                                width={200}
-                                                fontWeight={400}
-                                                placeholder={"Meeting With"}
-                                                type='text'
-                                                name='meeting'
-                                                value={data?.meeting}
-                                                onChange={(e) => handleChange(e, false)}
-                                            />
-                                        </Grid>
-                                    </StyledTableCell>
+                                    <StyledTableCell style={{ paddingLeft: '10px' }}>{index + 1}</StyledTableCell>
+                                    <StyledTableCell align="center">{row?.reason}</StyledTableCell>
+                                    <StyledTableCell align="center">{row?.meeting} </StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <Box style={{ display: 'flex', justifyContent: 'end', marginTop: '10px' }}>
-                        <CommonButton
-                            width={'10%'}
-                            text={"Add Row"}
-                            type="submit"
-                            onClick={addRow}
-                        />
-                    </Box>
-                </Grid>
-            </Grid>
+            </Grid>}
             <Grid item xs={12} sm={12} md={12} lg={12}>
-                <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
+                <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
                     <CommonButton
                         width={'13%'}
                         text={`${isEdit ? "Update" : "Create"} Visitor`}

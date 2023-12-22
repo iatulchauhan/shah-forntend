@@ -24,7 +24,7 @@ import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
 import DataNotFound from '../../Components/Common/DataNotFound';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { roles } from '../../Utils/enum';
+import { Roles, roles } from '../../Utils/enum';
 import VisitorModel from '../../Components/VisitorModel';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import CustomerModel from '../../Components/CustomerModel';
@@ -90,7 +90,7 @@ const User = () => {
     const [model, setModel] = useState(false);
     const [visitorModel, setVisitorModel] = useState(false);
     const [customerModel, setCustomerModel] = useState(false);
-    const [data, setData] = useState({})
+    const [data, setData] = useState({ userPurchasePlan: [{ investment: '', investmentDays: '', returnOfInvestment: '' }] })
     const [error, setError] = useState({})
     const [deleteId, setDeleteId] = useState("")
     const [isEdit, setIsEdit] = useState(false)
@@ -106,15 +106,20 @@ const User = () => {
     const [selectedState, setSelectedState] = useState("");
     const [selectedRole, setSelectedRole] = useState("")
     const [page, setPage] = useState(0);
-    const [tableData, setTableData] = React.useState([
-        { id: 1, reason: '', meeting: '' },
+    const [visitorHistory, setVisitorHistory] = React.useState([
+        { id: 1, reason: 'hello', meeting: 'atul' },
+        { id: 1, reason: 'hello', meeting: 'atul' },
+        { id: 1, reason: 'hello', meeting: 'atul' },
     ]);
+    const [referanceList, setReferanceList] = useState([]);
+    const [selectedReferance, setSelectedReferance] = useState("")
+
     const handleChangePage = (newPage) => { setPage(newPage); };
     const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
 
     const addRow = () => {
-        const newRow = { id: tableData.length + 1, reason: '', meeting: '' };
-        setTableData([...tableData, newRow]);
+        const newRow = { id: visitorHistory.length + 1, reason: '', meeting: '' };
+        setVisitorHistory([...visitorHistory, newRow]);
     };
 
     const handleChangetable = (e, id) => {
@@ -122,6 +127,7 @@ const User = () => {
         // You may want to update the specific row in the state
     }
     //Validation
+    console.log(error, "errorerror")
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
@@ -165,17 +171,22 @@ const User = () => {
             formIsValid = false
             errors['branchName'] = 'Please select branchName.'
         }
-        if (!selectedRole) {
-            formIsValid = false
-            errors['userType'] = 'Please select Assign Roles.'
+        if (model) {
+            if (!selectedRole) {
+                formIsValid = false
+                errors['userType'] = 'Please select Assign Roles.'
+            }
         }
-        if (!data?.meeting) {
-            formIsValid = false
-            errors['meeting'] = 'Please enter Meeting With.'
-        }
-        if (!data?.reason) {
-            formIsValid = false
-            errors['reason'] = 'Please enter reason.'
+
+        if ((visitorModel || customerModel) && !data?._id) {
+            if (!data?.reference) {
+                formIsValid = false
+                errors['reference'] = 'Please enter Meeting With.'
+            }
+            if (!data?.reason) {
+                formIsValid = false
+                errors['reason'] = 'Please enter reason.'
+            }
         }
 
         if (!data?._id) {
@@ -194,40 +205,72 @@ const User = () => {
                 errors['matchPassword'] = 'Passwords do not match.';
             }
         }
-        // if (isAnyInvestmentFieldFilled) {
-        if (!data?.investment) {
-            formIsValid = false;
-            errors['investment'] = 'Please enter Investment.';
+
+        if (customerModel) {
+            data?.userPurchasePlan?.map((e) => {
+                if (!e?.investment) {
+                    formIsValid = false;
+                    errors['investment'] = 'Please enter Investment.';
+                }
+                if (!e?.investmentDays) {
+                    formIsValid = false;
+                    errors['investmentDays'] = 'Please enter Investment Days.';
+                }
+                if (!e?.returnOfInvestment) {
+                    formIsValid = false;
+                    errors['returnOfInvestment'] = 'Please enter Return Of Investment.';
+                }
+            });
         }
-        if (!data?.investmentDays) {
-            formIsValid = false;
-            errors['investmentDays'] = 'Please enter Investment Days.';
-        }
-        if (!data?.returnOfInvestment) {
-            formIsValid = false;
-            errors['returnOfInvestment'] = 'Please enter Return Of Investment.';
-        }
-        // }
         setError(errors)
         return formIsValid
     }
 
     const _getDefaultId = (data, name) => {
-        return data?.length > 0 && data?.filter((e) => e.name == name)?.[0]?.id
+        console.log(name, data, "namename")
+        return data?.length > 0 && data?.filter((e) => e?.name == name)?.[0]?.id
     }
 
-    const handleChange = (e) => {
+    const handleChange = (e, isInvestmentPlan, i) => {
         const { name, value } = e.target
-        setData((prevState) => ({
-            ...prevState,
-            [name]: value
-        }))
+        if (isInvestmentPlan === true) {
+            const modifyData = { ...data };
+            if (modifyData.userPurchasePlan && modifyData.userPurchasePlan[i]) {
+                modifyData.userPurchasePlan[i][name] = value;
+            }
+            setData(modifyData);
+        } else {
+            setData((prevState) => ({
+                ...prevState,
+                [name]: value
+            }))
+        }
     }
 
-    const _getUser = () => {
+
+    const setUserPurchasePlanDelete = (i) => {
+        const modifyData = { ...data };
+        if (modifyData.userPurchasePlan && modifyData.userPurchasePlan.length > i) {
+            modifyData.userPurchasePlan.splice(i, 1);
+            setData(modifyData);
+        }
+    };
+
+    const setUserPurchasePlanAdd = () => {
+        setData({
+            ...data,
+            userPurchasePlan: [...data?.userPurchasePlan, { investment: '', investmentDays: '', returnOfInvestment: '' }],
+        });
+    };
+
+    const _getUsers = () => {
         toggleLoader();
-        let body = `admin/users?limit=${rowsPerPage}&page=${page + 1}`
-        axios.get(body).then((res) => {
+        // let body = `admin/users?limit=${rowsPerPage}&page=${page + 1}`
+        let body = {
+            limit: rowsPerPage,
+            page: page + 1
+        }
+        axios.post('admin/users', body).then((res) => {
             if (res?.data?.data) {
                 setUserDetails(res?.data?.data)
             }
@@ -239,6 +282,26 @@ const User = () => {
         );
     }
 
+    // console.log(referanceList, "referanceList")
+    // const _getMeetingWithList = () => {
+    //     toggleLoader();
+    //     // let body = `admin/users?limit=${rowsPerPage}&page=${page + 1}`
+    //     let body = {
+    //         limit: rowsPerPage,
+    //         page: page + 1,
+    //         userType: roles?.filter((e) => e?.id === Roles.Counsellor || e?.id === Roles.Accountant).map((e) => e?.id)
+    //     }
+    //     axios.post('admin/users', body).then((res) => {
+    //         if (res?.data?.data) {
+    //             setReferanceList(res?.data?.data)
+    //         }
+    //         toggleLoader();
+    //     }).catch((err) => {
+    //         toggleLoader();
+    //         OnUpdateError(err.data.message);
+    //     }
+    //     );
+    // }
     const _getBranches = () => {
         axios.get("/admin/branch")
             .then((res) => {
@@ -251,8 +314,8 @@ const User = () => {
             })
     }
 
-    const _getCountries = () => {
-        axios.get("/countries")
+    const _getCountries = async () => {
+        await axios.get("/countries")
             .then((res) => {
                 if (res?.data?.data) {
                     setCountries(res?.data?.data)
@@ -263,10 +326,11 @@ const User = () => {
             })
     }
 
-    const _getStates = () => {
+    const _getStates = async () => {
         toggleLoader();
-        axios.post("/states", { country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
+        await axios.post("/states", { country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
             if (res?.data?.data) {
+                console.log(res?.data?.data, "res?.data?.data")
                 setStates(res?.data?.data)
             }
             toggleLoader();
@@ -276,10 +340,11 @@ const User = () => {
         }
         );
     }
-
-    const _getCities = () => {
+    console.log(selectedCountry, selectedState, "states?.response")
+    const _getCities = async () => {
         toggleLoader();
-        axios.post("/cities", { state_id: _getDefaultId(states?.response, selectedState), country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
+        console.log(states?.response, selectedState, "selectedState")
+        await axios.post("/cities", { state_id: _getDefaultId(states?.response, selectedState), country_id: _getDefaultId(countries?.response, selectedCountry) }).then((res) => {
             if (res?.data?.data) {
                 setCities(res?.data?.data)
             }
@@ -295,7 +360,7 @@ const User = () => {
         setModel(false);
         setVisitorModel(false);
         setCustomerModel(false);
-        setData({});
+        setData({ userPurchasePlan: [{ investment: '', investmentDays: '', returnOfInvestment: '' }] });
         setError({});
         setIsEdit(false);
         setSelectedBranch("");
@@ -303,8 +368,10 @@ const User = () => {
         setSelectedState("");
         setSelectedCity("");
         setSelectedRole("");
+
     }
     const handleEdit = (row) => {
+        console.log(row, "rowwwwwwwwwwww")
         const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0]
         setData(row);
         setSelectedBranch(row?.branchDetails?.branchName || "");
@@ -313,9 +380,15 @@ const User = () => {
         setSelectedCity(row?.cityDetail?.name || "");
         setSelectedRole(roleConfig?.label);
         setIsEdit(true);
-        setModel(true);
+        if (row?.userType === 6) {
+            setVisitorModel(true)
+        } else if (row?.userType === 1) {
+            setCustomerModel(true)
+        } else {
+            setModel(true);
+        }
     }
-
+    console.log(data, "datadatadata")
     const _handleDelete = () => {
         if (deleteId) {
             toggleLoader();
@@ -324,7 +397,7 @@ const User = () => {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     toggleLoader();
                     setDeleteId("");
-                    _getUser();
+                    _getUsers();
                 })
                 .catch((err) => {
                     toggleLoader();
@@ -345,26 +418,31 @@ const User = () => {
                 "postalCode": data?.postalCode,
                 "mobileNo": data?.mobileNo,
                 "email": data?.email,
-                "password": data?.password,
                 "branch": [branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id],
-                "userType": roles?.filter((e) => e?.label == selectedRole)[0]?.id,
+                "userType": visitorModel ? 6 : customerModel ? 1 : roles?.filter((e) => e?.label == selectedRole)[0]?.id,
+            }
+            if (visitorModel || customerModel) {
+                body.reason = data?.reason || null
+                body.reference = data?.reference || null
+            }
+            if (customerModel) {
+                body.password = data?.password
+                body.userPurchasePlan = []
+            }
+            if (model) {
+                body.password = data?.password
             }
             if (data?._id) {
                 body.id = data?._id
                 delete body.password
             }
-
+            // if (data?._id && data?.userType === 1)
 
             axios.post(`admin/users/${data?._id ? "update" : "create"}`, body).then((res) => {
-                console.log(res, "resres")
                 if (res?.data?.data) {
-                    console.log(model, "model")
-                    setModel(false)
-                    console.log(model, "model")
-
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     handleClear()
-                    _getUser()
+                    _getUsers()
                 }
                 toggleLoader();
             }).catch((err) => {
@@ -375,8 +453,12 @@ const User = () => {
         }
     }
 
+    // useEffect(() => {
+    //     if (visitorModel || customerModel) _getMeetingWithList()
+    // }, [visitorModel, customerModel])
+
     useEffect(() => {
-        _getUser()
+        _getUsers()
     }, [page, rowsPerPage])
 
     useEffect(() => {
@@ -385,83 +467,75 @@ const User = () => {
     }, [])
 
     React.useEffect(() => {
-        if (selectedCountry) {
+        if (selectedCountry && countries?.response) {
             _getStates()
         }
-    }, [selectedCountry])
+    }, [selectedCountry, countries?.response])
 
     React.useEffect(() => {
-        if (selectedCountry && selectedState) {
+        if (selectedCountry && selectedState && states?.response) {
             _getCities()
         }
-    }, [selectedState])
+    }, [selectedState, selectedCountry, states?.response])
 
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <Box style={{ display: 'flex', justifyContent: 'end', padding: '15px', gap: 5 }}>
+                        <Box style={{ display: 'flex', justifyContent: 'end', padding: '15px', gap: 5, flexWrap: 'wrap' }}>
                             <CommonButton
-                                width={'12%'}
-                                text={'Add Customer'}
-                                onClick={() => setCustomerModel(true)}
-                            />
-                            <CommonButton
-                                width={'10%'}
+                                width={'120px'}
                                 text={'Add Visitor'}
-                                onClick={() => setVisitorModel(true)}
+                                onClick={() => { handleClear(); setVisitorModel(true); setCustomerModel(false); setModel(false); }}
                             />
                             <CommonButton
-                                width={'10%'}
+                                width={'120px'}
+                                text={'Add Customer'}
+                                onClick={() => { handleClear(); setCustomerModel(true); setVisitorModel(false); setModel(false); }}
+                            />
+                            <CommonButton
+                                width={'120px'}
                                 text={'Add Role'}
-                                onClick={() => setModel(true)}
+                                onClick={() => { handleClear(); setModel(true); setVisitorModel(false); setCustomerModel(false); }}
                             />
                         </Box>
                     </Grid>
-                    {visitorModel &&
-                        <Grid item xs={12}>
-                            <TableHeading title={`${isEdit ? "Update" : "Add"} Visitor`} handleBack={() => { setVisitorModel(false); handleClear() }} removeSearchField={true} />
-                        </Grid>}
-                    {customerModel &&
-                        <Grid item xs={12}>
-                            <TableHeading title={`${isEdit ? "Update" : "Add"} Customer`} handleBack={() => { setCustomerModel(false); handleClear() }} removeSearchField={true} />
-                        </Grid>
-                    }
-                    {model &&
-                        <Grid item xs={12}>
-                            <TableHeading title={`${isEdit ? "Update" : "Add"} User`} handleBack={() => { setModel(false); handleClear() }} removeSearchField={true} />
-                        </Grid>
-                    }
                 </Grid>
-
-                {visitorModel &&
-                    <VisitorModel data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
-                        selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
-                        states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
-                        selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
-                        setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
-                        setSelectedCountry={setSelectedCountry} countries={countries} tableData={tableData} addRow={addRow} handleChangetable={handleChangetable} />
-                }
-                {customerModel &&
-                    <CustomerModel data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
-                        selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
-                        states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
-                        selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
-                        setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
-                        setSelectedCountry={setSelectedCountry} countries={countries} tableData={tableData} addRow={addRow} handleChangetable={handleChangetable} />
-                }
-                {model &&
-                    <AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
-                        selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
-                        states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
-                        selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
-                        setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
-                        setSelectedCountry={setSelectedCountry} countries={countries} tableData={tableData} addRow={addRow} handleChangetable={handleChangetable} />
-
-                }
             </PaperContainer>
             <PaperContainer elevation={0} square={false}>
+                {visitorModel &&
+                    <Grid item xs={12}>
+                        <TableHeading title={`${isEdit ? "Update" : "Add"} Visitor`} handleBack={() => { setVisitorModel(false); handleClear(); }} removeSearchField={true} />
+                        <VisitorModel data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
+                            selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
+                            states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
+                            selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
+                            setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
+                            setSelectedCountry={setSelectedCountry} countries={countries} visitorHistory={visitorHistory} addRow={addRow} handleChangetable={handleChangetable} />
+                    </Grid>}
+                {customerModel &&
+                    <Grid item xs={12}>
+                        <TableHeading title={`${isEdit ? "Update" : "Add"} Customer`} handleBack={() => { setCustomerModel(false); handleClear(); }} removeSearchField={true} />
+                        <CustomerModel data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
+                            selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
+                            states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
+                            selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
+                            setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
+                            setSelectedCountry={setSelectedCountry} countries={countries} visitorHistory={visitorHistory} addRow={addRow} handleChangetable={handleChangetable} setUserPurchasePlanDelete={setUserPurchasePlanDelete} setUserPurchasePlanAdd={setUserPurchasePlanAdd} />
+                    </Grid>
+                }
+                {model &&
+                    <Grid item xs={12}>
+                        <TableHeading title={`${isEdit ? "Update" : "Add"} User`} handleBack={() => { setModel(false); handleClear(); }} removeSearchField={true} />
+                        <AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
+                            selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
+                            states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
+                            selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
+                            setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
+                            setSelectedCountry={setSelectedCountry} countries={countries} visitorHistory={visitorHistory} addRow={addRow} handleChangetable={handleChangetable} />
+                    </Grid>
+                }
                 {!model && !visitorModel && !customerModel &&
                     <>
                         <Grid container >
