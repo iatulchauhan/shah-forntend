@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Assets from "./ImageContainer";
 import { makeStyles } from "tss-react/mui";
+import { getLSItem } from "../../APiSetUp/LocalStorage";
 
 
 const drawerWidth = 275;
@@ -113,7 +114,8 @@ export default function SideBar(props) {
   const { user, logout, toggleSideBar } = useAppContext();
 
   const [open, setOpen] = useState(width > 991 ? true : false);
-
+  const userType = JSON.parse(getLSItem("user"))?.userType
+  console.log(userType, "userTypeuserType")
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -134,7 +136,7 @@ export default function SideBar(props) {
     setOpen(!open);
     toggleSideBar();
   };
-  const data = [
+  const adminMenus = [
     {
       title: "Dashboard",
       icon: (
@@ -221,7 +223,32 @@ export default function SideBar(props) {
       activeLinks: ["payment"],
     },
   ];
+  const receptionMenus = [
+    {
+      title: "Dashboard",
+      icon: (
+        <Assets src="/assets/icons/dashboard.svg" absolutePath={true}
+        />
+      ),
+      link: "/",
+      activeLinks: [""],
+    },
+    {
+      title: "Visitor List",
+      icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
+      link: "/receptionist-visitor",
+      activeLinks: ["receptionist-visitor"],
+    },
+    {
+      title: "Visitor History",
+      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
+      link: "/receptionist-visitor-history",
+      activeLinks: ["receptionist-visitor-history"],
+    },
 
+  ];
+
+  const sideMenuList = userType === 2 ? receptionMenus : adminMenus
 
   const logoutAdmin = () => {
     Swal.fire({
@@ -306,7 +333,7 @@ export default function SideBar(props) {
               backgroundColor: "transparent"
             }
           }}>
-            {data.map((item, index) => (
+            {sideMenuList.map((item, index) => (
               <Link
                 to={item.link}
                 className={

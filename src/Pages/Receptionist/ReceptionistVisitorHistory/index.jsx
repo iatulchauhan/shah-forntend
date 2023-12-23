@@ -11,12 +11,12 @@ import {
 } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import PaperContainer from '../../Components/Common/PaperContainer';
-import TableHeading from '../../Components/Common/CommonTableHeading';
-import CommonPagination from '../../Components/Common/Pagination';
-import { lightTheme } from '../../theme';
-import { useAppContext } from '../../Context/context';
-import axios from '../../APiSetUp/axios'
+import PaperContainer from '../../../Components/Common/PaperContainer';
+import TableHeading from '../../../Components/Common/CommonTableHeading';
+import CommonPagination from '../../../Components/Common/Pagination';
+import { lightTheme } from '../../../theme';
+import { useAppContext } from '../../../Context/context';
+import axios from "../../../APiSetUp/axios";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -71,32 +71,14 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const rows = [
-    {
-        key: '1',
-        name: "John Doe",
-        contactNo: '+91 9865998545',
-        emailId: 'johndoe@gmail.com',
-        activePlan: 'Lorem ipsum',
-        expiringPlan: '10 Days',
-    },
-    {
-        key: '2',
-        name: "John Doe",
-        contactNo: '+91 9865998545',
-        emailId: 'johndoe@gmail.com',
-        activePlan: 'Lorem ipsum',
-        expiringPlan: '10 Days',
-    },
 
-
-];
-const VisitorHistory = () => {
+const ReceptionistVisitorHistory = () => {
     const { classes } = useStyles();
     const { OnUpdateError, toggleLoader } = useAppContext();
     //States
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [visitorHistoryDetails, setVisitorHistoryDetails] = useState([]);
+    console.log(visitorHistoryDetails, 'visitorHistoryDetails')
     const [page, setPage] = React.useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -172,4 +154,4 @@ const VisitorHistory = () => {
     )
 }
 
-export default VisitorHistory
+export default ReceptionistVisitorHistory

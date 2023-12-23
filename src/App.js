@@ -28,6 +28,8 @@ import OTPverification from "./Pages/OTPverification";
 import ForgetPassword from "./Pages/ForgetPassword";
 import Resetpassword from "./Pages/Resetpassword";
 import VisitorHistory from "./Pages/VisitorHistory";
+import ReceptionistVisitorHistory from "./Pages/Receptionist/ReceptionistVisitorHistory";
+import ReceptionistVisitor from "./Pages/Receptionist/ReceptionistVisitor";
 
 function App() {
   return (
@@ -61,8 +63,8 @@ function App() {
               <Route path="/otp-verification" element={<OTPverification />} />
               <Route path="/reset-password" element={<Resetpassword />} />
               <Route path="/visitor-history" element={<VisitorHistory />} />
-
-
+              <Route path="/receptionist-visitor-history" element={<ReceptionistVisitorHistory />} />
+              <Route path="/receptionist-visitor" element={<ReceptionistVisitor />} />
             </Route>
           </Routes>
         </Layout>

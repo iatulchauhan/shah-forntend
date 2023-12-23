@@ -206,8 +206,8 @@ const VisitorModel = ({ data, branches, setSelectedBranch, selectedBranch, setSe
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.reference ? error?.reference : ""} />
             </Grid>
             {data?._id && <Grid item xs={12} sm={12} md={12} lg={12} sx={{ marginTop: 1 }}>
-                <TextLabel fontSize={"16px"} fontWeight={"400"} title={'Meeting History'} />
-                <TableContainer component={Paper} square>
+                <TextLabel fontSize={"15px"} fontWeight={"400"} color='#151D48' title={'Meeting History'} />
+                <TableContainer component={Paper} square style={{ marginTop: '5px' }}>
                     <Table aria-label="customized table">
                         <TableHead>
                             <TableRow>
