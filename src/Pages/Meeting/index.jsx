@@ -126,6 +126,8 @@ const MeetingList = () => {
     const [slotTimes, setSlotTimes] = useState([]);
     const [page, setPage] = React.useState(0);
     const [selectedSlots, setSelectedSlots] = useState([]);
+    const [meetingDetails, setMeetingDetails] = useState([]);
+
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -133,7 +135,6 @@ const MeetingList = () => {
         setRowsPerPage(value);
         setPage(0);
     };
-    console.log(selectedSlots, "selectedSlots")
     const convertToAmPm = (timeInMinutes) => {
         console.log(timeInMinutes, "timeInMinutes")
         const hours = Math.floor(timeInMinutes / 60);
@@ -142,7 +143,6 @@ const MeetingList = () => {
         const formattedHours = hours % 12 || 12;
         return `${formattedHours}:${minutes < 10 ? '0' : ''}${minutes} ${period}`;
     };
-
 
     const _getSlotTimes = () => {
         toggleLoader();
@@ -158,7 +158,6 @@ const MeetingList = () => {
         }
         );
     }
-    console.log(slotTimes, 'response')
 
     const handleSlotClick = (clickedSlot) => {
         // Initialize selectedSlots as an empty array if it's undefined
@@ -216,7 +215,21 @@ const MeetingList = () => {
         setIsEdit(false)
     }
 
-    const _addUpdateBranch = () => {
+    const _getMeeting = () => {
+        toggleLoader();
+        axios.get(`admin/branch?limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
+            if (res?.data?.data) {
+                // setMeetingDetails(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+    const _addUpdateMeeting = () => {
         if (handleValidation()) {
             toggleLoader();
             let body = {
@@ -227,7 +240,7 @@ const MeetingList = () => {
             if (data?._id) {
                 body.id = data?._id
             }
-            axios.post(`admin/branch/${data?._id ? "update" : "create"}`, body).then((res) => {
+            axios.post(`receptionist/scheduleMeeting/counsellor/create${data?._id ? "update" : "create"}`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     handleClear()
@@ -245,7 +258,9 @@ const MeetingList = () => {
         _getSlotTimes()
     }, [])
 
-
+    React.useEffect(() => {
+        _getMeeting()
+    }, [page, rowsPerPage])
 
     return (
         <>
@@ -330,7 +345,7 @@ const MeetingList = () => {
                 onClose={handleClear}
                 title={`${isEdit ? "Update" : "Add"} User`}
                 content={<AddMeeting data={data} setData={setData} error={error} handleChange={handleChange}
-                    onSubmit={_addUpdateBranch} isEdit={isEdit} slotTimes={slotTimes} setSlotTimes={setSlotTimes}
+                    onSubmit={_addUpdateMeeting} isEdit={isEdit} slotTimes={slotTimes} setSlotTimes={setSlotTimes}
                     convertToAmPm={convertToAmPm} setSelectedSlot={setSelectedSlots} selectedSlot={selectedSlots} handleSlotClick={handleSlotClick} />}
             />
         </>

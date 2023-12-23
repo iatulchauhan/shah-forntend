@@ -209,6 +209,12 @@ export default function SideBar(props) {
       activeLinks: ["expiring-plan"],
     },
     {
+      title: "Visitor History",
+      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
+      link: "/visitor-history",
+      activeLinks: ["visitor-history"],
+    },
+    {
       title: "Payment",
       icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
       link: "/payment",
