@@ -27,6 +27,7 @@ import Clients from "./Pages/Clients";
 import OTPverification from "./Pages/OTPverification";
 import ForgetPassword from "./Pages/ForgetPassword";
 import Resetpassword from "./Pages/Resetpassword";
+import VisitorHistory from "./Pages/VisitorHistory";
 
 function App() {
   return (
@@ -59,6 +60,8 @@ function App() {
               <Route path="/forgot-password" element={<ForgetPassword />} />
               <Route path="/otp-verification" element={<OTPverification />} />
               <Route path="/reset-password" element={<Resetpassword />} />
+              <Route path="/visitor-history" element={<VisitorHistory />} />
+
 
             </Route>
           </Routes>
