@@ -245,6 +245,12 @@ export default function SideBar(props) {
       link: "/receptionist-visitor-history",
       activeLinks: ["receptionist-visitor-history"],
     },
+    {
+      title: "Schedule Meeting",
+      icon: <Assets src="/assets/icons/rec-meeting.svg" absolutePath={true} />,
+      link: "/receptionist-meeting-list",
+      activeLinks: ["receptionist-meeting-list"],
+    },
 
   ];
 

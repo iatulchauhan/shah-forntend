@@ -30,6 +30,7 @@ import Resetpassword from "./Pages/Resetpassword";
 import VisitorHistory from "./Pages/VisitorHistory";
 import ReceptionistVisitorHistory from "./Pages/Receptionist/ReceptionistVisitorHistory";
 import ReceptionistVisitor from "./Pages/Receptionist/ReceptionistVisitor";
+import ReceptionistMeetingList from "./Pages/Receptionist/ReceptionistMeetingList";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
               <Route path="/visitor-history" element={<VisitorHistory />} />
               <Route path="/receptionist-visitor-history" element={<ReceptionistVisitorHistory />} />
               <Route path="/receptionist-visitor" element={<ReceptionistVisitor />} />
+              <Route path="/receptionist-meeting-list" element={<ReceptionistMeetingList />} />
             </Route>
           </Routes>
         </Layout>
