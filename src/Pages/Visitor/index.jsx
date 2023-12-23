@@ -24,6 +24,7 @@ import DataNotFound from '../../Components/Common/DataNotFound';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AddVisitor from '../../Components/Visitor';
 import { lightTheme } from '../../theme';
+import { Roles } from '../../Utils/enum';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -31,6 +32,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 16,
         color: theme.palette.primary.main,
         fontFamily: "Poppins",
+        padding: '8px'
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
@@ -157,12 +159,30 @@ const Visitor = () => {
         return data?.length > 0 && data?.filter((e) => e.name == name)?.[0]?.id
     }
 
+    // const _getVisitor = () => {
+    //     toggleLoader();
+    //     axios.get(`receptionist/visitor?limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
+    //         if (res?.data?.data) {
+    //             setVisitorDetails(res?.data?.data)
+    //             console.log('res?.data?.data👌', res?.data?.data)
+    //         }
+    //         toggleLoader();
+    //     }).catch((err) => {
+    //         toggleLoader();
+    //         OnUpdateError(err.data.message);
+    //     }
+    //     );
+    // }
     const _getVisitor = () => {
         toggleLoader();
-        axios.get(`receptionist/visitor?limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
+        let body = {
+            limit: rowsPerPage,
+            page: page + 1,
+            userType: [Roles.Visitor]
+        }
+        axios.post('admin/users', body).then((res) => {
             if (res?.data?.data) {
                 setVisitorDetails(res?.data?.data)
-                console.log('res?.data?.data👌', res?.data?.data)
             }
             toggleLoader();
         }).catch((err) => {
@@ -306,7 +326,7 @@ const Visitor = () => {
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Visitor Data" buttonText={'Add Visitor'} onClick={() => setModel(true)} />
+                        <TableHeading title="Visitor Data" />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -314,46 +334,23 @@ const Visitor = () => {
                                 <Table sx={{ minWidth: 600 }} aria-label="customized table">
                                     <TableHead >
                                         <TableRow>
-                                            <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
+                                            <StyledTableCell className={classes.paddedRow}>No.</StyledTableCell>
                                             <StyledTableCell>Name</StyledTableCell>
                                             <StyledTableCell>Address</StyledTableCell>
                                             <StyledTableCell>Contact No.</StyledTableCell>
                                             <StyledTableCell>Email Id</StyledTableCell>
-                                            <StyledTableCell align="right">Action</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {visitorDetails?.response?.map((row, index) => (
                                             <StyledTableRow key={index} >
-                                                <StyledTableCell>{row.key}</StyledTableCell>
+                                                <StyledTableCell>{index + 1}</StyledTableCell>
                                                 <StyledTableCell className={classes.paddedRow} component="th" scope="row">
                                                     {row.name}
                                                 </StyledTableCell>
                                                 <StyledTableCell>{row.address}</StyledTableCell>
                                                 <StyledTableCell>{row.mobileNo}</StyledTableCell>
                                                 <StyledTableCell>{row.email}</StyledTableCell>
-                                                <StyledTableCell>
-                                                    <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                        <Assets
-                                                            className={classes.writeBox}
-                                                            src={"/assets/icons/write.svg"}
-                                                            absolutePath={true}
-                                                            onClick={() => { handleEdit(row) }}
-                                                        />
-                                                        <Assets
-                                                            className={classes.viewBox}
-                                                            src={"/assets/icons/view.svg"}
-                                                            absolutePath={true}
-                                                        />
-                                                        <Assets
-                                                            className={classes.deleteBox}
-                                                            src={"/assets/icons/delete.svg"}
-                                                            absolutePath={true}
-                                                            onClick={() => { setDeleteId(row?._id); _handleDelete(); }}
-                                                        />
-                                                    </Box>
-                                                </StyledTableCell>
-
                                             </StyledTableRow>
                                         ))}
                                     </TableBody>

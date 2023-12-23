@@ -18,8 +18,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         color: '#ffff',
         fontFamily: "Poppins",
         whiteSpace: 'nowrap',
-        background: '#92929c',
-        padding: '8px',
+        background: theme.palette.primary.main,
+        padding: '5px',
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
@@ -31,15 +31,13 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     "&:nth-of-type(odd)": {
-        backgroundColor: theme.palette.action.hover,
+        backgroundColor: theme.palette.bgLightGray.main,
     },
     "&:last-child td, &:last-child th": {
         border: 0,
     },
 }));
-const VisitorModel = ({ data, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch,
-    setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
-    onSubmit, setSelectedCountry, selectedCountry, countries, handleChangetable, addRow, visitorHistory, referanceList, setSelectedReferance, selectedReferance }) => {
+const VisitorModel = ({ data, branches, setSelectedBranch, selectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit, onSubmit, setSelectedCountry, selectedCountry, countries }) => {
 
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -54,18 +52,6 @@ const VisitorModel = ({ data, branches, roles, selectedRole, setSelectedRole, se
                     onChange={(e) => handleChange(e, false)}
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.name ? error?.name : ""} />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4}>
-                <CommonTextField
-                    fontWeight={400}
-                    text={'Address'}
-                    placeholder={"Enter Address"}
-                    type='text'
-                    name='address'
-                    value={data?.address}
-                    onChange={(e) => handleChange(e, false)}
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.address ? error?.address : ""} />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4}>
                 <CommonTextField
@@ -95,6 +81,18 @@ const VisitorModel = ({ data, branches, roles, selectedRole, setSelectedRole, se
             <Grid item xs={12} sm={12} md={6} lg={4}>
                 <CommonTextField
                     fontWeight={400}
+                    text={'Address'}
+                    placeholder={"Enter Address"}
+                    type='text'
+                    name='address'
+                    value={data?.address}
+                    onChange={(e) => handleChange(e, false)}
+                />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.address ? error?.address : ""} />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <CommonTextField
+                    fontWeight={400}
                     text={'Postal Code'}
                     placeholder={"Enter Postal Code"}
                     type='number'
@@ -103,6 +101,22 @@ const VisitorModel = ({ data, branches, roles, selectedRole, setSelectedRole, se
                     onChange={(e) => handleChange(e, false)}
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.postalCode ? error?.postalCode : ""} />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
+                <AutoCompleteSearch
+                    fullWidth
+                    backgroundColor="white"
+                    // width={"300px"}
+                    text="Branch"
+                    placeholder={"Select Branch"}
+                    handleChange={(e, newValue) => setSelectedBranch(newValue)}
+                    options={branches?.map((e) => e?.branchName) || []}
+                    name="branchName"
+                    defaultValue={selectedBranch || ""}
+                    freeSolo
+                    blurOnSelect
+                />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedBranch?.branchName ? error?.branchName : ""} />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4}>
                 <AutoCompleteSearch
@@ -162,22 +176,7 @@ const VisitorModel = ({ data, branches, roles, selectedRole, setSelectedRole, se
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedCity ? error?.city : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4}>
-                <AutoCompleteSearch
-                    fullWidth
-                    backgroundColor="white"
-                    // width={"300px"}
-                    text="Branch"
-                    placeholder={"Select Branch"}
-                    handleChange={(e, newValue) => setSelectedBranch(newValue)}
-                    options={branches?.map((e) => e?.branchName) || []}
-                    name="branchName"
-                    defaultValue={selectedBranch || ""}
-                    freeSolo
-                    blurOnSelect
-                />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedBranch?.branchName ? error?.branchName : ""} />
-            </Grid>
+
             <Grid item xs={12} sm={12} md={6} lg={6}>
                 <CommonTextField
                     fontWeight={400}
@@ -206,23 +205,23 @@ const VisitorModel = ({ data, branches, roles, selectedRole, setSelectedRole, se
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.reference ? error?.reference : ""} />
             </Grid>
-            {data?._id && <Grid item xs={12} sm={12} md={12} lg={12} >
-                <TextLabel fontSize={"20px"} fontWeight={"400"} title={'Meeting History'} />
-                <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+            {data?._id && <Grid item xs={12} sm={12} md={12} lg={12} sx={{ marginTop: 1 }}>
+                <TextLabel fontSize={"16px"} fontWeight={"400"} title={'Meeting History'} />
+                <TableContainer component={Paper} square>
                     <Table aria-label="customized table">
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
                                 <StyledTableCell align="center">Reason</StyledTableCell>
-                                <StyledTableCell align="center">Meeting With</StyledTableCell>
+                                <StyledTableCell align="center">Referance</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {visitorHistory.map((row, index) => (
+                            {data?.history?.map((row, index) => (
                                 <StyledTableRow key={row.id}>
                                     <StyledTableCell style={{ paddingLeft: '10px' }}>{index + 1}</StyledTableCell>
                                     <StyledTableCell align="center">{row?.reason}</StyledTableCell>
-                                    <StyledTableCell align="center">{row?.meeting} </StyledTableCell>
+                                    <StyledTableCell align="center">{row?.reference} </StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>

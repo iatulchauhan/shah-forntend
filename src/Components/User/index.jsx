@@ -1,43 +1,16 @@
 import React from 'react'
-import { Box, Button, Grid, Paper, Table, TableBody, TableContainer, TableHead, TableRow, } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import TextLabel from '../Common/Fields/TextLabel';
 import CommonTextField from '../Common/Fields/TextField';
 import CommonButton from '../Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
-import DataNotFound from '../Common/DataNotFound';
-import { styled } from "@mui/material/styles";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { Roles } from '../../Utils/enum';
+import AutoCompleteMultiSelect from '../Common/AutoCompleteMultiSelect';
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        fontWeight: 400,
-        fontSize: 15,
-        color: '#151D48',
-        fontFamily: "Poppins",
-        whiteSpace: 'nowrap',
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-        fontFamily: "Poppins",
-        fontWeight: 500,
-        padding: '7px',
-    },
-}));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-        backgroundColor: theme.palette.action.hover,
-    },
-    "&:last-child td, &:last-child th": {
-        border: 0,
-    },
-}));
-const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch,
-    setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
-    onSubmit, setSelectedCountry, selectedCountry, countries, handleChangetable, addRow, tableData }) => {
-
+const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setMultiSelectedBranch, multiSelectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
+    onSubmit, setSelectedCountry, selectedCountry, countries }) => {
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
             <Grid item xs={12} sm={12} md={12} lg={4}>
@@ -166,7 +139,7 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setSele
                     // width={"300px"}
                     text="User Type"
                     handleChange={(e, newValue) => setSelectedRole(newValue)}
-                    options={roles?.map((e) => e?.label) || []}
+                    options={roles?.filter((e) => { return e?.id !== Roles.Visitor && e?.id !== Roles.User })?.map((e) => e?.label) || []}
                     name="label"
                     defaultValue={selectedRole || ""}
                     freeSolo
@@ -176,20 +149,17 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setSele
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedRole?.label ? error?.userType : ""} />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4}>
-                <AutoCompleteSearch
+                <AutoCompleteMultiSelect
                     fullWidth
-                    backgroundColor="white"
-                    // width={"300px"}
                     text="Branch"
                     placeholder={"Select Branch"}
-                    handleChange={(e, newValue) => setSelectedBranch(newValue)}
-                    options={branches?.map((e) => e?.branchName) || []}
+                    handleChange={(e, newValue) => { console.log(newValue, "newValue"); setMultiSelectedBranch(newValue) }}
+                    options={branches || []}
                     name="branchName"
-                    defaultValue={selectedBranch || ""}
-                    freeSolo
-                    blurOnSelect
+                    getOptionLabel={(option) => option?.branchName}
+                    defaultValue={multiSelectedBranch || {}}
                 />
-                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedBranch?.branchName ? error?.branchName : ""} />
+                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!multiSelectedBranch?.length === 0 ? error?.branchName : ""} />
             </Grid>
             {!data?._id &&
                 <>
@@ -286,70 +256,6 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setSele
                     </Grid>
                 </>
             )}
-            {/* {selectedRole === 'Visitor' && (
-                <>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} marginTop={'15px'}>
-                            <TableContainer component={Paper}>
-                                <Table sx={{ minWidth: 550 }} aria-label="customized table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <StyledTableCell>No</StyledTableCell>
-                                            <StyledTableCell align="left">Reason</StyledTableCell>
-                                            <StyledTableCell align="left">Meeting With</StyledTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {tableData.map((row) => (
-                                            <StyledTableRow key={row.id}>
-                                                <StyledTableCell>{row.id}</StyledTableCell>
-                                                <StyledTableCell align="center">
-                                                    <Grid item xs={12} sm={12} md={6} lg={6}>
-                                                        <CommonTextField
-                                                            border="1px solid #d6d6d6"
-                                                            background='none'
-                                                            fontWeight={400}
-                                                            placeholder={'Enter Reason'}
-                                                            type="text"
-                                                            name={`reason-${row.id}`}
-                                                            value={row.reason}
-                                                            onChange={(e) => handleChangetable(e, row.id)}
-                                                        />
-                                                    </Grid>
-                                                </StyledTableCell>
-                                                <StyledTableCell align="center">
-                                                    <Grid item xs={12} sm={12} md={6} lg={6}>
-                                                        <CommonTextField
-                                                            border="1px solid #d6d6d6"
-                                                            background='none'
-                                                            fontWeight={400}
-                                                            placeholder={'Meeting With'}
-                                                            type="text"
-                                                            name={`meeting-${row.id}`}
-                                                            value={row.meeting}
-                                                            onChange={(e) => handleChangetable(e, row.id)}
-                                                        />
-                                                    </Grid>
-                                                </StyledTableCell>
-                                            </StyledTableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12}>
-                            <Box style={{ display: 'flex', justifyContent: 'end', marginTop: '5px' }}>
-                                <CommonButton
-                                    width={'10%'}
-                                    text={"Add Row"}
-                                    type="submit"
-                                    onClick={addRow}
-                                />
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </>
-            )} */}
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton

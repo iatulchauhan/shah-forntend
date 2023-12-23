@@ -14,7 +14,6 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import Assets from '../../Components/Common/ImageContainer';
 import PaperContainer from '../../Components/Common/PaperContainer';
 import TableHeading from '../../Components/Common/CommonTableHeading';
-import CommonModal from '../../Components/Common/CommonModel';
 import { Regex } from '../../Utils/regex';
 import CommonPagination from '../../Components/Common/Pagination';
 import { lightTheme } from '../../theme';
@@ -24,7 +23,7 @@ import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
 import DataNotFound from '../../Components/Common/DataNotFound';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { Roles, roles } from '../../Utils/enum';
+import { roles } from '../../Utils/enum';
 import VisitorModel from '../../Components/VisitorModel';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import CustomerModel from '../../Components/CustomerModel';
@@ -98,6 +97,7 @@ const User = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [branches, setBranches] = useState([])
     const [selectedBranch, setSelectedBranch] = useState("");
+    const [multiSelectedBranch, setMultiSelectedBranch] = useState([]);
     const [countries, setCountries] = useState([])
     const [selectedCountry, setSelectedCountry] = useState("");
     const [states, setStates] = useState([]);
@@ -106,28 +106,13 @@ const User = () => {
     const [selectedState, setSelectedState] = useState("");
     const [selectedRole, setSelectedRole] = useState("")
     const [page, setPage] = useState(0);
-    const [visitorHistory, setVisitorHistory] = React.useState([
-        { id: 1, reason: 'hello', meeting: 'atul' },
-        { id: 1, reason: 'hello', meeting: 'atul' },
-        { id: 1, reason: 'hello', meeting: 'atul' },
-    ]);
-    const [referanceList, setReferanceList] = useState([]);
-    const [selectedReferance, setSelectedReferance] = useState("")
 
-    const handleChangePage = (newPage) => { setPage(newPage); };
-    const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
 
-    const addRow = () => {
-        const newRow = { id: visitorHistory.length + 1, reason: '', meeting: '' };
-        setVisitorHistory([...visitorHistory, newRow]);
-    };
 
-    const handleChangetable = (e, id) => {
-        // Implement your handleChange logic here
-        // You may want to update the specific row in the state
-    }
+
+
     //Validation
-    console.log(error, "errorerror")
+    console.log(error, multiSelectedBranch, multiSelectedBranch.map(item => item._id), "multiSelectedBranch")
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
@@ -167,10 +152,19 @@ const User = () => {
             formIsValid = false;
             errors["invalidEmail"] = "* Invalid email Address";
         }
-        if (!selectedBranch) {
-            formIsValid = false
-            errors['branchName'] = 'Please select branchName.'
+        
+        if (model) {
+            if (multiSelectedBranch?.length === 0) {
+                formIsValid = false
+                errors['branchName'] = 'Please select branchName.'
+            }
+        } else {
+            if (!selectedBranch) {
+                formIsValid = false
+                errors['branchName'] = 'Please select branchName.'
+            }
         }
+
         if (model) {
             if (!selectedRole) {
                 formIsValid = false
@@ -224,6 +218,16 @@ const User = () => {
         }
         setError(errors)
         return formIsValid
+    }
+
+    const handleChangePage = (newPage) => { setPage(newPage); };
+    const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
+
+
+
+    const handleChangetable = (e, id) => {
+        // Implement your handleChange logic here
+        // You may want to update the specific row in the state
     }
 
     const _getDefaultId = (data, name) => {
@@ -282,26 +286,6 @@ const User = () => {
         );
     }
 
-    // console.log(referanceList, "referanceList")
-    // const _getMeetingWithList = () => {
-    //     toggleLoader();
-    //     // let body = `admin/users?limit=${rowsPerPage}&page=${page + 1}`
-    //     let body = {
-    //         limit: rowsPerPage,
-    //         page: page + 1,
-    //         userType: roles?.filter((e) => e?.id === Roles.Counsellor || e?.id === Roles.Accountant).map((e) => e?.id)
-    //     }
-    //     axios.post('admin/users', body).then((res) => {
-    //         if (res?.data?.data) {
-    //             setReferanceList(res?.data?.data)
-    //         }
-    //         toggleLoader();
-    //     }).catch((err) => {
-    //         toggleLoader();
-    //         OnUpdateError(err.data.message);
-    //     }
-    //     );
-    // }
     const _getBranches = () => {
         axios.get("/admin/branch")
             .then((res) => {
@@ -374,7 +358,7 @@ const User = () => {
         console.log(row, "rowwwwwwwwwwww")
         const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0]
         setData(row);
-        setSelectedBranch(row?.branchDetails?.branchName || "");
+        setSelectedBranch(row?.branchDetails?.[0]?.branchName || "");
         setSelectedCountry(row?.countryDetail?.name || "");
         setSelectedState(row?.stateDetail?.name || "");
         setSelectedCity(row?.cityDetail?.name || "");
@@ -418,7 +402,7 @@ const User = () => {
                 "postalCode": data?.postalCode,
                 "mobileNo": data?.mobileNo,
                 "email": data?.email,
-                "branch": [branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id],
+                "branch": model ? multiSelectedBranch.map(item => item._id) : [branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id],
                 "userType": visitorModel ? 6 : customerModel ? 1 : roles?.filter((e) => e?.label == selectedRole)[0]?.id,
             }
             if (visitorModel || customerModel) {
@@ -427,7 +411,7 @@ const User = () => {
             }
             if (customerModel) {
                 body.password = data?.password
-                body.userPurchasePlan = []
+                body.userPurchasePlan = data?.userPurchasePlan
             }
             if (model) {
                 body.password = data?.password
@@ -491,7 +475,7 @@ const User = () => {
                             />
                             <CommonButton
                                 width={'120px'}
-                                text={'Add Customer'}
+                                text={'Add Client'}
                                 onClick={() => { handleClear(); setCustomerModel(true); setVisitorModel(false); setModel(false); }}
                             />
                             <CommonButton
@@ -512,7 +496,7 @@ const User = () => {
                             states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
                             selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
                             setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
-                            setSelectedCountry={setSelectedCountry} countries={countries} visitorHistory={visitorHistory} addRow={addRow} handleChangetable={handleChangetable} />
+                            setSelectedCountry={setSelectedCountry} countries={countries} />
                     </Grid>}
                 {customerModel &&
                     <Grid item xs={12}>
@@ -522,18 +506,18 @@ const User = () => {
                             states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
                             selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
                             setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
-                            setSelectedCountry={setSelectedCountry} countries={countries} visitorHistory={visitorHistory} addRow={addRow} handleChangetable={handleChangetable} setUserPurchasePlanDelete={setUserPurchasePlanDelete} setUserPurchasePlanAdd={setUserPurchasePlanAdd} />
+                            setSelectedCountry={setSelectedCountry} countries={countries} setUserPurchasePlanDelete={setUserPurchasePlanDelete} setUserPurchasePlanAdd={setUserPurchasePlanAdd} />
                     </Grid>
                 }
                 {model &&
                     <Grid item xs={12}>
                         <TableHeading title={`${isEdit ? "Update" : "Add"} User`} handleBack={() => { setModel(false); handleClear(); }} removeSearchField={true} />
                         <AddUser data={data} setData={setData} error={error} handleChange={handleChange} branches={branches}
-                            selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} roles={roles} cities={cities}
+                            multiSelectedBranch={multiSelectedBranch} setMultiSelectedBranch={setMultiSelectedBranch} roles={roles} cities={cities}
                             states={states} onSubmit={_addUpdateUser} isEdit={isEdit} setSelectedState={setSelectedState}
                             selectedState={selectedState} setSelectedCity={setSelectedCity} selectedCity={selectedCity}
                             setSelectedRole={setSelectedRole} selectedRole={selectedRole} selectedCountry={selectedCountry}
-                            setSelectedCountry={setSelectedCountry} countries={countries} visitorHistory={visitorHistory} addRow={addRow} handleChangetable={handleChangetable} />
+                            setSelectedCountry={setSelectedCountry} countries={countries} />
                     </Grid>
                 }
                 {!model && !visitorModel && !customerModel &&
@@ -569,10 +553,10 @@ const User = () => {
                                                             <StyledTableCell className={classes.paddedRow} component="th" scope="row">
                                                                 {row.name}
                                                             </StyledTableCell>
-                                                            <StyledTableCell>{row.address}</StyledTableCell>
-                                                            <StyledTableCell>{row.mobileNo}</StyledTableCell>
-                                                            <StyledTableCell>{row.email}</StyledTableCell>
-                                                            <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
+                                                            <StyledTableCell>{row?.address}</StyledTableCell>
+                                                            <StyledTableCell>{row?.mobileNo}</StyledTableCell>
+                                                            <StyledTableCell>{row?.email}</StyledTableCell>
+                                                            <StyledTableCell>{row?.branchDetails?.map((e) => e?.branchName)?.join(",")}</StyledTableCell>
                                                             <StyledTableCell align='center'>{getRoleName(row.userType)}</StyledTableCell>
                                                             <StyledTableCell align="right">
                                                                 <Box display={"flex"} justifyContent={"end"} gap={1}>

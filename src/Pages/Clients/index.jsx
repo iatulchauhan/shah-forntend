@@ -23,7 +23,7 @@ import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
 import DataNotFound from '../../Components/Common/DataNotFound';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { roles } from '../../Utils/enum';
+import { Roles, roles } from '../../Utils/enum';
 import AddClient from '../../Components/Client';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -203,7 +203,8 @@ const Clients = () => {
         toggleLoader();
         let body = {
             limit: rowsPerPage,
-            page: page + 1
+            page: page + 1,
+            userType: [Roles.User]
         }
         axios.post(`admin/users`, body).then((res) => {
             if (res?.data?.data) {
@@ -390,10 +391,8 @@ const Clients = () => {
                                             <StyledTableCell>Address</StyledTableCell>
                                             <StyledTableCell>Contact No.</StyledTableCell>
                                             <StyledTableCell>Email Id</StyledTableCell>
-                                            <StyledTableCell>Active Plan</StyledTableCell>
+                                            <StyledTableCell align='center'>Active Plan</StyledTableCell>
                                             <StyledTableCell>Branch</StyledTableCell>
-                                            <StyledTableCell align='center'>Role</StyledTableCell>
-                                            <StyledTableCell align="right">Action</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -408,31 +407,8 @@ const Clients = () => {
                                                     <StyledTableCell>{row.address}</StyledTableCell>
                                                     <StyledTableCell>{row.mobileNo}</StyledTableCell>
                                                     <StyledTableCell>{row.email}</StyledTableCell>
-                                                    <StyledTableCell>{row.activePlan}</StyledTableCell>
-                                                    <StyledTableCell>{row?.branchDetails?.branchName}</StyledTableCell>
-                                                    <StyledTableCell align='center'>{getRoleName(row.userType)}</StyledTableCell>
-                                                    <StyledTableCell align="right">
-                                                        <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                            <Assets
-                                                                className={classes.writeBox}
-                                                                src={"/assets/icons/write.svg"}
-                                                                absolutePath={true}
-                                                                onClick={() => { handleEdit(row) }}
-                                                            />
-                                                            <Assets
-                                                                className={classes.viewBox}
-                                                                src={"/assets/icons/view.svg"}
-                                                                absolutePath={true}
-                                                            />
-                                                            <Assets
-                                                                className={classes.deleteBox}
-                                                                src={"/assets/icons/delete.svg"}
-                                                                absolutePath={true}
-                                                                onClick={() => { setDeleteId(row?._id); _handleDelete(); }}
-                                                            />
-                                                        </Box>
-                                                    </StyledTableCell>
-
+                                                    <StyledTableCell align='center'>{row.userPurchasePlan?.length}</StyledTableCell>
+                                                    <StyledTableCell>{row?.branchDetails?.[0]?.branchName}</StyledTableCell>
                                                 </StyledTableRow>
                                             )
                                         })}

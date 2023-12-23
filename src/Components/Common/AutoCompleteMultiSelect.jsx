@@ -1,8 +1,9 @@
-import * as React from "react";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import { Box, InputLabel, Paper, Typography, useTheme } from "@mui/material";
+import React from 'react'
+import Chip from '@mui/material/Chip';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import { makeStyles } from "tss-react/mui";
+import { Box, InputLabel, Typography, useTheme } from '@mui/material';
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -87,9 +88,7 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-
-export default function AutoCompleteSearch({
-    width,
+const AutoCompleteMultiSelect = ({ width,
     height,
     text,
     valid,
@@ -102,6 +101,7 @@ export default function AutoCompleteSearch({
     labelSize,
     disabled,
     defaultValue,
+    getOptionLabel,
     freeSolo = true,
     clearOnSelect,
     blurOnSelect,
@@ -111,8 +111,8 @@ export default function AutoCompleteSearch({
     handleSearch,
     multiple = false,
     fullWidth,
-    className
-}) {
+    label,
+    className }) => {
     const { classes, cx } = useStyles();
     const theme = useTheme()
     return (
@@ -150,44 +150,37 @@ export default function AutoCompleteSearch({
                 borderRadius={1}
             >
                 <Autocomplete
+                    multiple
                     fullWidth={fullWidth}
-                    multiple={multiple}
+                    id="tags-outlined"
+                    options={options}
                     className={cx(classes.main, className)}
-                    disabled={disabled ? disabled : ""}
-                    autoHighlight={false}
-                    disablePortal
-                    blurOnSelect={blurOnSelect}
-                    options={options || []}
                     onChange={handleChange}
-                    isOptionEqualToValue={(option, value) => {
-                        if (value === "" || value === option) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }}
-                    value={defaultValue || ""}
-                    defaultValue={defaultValue || ""}
+                    getOptionLabel={getOptionLabel}
+                    defaultValue={defaultValue}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label={label}
+                            placeholder={placeholder}
+                            onChange={handleSearch}
+                            disabled={disabled ? disabled : ""}
+                            value={searchValue}
+                            name={name}
+                            onBlur={onBlur}
+                        />
+                    )}
                     sx={{
                         borderRadius: 1,
                         width: width,
                         backgroundColor: "white",
                     }}
-                    freeSolo={freeSolo}
-                    renderInput={(params) => (
-                        <TextField
-                            className="searchInput"
-                            {...params}
-                            onBlur={onBlur}
-                            placeholder={placeholder}
-                            onChange={handleSearch}
-                            name={name}
-                            disabled={disabled ? disabled : ""}
-                            value={searchValue}
-                        />
-                    )}
+                    clearOnSelect={clearOnSelect}
                 />
             </Box>
         </>
-    );
+    )
 }
+
+export default AutoCompleteMultiSelect
