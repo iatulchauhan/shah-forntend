@@ -158,6 +158,7 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setMult
                     name="branchName"
                     getOptionLabel={(option) => option?.branchName}
                     defaultValue={multiSelectedBranch || {}}
+                    mappingLabel='branchName'
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!multiSelectedBranch?.length === 0 ? error?.branchName : ""} />
             </Grid>

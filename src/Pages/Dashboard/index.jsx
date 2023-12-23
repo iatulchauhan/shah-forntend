@@ -207,7 +207,6 @@ const Dashboard = () => {
 
     return (
         <>
-
             <PaperContainer>
                 <Box padding={3} display={"flex"} justifyContent={"space-between"} alignItems={"center"} >
                     <TextLabel variant={"h6"} fontWeight={"600"} title={"Today’s Summary"} />

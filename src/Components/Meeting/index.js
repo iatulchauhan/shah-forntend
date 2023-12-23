@@ -11,6 +11,8 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { makeStyles } from "tss-react/mui";
+import AutoCompleteSearch from '../Common/commonAutoComplete';
+import { Roles } from '../../Utils/enum';
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -47,7 +49,7 @@ const useStyles = makeStyles()((theme) => {
     };
 });
 
-const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, convertToAmPm, setSelectedSlot, selectedSlot, handleSlotClick }) => {
+const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, convertToAmPm, setSelectedSlot, selectedSlot, setData, clients, setSelectedInviteTo, selectedInviteTo, selectedClient, setSelectedClient, handleSlotClick }) => {
     const { classes } = useStyles();
     return (
         <Box>
@@ -58,48 +60,52 @@ const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, co
                         text={'Title'}
                         placeholder={"Enter Title"}
                         type='text'
-                        name='Title'
+                        name='title'
                         value={data?.title}
                         onChange={(e) => handleChange(e, false)}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.title ? error?.title : ""} />
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={6}>
-                    <CommonTextField
-                        fontWeight={400}
-                        text={'Client Name'}
-                        placeholder={"Enter Name"}
-                        type='text'
-                        name='Title'
-                        value={data?.title}
-                        onChange={(e) => handleChange(e, false)}
-                    />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.title ? error?.title : ""} />
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={6} className={classes.customLabel}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} >
-                        <DemoContainer
-
-                            components={['DesktopDatePicker']}
-                        >
-                            <DemoItem label="Date" >
-                                <DesktopDatePicker className={classes.dateBox} defaultValue={dayjs('2022-04-17')} />
-                            </DemoItem>
-                        </DemoContainer>
-                    </LocalizationProvider>
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.title ? error?.title : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <CommonTextField
-                        fontWeight={400}
-                        text={'Invite to'}
-                        placeholder={"Enter People to invite"}
-                        type='text'
-                        name='Title'
-                        value={data?.title}
-                        onChange={(e) => handleChange(e, false)}
+                    <AutoCompleteSearch
+                        fullWidth
+                        backgroundColor="white"
+                        text="Client"
+                        handleChange={(e, newValue) => setSelectedClient(newValue)}
+                        options={clients?.response?.filter((e) => e?.userType === Roles.Visitor || e?.userType === Roles.User)?.map((e) => e?.name) || []}
+                        name="selectedClient"
+                        defaultValue={selectedClient || ""}
+                        freeSolo
+                        blurOnSelect
+                        placeholder={"Select Client"}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.title ? error?.title : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedClient ? error?.selectedClient : ""} />
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={6} className={classes.customLabel}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} >
+                        <DemoContainer components={['DesktopDatePicker']}                        >
+                            <DemoItem label="Meeting Date" >
+                                <DesktopDatePicker className={classes.dateBox} inputFormat="MM/dd/yyyy" name='date'
+                                    value={dayjs(data?.meetingDate)} defaultValue={dayjs(data?.meetingDate)} onChange={(newValue) => setData({ ...data, meetingDate: newValue })} />
+                            </DemoItem>
+                        </DemoContainer>
+                    </LocalizationProvider>
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.meetingDate ? error?.meetingDate : ""} />
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <AutoCompleteSearch
+                        fullWidth
+                        backgroundColor="white"
+                        text="Invite To"
+                        handleChange={(e, newValue) => setSelectedInviteTo(newValue)}
+                        options={clients?.response?.filter((e) => e?.userType === Roles.Counsellor || e?.userType === Roles.Receptionist)?.map((e) => e?.name) || []}
+                        name="selectedInviteTo"
+                        defaultValue={selectedInviteTo || ""}
+                        freeSolo
+                        blurOnSelect
+                        placeholder={"Select Invite"}
+                    />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedInviteTo ? error?.selectedInviteTo : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <TextLabel fontSize={"15px"} color={"#151D48"} fontWeight={"400"} title={'Start Time'} style={{ padding: '3px' }} />
@@ -126,7 +132,7 @@ const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, co
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                         <CommonButton
                             width={'60%'}
-                            text={`${isEdit ? "Update" : "Create"} Meeting`}
+                            text={`${isEdit ? "Update" : "Schedule"} Meeting`}
                             type="submit"
                             onClick={onSubmit}
                         />

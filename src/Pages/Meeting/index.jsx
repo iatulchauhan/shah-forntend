@@ -23,6 +23,8 @@ import { lightTheme } from '../../theme';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import AddMeeting from '../../Components/Meeting';
 import { useEffect } from 'react';
+import { Roles } from '../../Utils/enum';
+import dayjs from 'dayjs';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -126,8 +128,10 @@ const MeetingList = () => {
     const [slotTimes, setSlotTimes] = useState([]);
     const [page, setPage] = React.useState(0);
     const [selectedSlots, setSelectedSlots] = useState([]);
-    const [meetingDetails, setMeetingDetails] = useState([]);
-
+    const [clients, setClients] = useState([]);
+    const [selectedClient, setSelectedClient] = useState([]);
+    const [selectedInviteTo, setSelectedInviteTo] = useState([]);
+    console.log(clients, "clients")
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -159,6 +163,20 @@ const MeetingList = () => {
         );
     }
 
+    const _getClients = () => {
+        toggleLoader();
+        axios.post(`admin/users`).then((res) => {
+            if (res?.data?.data) {
+                setClients(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
     const handleSlotClick = (clickedSlot) => {
         // Initialize selectedSlots as an empty array if it's undefined
         const currentSelectedSlots = selectedSlots || [];
@@ -177,9 +195,9 @@ const MeetingList = () => {
         // Update the isBooked property in the state
         const updatedData = slotTimes.map((slot) => {
             if (updatedSlots.includes(slot.startTime)) {
-                return { ...slot, isSelected: true };
+                return { ...slot, isSelected: true, isBooked: true };
             } else {
-                return { ...slot, isSelected: false };
+                return { ...slot, isSelected: false, isBooked: false };
             }
         });
 
@@ -190,9 +208,21 @@ const MeetingList = () => {
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
-        if (!data?.branchName) {
+        if (!data?.title) {
             formIsValid = false
-            errors['branchName'] = 'Please enter name.'
+            errors['title'] = 'Please enter title.'
+        }
+        if (!selectedClient) {
+            formIsValid = false
+            errors['selectedClient'] = 'Please select Client.'
+        }
+        if (!selectedInviteTo) {
+            formIsValid = false
+            errors['selectedInviteTo'] = 'Please select invite.'
+        }
+        if (!data?.meetingDate) {
+            formIsValid = false
+            errors['meetingDate'] = 'Please select meeting date.'
         }
         setError(errors)
         return formIsValid
@@ -228,19 +258,20 @@ const MeetingList = () => {
         }
         );
     }
-
-    const _addUpdateMeeting = () => {
+    const _addUpdateMeetingSchedule = () => {
         if (handleValidation()) {
             toggleLoader();
             let body = {
-                "branchName": data?.branchName,
-                "address": data?.address,
-                "postalCode": data?.postalCode
+                "title": data?.title,
+                "client": clients?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
+                "meetingWith": clients?.response?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
+                "meetingDate": dayjs(data?.meetingDate).format('DD/MM/YYYY'),
+                "slot_time": slotTimes
             }
             if (data?._id) {
                 body.id = data?._id
             }
-            axios.post(`receptionist/scheduleMeeting/counsellor/create${data?._id ? "update" : "create"}`, body).then((res) => {
+            axios.post(`admin/meeting/create`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     handleClear()
@@ -257,6 +288,12 @@ const MeetingList = () => {
     useEffect(() => {
         _getSlotTimes()
     }, [])
+
+    useEffect(() => {
+        if (model) {
+            _getClients()
+        }
+    }, [model])
 
     React.useEffect(() => {
         _getMeeting()
@@ -343,10 +380,9 @@ const MeetingList = () => {
             <CommonModal
                 open={model}
                 onClose={handleClear}
-                title={`${isEdit ? "Update" : "Add"} User`}
-                content={<AddMeeting data={data} setData={setData} error={error} handleChange={handleChange}
-                    onSubmit={_addUpdateMeeting} isEdit={isEdit} slotTimes={slotTimes} setSlotTimes={setSlotTimes}
-                    convertToAmPm={convertToAmPm} setSelectedSlot={setSelectedSlots} selectedSlot={selectedSlots} handleSlotClick={handleSlotClick} />}
+                title={`${isEdit ? "Update" : "Schedule"} Meeting`}
+                content={<AddMeeting data={data} setData={setData} error={error} handleChange={handleChange} onSubmit={_addUpdateMeetingSchedule} isEdit={isEdit} slotTimes={slotTimes} setSlotTimes={setSlotTimes}
+                    convertToAmPm={convertToAmPm} setSelectedSlot={setSelectedSlots} clients={clients} selectedInviteTo={selectedInviteTo} setSelectedInviteTo={setSelectedInviteTo} selectedClient={selectedClient} setSelectedClient={setSelectedClient} selectedSlot={selectedSlots} handleSlotClick={handleSlotClick} />}
             />
         </>
     )

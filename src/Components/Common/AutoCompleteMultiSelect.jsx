@@ -112,7 +112,9 @@ const AutoCompleteMultiSelect = ({ width,
     multiple = false,
     fullWidth,
     label,
-    className }) => {
+    mappingLabel,
+    className,
+ }) => {
     const { classes, cx } = useStyles();
     const theme = useTheme()
     return (
@@ -171,7 +173,13 @@ const AutoCompleteMultiSelect = ({ width,
                             onBlur={onBlur}
                         />
                     )}
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip {...getTagProps({ index })} color="primary" key={option[mappingLabel] || ""} label={option[mappingLabel] || ""} size="small" style={{ background: "#d6d7ff" }} variant="outlined" />
+                        ))
+                    }
                     sx={{
+
                         borderRadius: 1,
                         width: width,
                         backgroundColor: "white",

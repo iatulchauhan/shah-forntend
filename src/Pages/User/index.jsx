@@ -23,7 +23,7 @@ import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
 import DataNotFound from '../../Components/Common/DataNotFound';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { roles } from '../../Utils/enum';
+import { Roles, roles } from '../../Utils/enum';
 import VisitorModel from '../../Components/VisitorModel';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import CustomerModel from '../../Components/CustomerModel';
@@ -108,9 +108,6 @@ const User = () => {
     const [page, setPage] = useState(0);
 
 
-
-
-
     //Validation
     console.log(error, multiSelectedBranch, multiSelectedBranch.map(item => item._id), "multiSelectedBranch")
     const handleValidation = () => {
@@ -152,7 +149,7 @@ const User = () => {
             formIsValid = false;
             errors["invalidEmail"] = "* Invalid email Address";
         }
-        
+
         if (model) {
             if (multiSelectedBranch?.length === 0) {
                 formIsValid = false
@@ -352,21 +349,21 @@ const User = () => {
         setSelectedState("");
         setSelectedCity("");
         setSelectedRole("");
-
+        setMultiSelectedBranch([])
     }
     const handleEdit = (row) => {
-        console.log(row, "rowwwwwwwwwwww")
         const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0]
         setData(row);
         setSelectedBranch(row?.branchDetails?.[0]?.branchName || "");
+        setMultiSelectedBranch(row?.branchDetails)
         setSelectedCountry(row?.countryDetail?.name || "");
         setSelectedState(row?.stateDetail?.name || "");
         setSelectedCity(row?.cityDetail?.name || "");
         setSelectedRole(roleConfig?.label);
         setIsEdit(true);
-        if (row?.userType === 6) {
+        if (row?.userType === Roles.Visitor) {
             setVisitorModel(true)
-        } else if (row?.userType === 1) {
+        } else if (row?.userType === Roles.User) {
             setCustomerModel(true)
         } else {
             setModel(true);
