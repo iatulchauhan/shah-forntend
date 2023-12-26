@@ -21,9 +21,9 @@ import Assets from '../../../Components/Common/ImageContainer';
 import CommonModal from '../../../Components/Common/CommonModel';
 import CommonPagination from '../../../Components/Common/Pagination';
 import { lightTheme } from '../../../theme';
-import AddMeeting from '../../../Components/Meeting';
 import CommonButton from '../../../Components/Common/Button/CommonButton';
 import dayjs from 'dayjs';
+import AddScheduleMeeting from '../../../Components/ReceptionistModels/ScheduleMeetingModel';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -128,9 +128,11 @@ const ReceptionistMeetingList = () => {
     const [page, setPage] = React.useState(0);
     const [selectedSlots, setSelectedSlots] = useState([]);
     const [clients, setClients] = useState([]);
+    const [meetingVisitorList, setMeetingVisitorList] = useState([]);
+    const [meetingCounsellorList, setMeetingCounsellorList] = useState([]);
     const [selectedClient, setSelectedClient] = useState([]);
     const [selectedInviteTo, setSelectedInviteTo] = useState([]);
-    console.log(clients, "clients")
+    console.log(meetingVisitorList, 'meetingVisitorList')
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -149,10 +151,16 @@ const ReceptionistMeetingList = () => {
 
     const _getSlotTimes = () => {
         toggleLoader();
-        let body = '/slotTimes'
-        axios.post(body).then((res) => {
+        let body = {
+            "client": "658512dcf440749d23b28fb9",
+            "inviteTo": "658141338e2809b893cec105",
+            "sloatDate": "2024-01-01"
+        }
+
+        axios.post(`/slotTimes`, body).then((res) => {
             if (res?.data?.data) {
                 setSlotTimes(res?.data?.data?.slot_time)
+                console.log(res?.data?.data, 'res?.data?.data')
             }
             toggleLoader();
         }).catch((err) => {
@@ -162,11 +170,25 @@ const ReceptionistMeetingList = () => {
         );
     }
 
-    const _getClients = () => {
+    const _getMeetingVisitorList = () => {
         toggleLoader();
-        axios.post(`admin/users`).then((res) => {
+        axios.get(`/receptionist/visitor_list`).then((res) => {
             if (res?.data?.data) {
-                setClients(res?.data?.data)
+                setMeetingVisitorList(res?.data?.data)
+            }
+            toggleLoader();
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        }
+        );
+    }
+
+    const _getMeetingCounsellorList = () => {
+        toggleLoader();
+        axios.get(`/receptionist/counsellor_list`).then((res) => {
+            if (res?.data?.data) {
+                setMeetingCounsellorList(res?.data?.data)
             }
             toggleLoader();
         }).catch((err) => {
@@ -203,7 +225,6 @@ const ReceptionistMeetingList = () => {
         setSlotTimes(updatedData);
     }
 
-
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
@@ -227,7 +248,6 @@ const ReceptionistMeetingList = () => {
         return formIsValid
     }
 
-
     const handleChange = (e) => {
         const { name, value } = e.target
         setData((prevState) => ({
@@ -235,7 +255,6 @@ const ReceptionistMeetingList = () => {
             [name]: value
         }))
     }
-
 
     const handleClear = () => {
         setModel(false)
@@ -257,13 +276,13 @@ const ReceptionistMeetingList = () => {
         }
         );
     }
-    
+
     const _addUpdateMeetingSchedule = () => {
         if (handleValidation()) {
             toggleLoader();
             let body = {
                 "title": data?.title,
-                "client": clients?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
+                "client": meetingVisitorList?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
                 "meetingWith": clients?.response?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
                 "meetingDate": dayjs(data?.meetingDate).format('DD/MM/YYYY'),
                 "slot_time": slotTimes
@@ -291,7 +310,8 @@ const ReceptionistMeetingList = () => {
 
     useEffect(() => {
         if (model) {
-            _getClients()
+            _getMeetingVisitorList()
+            _getMeetingCounsellorList()
         }
     }, [model])
 
@@ -322,15 +342,13 @@ const ReceptionistMeetingList = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows.map((row, index) => (
+                                    {clients?.response?.map((row, index) => (
                                         <StyledTableRow key={index} >
-                                            <StyledTableCell>{row.key}</StyledTableCell>
-                                            <StyledTableCell className={classes.paddedRow} component="th" scope="row">
-                                                {row.title}
-                                            </StyledTableCell>
-                                            <StyledTableCell>{row.meeting}</StyledTableCell>
-                                            <StyledTableCell>{row.date}</StyledTableCell>
-                                            <StyledTableCell>{row.startTime}</StyledTableCell>
+                                            <StyledTableCell style={{ paddingLeft: '13px' }}>{index + 1}</StyledTableCell>
+                                            <StyledTableCell className={classes.paddedRow}>{row?.title}</StyledTableCell>
+                                            <StyledTableCell>{row?.meetingWithDetails?.name}</StyledTableCell>
+                                            <StyledTableCell>{row?.meetingDate}</StyledTableCell>
+                                            <StyledTableCell>{row.slot_time?.startTime}</StyledTableCell>
                                             <StyledTableCell className={classes.paddedRow} data-status={row.status}>
                                                 <CommonButton
                                                     text={row.status}
@@ -339,7 +357,7 @@ const ReceptionistMeetingList = () => {
                                                     borderRadius='8px'
                                                 />
                                             </StyledTableCell>
-                                            <StyledTableCell>{row.creator}</StyledTableCell>
+                                            <StyledTableCell>{row?.creatorDetails?.name}</StyledTableCell>
                                             <StyledTableCell>
                                                 <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                     <Assets
@@ -381,8 +399,8 @@ const ReceptionistMeetingList = () => {
                 open={model}
                 onClose={handleClear}
                 title={`${isEdit ? "Update" : "Schedule"} Meeting`}
-                content={<AddMeeting data={data} setData={setData} error={error} handleChange={handleChange} onSubmit={_addUpdateMeetingSchedule} isEdit={isEdit} slotTimes={slotTimes} setSlotTimes={setSlotTimes}
-                    convertToAmPm={convertToAmPm} setSelectedSlot={setSelectedSlots} clients={clients} selectedInviteTo={selectedInviteTo} setSelectedInviteTo={setSelectedInviteTo} selectedClient={selectedClient} setSelectedClient={setSelectedClient} selectedSlot={selectedSlots} handleSlotClick={handleSlotClick} />}
+                content={<AddScheduleMeeting data={data} setData={setData} error={error} handleChange={handleChange} onSubmit={_addUpdateMeetingSchedule} isEdit={isEdit} slotTimes={slotTimes} setSlotTimes={setSlotTimes}
+                    convertToAmPm={convertToAmPm} setSelectedSlot={setSelectedSlots} meetingVisitorList={meetingVisitorList} selectedClient={selectedClient} setSelectedClient={setSelectedClient} selectedSlot={selectedSlots} handleSlotClick={handleSlotClick} meetingCounsellorList={meetingCounsellorList} />}
             />
         </>
     )

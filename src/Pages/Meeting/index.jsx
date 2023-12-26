@@ -131,7 +131,6 @@ const MeetingList = () => {
     const [clients, setClients] = useState([]);
     const [selectedClient, setSelectedClient] = useState([]);
     const [selectedInviteTo, setSelectedInviteTo] = useState([]);
-    console.log(clients, "clients")
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
