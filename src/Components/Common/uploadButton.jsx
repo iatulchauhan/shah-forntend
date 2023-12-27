@@ -30,13 +30,13 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const FileUpload = ({ handleFileChange, selectedFile }) => {
+const FileUpload = ({ handleFileChange, selectedFile, OnDelate, text }) => {
     const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"];
     const { classes } = useStyles();
     return (
         <Box p={1} border="1px dashed #ccc" borderRadius={2} textAlign="center" display={'flex'} justifyContent={'space-between'} width={'100%'} alignItems={'center'}>
             <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}  >
-                Upload Image
+                {text ? text : "Upload Image"}
                 <VisuallyHiddenInput type="file" onChange={handleFileChange} />
             </Button>
             {selectedFile && (
@@ -45,7 +45,7 @@ const FileUpload = ({ handleFileChange, selectedFile }) => {
                         {selectedFile?.split("/")[2]}
                     </Typography>
                     <img src={`${Image_BASE_URL}${selectedFile}`} alt="Selected" style={{ height: '50px', width: '50px' }} />
-                    <Box display={"flex"} justifyContent={"end"} gap={1}>
+                    <Box display={"flex"} justifyContent={"end"} gap={1} onClick={OnDelate}>
                         <CloseOutlinedIcon sx={{ color: lightTheme.palette.error.main, fontSize: "25px" }} className={classes.clearBox} />
                     </Box>
                 </Box>
