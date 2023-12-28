@@ -326,7 +326,7 @@ const Visitor = () => {
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Visitor Data" />
+                        <TableHeading title="Visitor List" />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -335,22 +335,22 @@ const Visitor = () => {
                                     <TableHead >
                                         <TableRow>
                                             <StyledTableCell className={classes.paddedRow}>No.</StyledTableCell>
-                                            <StyledTableCell>Name</StyledTableCell>
-                                            <StyledTableCell>Address</StyledTableCell>
-                                            <StyledTableCell>Contact No.</StyledTableCell>
-                                            <StyledTableCell>Email Id</StyledTableCell>
+                                            <StyledTableCell align='center'>Name</StyledTableCell>
+                                            <StyledTableCell align='center'>Address</StyledTableCell>
+                                            <StyledTableCell align='center'>Contact No.</StyledTableCell>
+                                            <StyledTableCell align='center'>Email Address</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {visitorDetails?.response?.map((row, index) => (
                                             <StyledTableRow key={index} >
                                                 <StyledTableCell>{index + 1}</StyledTableCell>
-                                                <StyledTableCell className={classes.paddedRow} component="th" scope="row">
+                                                <StyledTableCell align='center' className={classes.paddedRow} >
                                                     {row.name}
                                                 </StyledTableCell>
-                                                <StyledTableCell>{row.address}</StyledTableCell>
-                                                <StyledTableCell>{row.mobileNo}</StyledTableCell>
-                                                <StyledTableCell>{row.email}</StyledTableCell>
+                                                <StyledTableCell align='center'>{row.address}</StyledTableCell>
+                                                <StyledTableCell align='center'>{row.mobileNo}</StyledTableCell>
+                                                <StyledTableCell align='center'>{row.email}</StyledTableCell>
                                             </StyledTableRow>
                                         ))}
                                     </TableBody>

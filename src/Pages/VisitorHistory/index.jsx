@@ -108,7 +108,11 @@ const VisitorHistory = () => {
 
     const _getVisitorHistory = () => {
         toggleLoader();
-        axios.get('receptionist/visitorHistory').then((res) => {
+        let body = {
+            limit: rowsPerPage,
+            page: page + 1
+        }
+        axios.post('/visitorHistory', body).then((res) => {
             if (res?.data?.data) {
                 setVisitorHistoryDetails(res?.data?.data)
                 console.log('res?.data?.data👌', res)
@@ -138,8 +142,8 @@ const VisitorHistory = () => {
                                         <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
                                         <StyledTableCell>Name</StyledTableCell>
                                         <StyledTableCell>Address</StyledTableCell>
-                                        <StyledTableCell>Contact No.</StyledTableCell>
                                         <StyledTableCell>Email Id</StyledTableCell>
+                                        <StyledTableCell>Contact No.</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -149,8 +153,8 @@ const VisitorHistory = () => {
                                                 <StyledTableCell>{index + 1}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.name}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.address}</StyledTableCell>
-                                                <StyledTableCell>{row?.userDetail?.mobileNo}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.email}</StyledTableCell>
+                                                <StyledTableCell>{row?.userDetail?.mobileNo}</StyledTableCell>
                                             </StyledTableRow>
                                         ))}
                                 </TableBody>

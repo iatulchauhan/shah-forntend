@@ -24,7 +24,7 @@ import { useState } from "react";
 import Assets from "./ImageContainer";
 import { makeStyles } from "tss-react/mui";
 import { getLSItem } from "../../APiSetUp/LocalStorage";
-
+import axios from "../../APiSetUp/axios";
 
 const drawerWidth = 275;
 
@@ -104,6 +104,67 @@ const useStyles = makeStyles()((theme) => {
 
   };
 });
+const menuIconList = [
+  {
+    title: "Dashboard",
+    icon: (<Assets src="/assets/icons/dashboard.svg" absolutePath={true} />),
+
+  },
+  {
+    title: "Create User",
+    icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Create Branch",
+    icon: <Assets src="/assets/icons/branches.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Client List",
+    icon: <Assets src="/assets/icons/client.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Visitor List",
+    icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Email",
+    icon: <Assets src="/assets/icons/sms.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Offer",
+    icon: <Assets src="/assets/icons/discount-shape.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Financial Data",
+    icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Meeting List",
+    icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Expiring Plan List",
+    icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Visitor History",
+    icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
+
+  },
+  {
+    title: "Payment",
+    icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
+  },
+];
 
 export default function SideBar(props) {
   const width = window.innerWidth;
@@ -111,15 +172,40 @@ export default function SideBar(props) {
   const location = useLocation();
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
-  const { user, logout, toggleSideBar } = useAppContext();
+  const { user, logout, toggleSideBar, toggleLoader, OnUpdateError } = useAppContext();
+
+  const [menuList, setMenuList] = useState([]);
 
   const [open, setOpen] = useState(width > 991 ? true : false);
   const userType = JSON.parse(getLSItem("user"))?.userType
-  console.log(userType, "userTypeuserType")
+  console.log(menuList, "menuListmenuList")
 
   const getMenuListByRole = () => {
+    toggleLoader();
+    axios.post(`/permissions`).then((res) => {
+      if (res?.data?.data) {
+        const dynamicMenuList = res.data.data.map((menuItem) => ({
+          ...menuItem,
+          activeLinks: (menuItem.path && menuItem.path.substring(1).split('/').filter(Boolean)) || [""],
+          icon: menuIconList?.length > 0 && menuIconList?.map((e) => { if (e?.title === menuItem?.page) return e?.icon })
+        }));
 
+        setMenuList(dynamicMenuList);
+      }
+      toggleLoader();
+    }).catch((err) => {
+      toggleLoader();
+      OnUpdateError(err.data.message);
+    });
   }
+
+
+  const handleDrawerOpen = () => {
+    setOpen(!open);
+    toggleSideBar();
+  };
+
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -136,10 +222,7 @@ export default function SideBar(props) {
     };
   }, []);
 
-  const handleDrawerOpen = () => {
-    setOpen(!open);
-    toggleSideBar();
-  };
+
 
   const adminMenus = [
     {
@@ -147,7 +230,6 @@ export default function SideBar(props) {
       icon: (<Assets src="/assets/icons/dashboard.svg" absolutePath={true} />),
       link: "/",
       activeLinks: [""],
-      
     },
     {
       title: "Create User",
@@ -217,39 +299,6 @@ export default function SideBar(props) {
     },
   ];
 
-  const receptionMenus = [
-    {
-      title: "Dashboard",
-      icon: (
-        <Assets src="/assets/icons/dashboard.svg" absolutePath={true}
-        />
-      ),
-      link: "/",
-      activeLinks: [""],
-    },
-    {
-      title: "Visitor List",
-      icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
-      link: "/receptionist-visitor",
-      activeLinks: ["receptionist-visitor"],
-    },
-    {
-      title: "Visitor History",
-      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
-      link: "/receptionist-visitor-history",
-      activeLinks: ["receptionist-visitor-history"],
-    },
-    {
-      title: "Schedule Meeting",
-      icon: <Assets src="/assets/icons/rec-meeting.svg" absolutePath={true} />,
-      link: "/receptionist-meeting-list",
-      activeLinks: ["receptionist-meeting-list"],
-    },
-
-  ];
-
-  const sideMenuList = userType === 2 ? receptionMenus : adminMenus
-
   const logoutAdmin = () => {
     Swal.fire({
       title: "<strong>Warning</strong>",
@@ -267,6 +316,11 @@ export default function SideBar(props) {
       }
     });
   };
+
+
+  React.useEffect(() => {
+    getMenuListByRole()
+  }, [])
   return (
     <>
       {location?.pathname === "/login" || location?.pathname === "/register" ? <>{props.children}</> : <Box sx={{ display: "flex" }}>
@@ -333,9 +387,9 @@ export default function SideBar(props) {
               backgroundColor: "transparent"
             }
           }}>
-            {sideMenuList.map((item, index) => (
+            {menuList.map((item, index) => (
               <Link
-                to={item.link}
+                to={item.path}
                 className={
                   item?.activeLinks?.includes(location.pathname.split("/")?.[1])
                     ? "active"
@@ -381,11 +435,12 @@ export default function SideBar(props) {
                         justifyContent: "center",
                       }}
                     >
+
                       {item?.icon}
                     </ListItemIcon>
                     <ListItemText
                       style={{ whiteSpace: "nowrap", }}
-                      primary={item?.title}
+                      primary={item?.page}
                       sx={{
                         color: item?.activeLinks?.includes(
                           location.pathname.split("/")?.[1]
