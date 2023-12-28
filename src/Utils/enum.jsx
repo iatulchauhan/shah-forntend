@@ -16,3 +16,11 @@ export const Roles = {
     Marketing: 5,
     Visitor: 6,
 };
+
+export const meetingStatus = {
+    approvalPending: 0, approved: 1, onGoing: 2, completed: 3, canceled: 4
+}
+
+export const permissionStatus = {
+    view: 0, create: 1, update: 2, delete: 3, active_inactive: 4
+}

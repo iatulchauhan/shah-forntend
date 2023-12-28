@@ -101,8 +101,8 @@ const Branches = () => {
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
     const [selectedState, setSelectedState] = useState("");
-    const [rowsPerPage, setRowsPerPage] = useState(5);          
-    const [page, setPage] = useState(0);     
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [page, setPage] = useState(0);
 
 
     const handleChangePage = (newPage) => { setPage(newPage); };
@@ -155,7 +155,11 @@ const Branches = () => {
 
     const _getBranches = () => {
         toggleLoader();
-        axios.get(`admin/branch?limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
+        let body = {
+            limit: rowsPerPage,
+            page: page + 1
+        }
+        axios.post(`/branch`, body).then((res) => {
             if (res?.data?.data) {
                 setBrancheDetails(res?.data?.data)
             }
@@ -216,7 +220,7 @@ const Branches = () => {
             id: userId,
             isActive: isActive,
         };
-        axios.post("admin/branch/activeInactive", body)
+        axios.post("branch/activeInactive", body)
             .then((res) => {
                 toggleLoader();
             })
@@ -250,7 +254,7 @@ const Branches = () => {
             if (data?._id) {
                 body.id = data?._id
             }
-            axios.post(`admin/branch/${data?._id ? "update" : "create"}`, body).then((res) => {
+            axios.post(`branch/${data?._id ? "update" : "create"}`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     handleClear()

@@ -64,9 +64,9 @@ function App() {
               <Route path="/otp-verification" element={<OTPverification />} />
               <Route path="/reset-password" element={<Resetpassword />} />
               <Route path="/visitor-history" element={<VisitorHistory />} />
-              <Route path="/receptionist-visitor-history" element={<ReceptionistVisitorHistory />} />
+              {/* <Route path="/receptionist-visitor-history" element={<ReceptionistVisitorHistory />} />
               <Route path="/receptionist-visitor" element={<ReceptionistVisitor />} />
-              <Route path="/receptionist-meeting-list" element={<ReceptionistMeetingList />} />
+              <Route path="/receptionist-meeting-list" element={<ReceptionistMeetingList />} /> */}
             </Route>
           </Routes>
         </Layout>

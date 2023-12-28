@@ -67,7 +67,7 @@ const Register = () => {
         setIsSubmit(true)
         if (handleValidation()) {
             toggleLoader();
-            axios.post("admin/signUp", {
+            axios.post("signUp", {
                 name: data?.name,
                 email: data?.email,
                 password: data?.password

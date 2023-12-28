@@ -23,8 +23,9 @@ import { lightTheme } from '../../theme';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import AddMeeting from '../../Components/Meeting';
 import { useEffect } from 'react';
-import { Roles } from '../../Utils/enum';
+import { Roles, meetingStatus } from '../../Utils/enum';
 import dayjs from 'dayjs';
+import TextLabel from '../../Components/Common/Fields/TextLabel';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -115,13 +116,15 @@ const MeetingList = () => {
     const { classes } = useStyles();
     const { OnUpdateError, toggleLoader } = useAppContext();
     const statusColors = {
-        'Pending Approval': '#EB5757',
-        'Accepted': '#2391C1',
-        'Completed': '#4CC123',
+        0: '#ffcc00',
+        1: '#00cc00',
+        2: "#3366cc",
+        3: '#339933',
+        4: "#cc0000"
     };
     //States
     const [model, setModel] = useState(false);
-    const [data, setData] = useState({})
+    const [data, setData] = useState({ meetingDate: null })
     const [error, setError] = useState({})
     const [isEdit, setIsEdit] = useState(false)
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -131,6 +134,9 @@ const MeetingList = () => {
     const [clients, setClients] = useState([]);
     const [selectedClient, setSelectedClient] = useState([]);
     const [selectedInviteTo, setSelectedInviteTo] = useState([]);
+    const [meetingDetails, setMeetingDetails] = useState([]);
+    const [meetingId, setMeetingId] = useState("");
+    console.log(selectedClient, "selectedClient")
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -139,7 +145,6 @@ const MeetingList = () => {
         setPage(0);
     };
     const convertToAmPm = (timeInMinutes) => {
-        console.log(timeInMinutes, "timeInMinutes")
         const hours = Math.floor(timeInMinutes / 60);
         const minutes = timeInMinutes % 60;
         const period = hours < 12 ? 'AM' : 'PM';
@@ -149,9 +154,15 @@ const MeetingList = () => {
 
     const _getSlotTimes = () => {
         toggleLoader();
-        let body = '/slotTimes'
-        axios.get(body).then((res) => {
+        let body = {
+            "client": clients?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
+            "meetingWith": clients?.response?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
+            "meetingDate": dayjs(data?.meetingDate).format('DD/MM/YYYY'),
+        }
+
+        axios.post('/slotTimes', body).then((res) => {
             if (res?.data?.data) {
+                console.log(res?.data?.data?.response, "slot response")
                 setSlotTimes(res?.data?.data?.slot_time)
             }
             toggleLoader();
@@ -164,7 +175,7 @@ const MeetingList = () => {
 
     const _getClients = () => {
         toggleLoader();
-        axios.post(`admin/users`).then((res) => {
+        axios.post(`users`).then((res) => {
             if (res?.data?.data) {
                 setClients(res?.data?.data)
             }
@@ -194,9 +205,9 @@ const MeetingList = () => {
         // Update the isBooked property in the state
         const updatedData = slotTimes.map((slot) => {
             if (updatedSlots.includes(slot.startTime)) {
-                return { ...slot, isSelected: true, isBooked: true };
+                return { ...slot, isBooked: true };
             } else {
-                return { ...slot, isSelected: false, isBooked: false };
+                return { ...slot, isBooked: false };
             }
         });
 
@@ -242,15 +253,27 @@ const MeetingList = () => {
         setData({})
         setError({})
         setIsEdit(false)
+        setClients([])
+        setSelectedInviteTo([])
+        setSelectedClient([])
+        setSelectedSlots([])
+        setSlotTimes([])
+        setMeetingId("")
     }
 
-    const _getMeeting = () => {
+    const _getMeetingList = () => {
         toggleLoader();
-        axios.get(`admin/branch?limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
+        let body = {
+            "limit": rowsPerPage,
+            "page": page + 1
+        }
+        axios.post(`meetingList`, body).then((res) => {
+            console.log(res, "resres")
             if (res?.data?.data) {
-                // setMeetingDetails(res?.data?.data)
+                setMeetingDetails(res?.data?.data)
+                // toggleLoader()
             }
-            toggleLoader();
+            toggleLoader()
         }).catch((err) => {
             toggleLoader();
             OnUpdateError(err.data.message);
@@ -270,7 +293,7 @@ const MeetingList = () => {
             if (data?._id) {
                 body.id = data?._id
             }
-            axios.post(`admin/meeting/create`, body).then((res) => {
+            axios.post(`meeting/create`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     handleClear()
@@ -285,8 +308,10 @@ const MeetingList = () => {
     }
 
     useEffect(() => {
-        _getSlotTimes()
-    }, [])
+        if (selectedClient?.length > 0 && data?.meetingDate && selectedInviteTo?.length > 0) {
+            _getSlotTimes()
+        }
+    }, [data?.meetingDate])
 
     useEffect(() => {
         if (model) {
@@ -294,8 +319,30 @@ const MeetingList = () => {
         }
     }, [model])
 
+    useEffect(() => {
+        (async () => {
+            console.log(meetingId, model, "meetingId")
+            if (model && meetingId) {
+                toggleLoader()
+                await axios.get(`meeting/by_id/${meetingId}`).then((res) => {
+                    if (res?.data?.data) {
+                        const updatedMeetingDetails = res?.data?.data?.[0]
+                        setData({ ...data, title: updatedMeetingDetails?.title, meetingDate: updatedMeetingDetails?.meetingDate })
+                        setSelectedClient(updatedMeetingDetails?.clientDetails?.name || "")
+                        setSelectedInviteTo(updatedMeetingDetails?.meetingWithDetails?.name || "")
+                        console.log(updatedMeetingDetails, "meetingDetails")
+                    }
+                    toggleLoader();
+                }).catch((err) => {
+                    toggleLoader();
+                    OnUpdateError(err.data.message);
+                })
+            }
+        })();
+    }, [model, meetingId])
+
     React.useEffect(() => {
-        _getMeeting()
+        _getMeetingList()
     }, [page, rowsPerPage])
 
     return (
@@ -310,41 +357,52 @@ const MeetingList = () => {
                             <Table sx={{ minWidth: 600 }} aria-label="customized table">
                                 <TableHead >
                                     <TableRow>
-                                        <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
-                                        <StyledTableCell>Title</StyledTableCell>
+                                        <StyledTableCell className={classes.paddedRow}>No.</StyledTableCell>
+                                        {/* <StyledTableCell>Title</StyledTableCell> */}
+                                        <StyledTableCell>Client</StyledTableCell>
                                         <StyledTableCell>Meeting With</StyledTableCell>
                                         <StyledTableCell>Date</StyledTableCell>
-                                        <StyledTableCell>Start Time</StyledTableCell>
-                                        <StyledTableCell>Status</StyledTableCell>
+                                        <StyledTableCell align='center'>Start Time</StyledTableCell>
+                                        <StyledTableCell align='center'>Status</StyledTableCell>
                                         <StyledTableCell>Creator</StyledTableCell>
                                         <StyledTableCell align="right">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows.map((row, index) => (
+                                    {meetingDetails?.response?.map((row, index) => (
                                         <StyledTableRow key={index} >
-                                            <StyledTableCell>{row.key}</StyledTableCell>
+                                            <StyledTableCell>{index + 1}</StyledTableCell>
+                                            {/* <StyledTableCell className={classes.paddedRow} component="th" scope="row">
+                                                {row?.title}
+                                            </StyledTableCell> */}
                                             <StyledTableCell className={classes.paddedRow} component="th" scope="row">
-                                                {row.title}
+                                                {row?.clientDetails?.name}
                                             </StyledTableCell>
-                                            <StyledTableCell>{row.meeting}</StyledTableCell>
-                                            <StyledTableCell>{row.date}</StyledTableCell>
-                                            <StyledTableCell>{row.startTime}</StyledTableCell>
-                                            <StyledTableCell className={classes.paddedRow} data-status={row.status}>
-                                                <CommonButton
-                                                    text={row.status}
-                                                    type="submit"
-                                                    background={statusColors[row.status] || ''}
-                                                    borderRadius='8px'
-                                                />
+                                            <StyledTableCell>{row?.meetingWithDetails?.name}</StyledTableCell>
+                                            <StyledTableCell>{row?.meetingDate}</StyledTableCell>
+                                            <StyledTableCell align='center'>{row?.startTime}</StyledTableCell>
+                                            <StyledTableCell className={classes.paddedRow} align='center'>
+                                                <TextLabel fontSize={"12px"} color={"white"} fontWeight={"400"} title={row?.status === meetingStatus?.approvalPending ? "Approval Pending"
+                                                    : row?.status === meetingStatus?.approved ? "Approved"
+                                                        : row?.status === meetingStatus?.onGoing ? "onGoing" :
+                                                            row?.status === meetingStatus?.completed ? "Completed" :
+                                                                row?.status === meetingStatus?.canceled ? "Canceled" : ""}
+                                                    textAlign={'center'}
+                                                    style={{
+                                                        backgroundColor: statusColors[row?.status],
+                                                        borderRadius: '20px',
+                                                        width: '130px',
+                                                        padding: '5px 5px'
+                                                    }} />
                                             </StyledTableCell>
-                                            <StyledTableCell>{row.creator}</StyledTableCell>
+                                            <StyledTableCell>{row?.creatorDetails?.name}</StyledTableCell>
                                             <StyledTableCell>
                                                 <Box display={"flex"} justifyContent={"end"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}
                                                         absolutePath={true}
+                                                        onClick={() => { setModel(true); setMeetingId(row?._id) }}
                                                     />
                                                     <Assets
                                                         className={classes.viewBox}

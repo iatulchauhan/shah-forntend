@@ -81,6 +81,22 @@ const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, co
                     />
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedClient ? error?.selectedClient : ""} />
                 </Grid>
+
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <AutoCompleteSearch
+                        fullWidth
+                        backgroundColor="white"
+                        text="Invite To"
+                        handleChange={(e, newValue) => setSelectedInviteTo(newValue)}
+                        options={clients?.response?.filter((e) => e?.userType === Roles.Counsellor || e?.userType === Roles.Accountant)?.map((e) => e?.name) || []}
+                        name="selectedInviteTo"
+                        defaultValue={selectedInviteTo || ""}
+                        freeSolo
+                        blurOnSelect
+                        placeholder={"Select Invite"}
+                    />
+                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedInviteTo ? error?.selectedInviteTo : ""} />
+                </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={6} className={classes.customLabel}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} >
                         <DemoContainer components={['DesktopDatePicker']}                        >
@@ -93,22 +109,7 @@ const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, co
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.meetingDate ? error?.meetingDate : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <AutoCompleteSearch
-                        fullWidth
-                        backgroundColor="white"
-                        text="Invite To"
-                        handleChange={(e, newValue) => setSelectedInviteTo(newValue)}
-                        options={clients?.response?.filter((e) => e?.userType === Roles.Counsellor || e?.userType === Roles.Receptionist)?.map((e) => e?.name) || []}
-                        name="selectedInviteTo"
-                        defaultValue={selectedInviteTo || ""}
-                        freeSolo
-                        blurOnSelect
-                        placeholder={"Select Invite"}
-                    />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedInviteTo ? error?.selectedInviteTo : ""} />
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <TextLabel fontSize={"15px"} color={"#151D48"} fontWeight={"400"} title={'Start Time'} style={{ padding: '3px' }} />
+                    <TextLabel fontSize={"15px"} color={"#151D48"} fontWeight={"400"} title={'Schedule Time'} style={{ padding: '3px' }} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12} display={"flex"} flexWrap={"wrap"} gap={2}>
                     {slotTimes?.map((e) => {
@@ -117,12 +118,13 @@ const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, co
                                 label={`${convertToAmPm(e?.startTime)}`}
                                 style={{
                                     borderRadius: '10px',
-                                    border: `1px solid ${e.isSelected === true ? 'var(--selected, #EDF2F6)' : 'var(--border, #EDF2F6)'}`,
-                                    background: e.isSelected === true ? 'var(--border, #EDF2F6)' : 'var(--White, #FFF)',
+                                    border: `1px solid ${e.isBooked === true ? 'var(--selected, #EDF2F6)' : 'var(--border, #EDF2F6)'}`,
+                                    background: e.isBooked === true ? 'var(--border, #EDF2F6)' : 'var(--White, #FFF)',
                                     height: '42px',
-                                    color: e.isSelected === true ? 'var(--White, #000)' : 'var(--text, #000)',
+                                    color: e.isBooked === true ? 'var(--White, #000)' : 'var(--text, #000)',
                                 }}
                                 onClick={() => handleSlotClick(e.startTime)}
+                                disabled={e.isBooked}
                             />
                         )
                     })}

@@ -116,6 +116,10 @@ export default function SideBar(props) {
   const [open, setOpen] = useState(width > 991 ? true : false);
   const userType = JSON.parse(getLSItem("user"))?.userType
   console.log(userType, "userTypeuserType")
+
+  const getMenuListByRole = () => {
+
+  }
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -136,25 +140,14 @@ export default function SideBar(props) {
     setOpen(!open);
     toggleSideBar();
   };
+
   const adminMenus = [
     {
       title: "Dashboard",
-      icon: (
-        // <FeatherIcon
-        //   icon="home"
-        //   style={{
-        //     color: location.pathname === "/dashboard" ? "#FFFFFF" : "#424448",
-        //   }}
-        // />
-        <Assets src="/assets/icons/dashboard.svg" absolutePath={true}
-        // style={{
-        //   color: location.pathname === "/" ? "red" : "red",
-        //   background: "red"
-        // }}
-        />
-      ),
+      icon: (<Assets src="/assets/icons/dashboard.svg" absolutePath={true} />),
       link: "/",
       activeLinks: [""],
+      
     },
     {
       title: "Create User",
@@ -223,6 +216,7 @@ export default function SideBar(props) {
       activeLinks: ["payment"],
     },
   ];
+
   const receptionMenus = [
     {
       title: "Dashboard",

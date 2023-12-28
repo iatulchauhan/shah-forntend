@@ -84,7 +84,7 @@ const Email = () => {
 
     const _getUsers = () => {
         toggleLoader();
-        axios.post('admin/users',).then((res) => {
+        axios.post('/users',).then((res) => {
             if (res?.data?.data) {
                 setUser(res?.data?.data)
             }
@@ -180,7 +180,7 @@ const Email = () => {
                 "pdf": imageData,
                 "image": pdfData
             }
-            axios.post(`admin/send_email`, body)
+            axios.post(`send_email`, body)
                 .then((res) => {
                     if (res?.data?.data) {
                     }
@@ -197,7 +197,7 @@ const Email = () => {
         let body = {
 
         }
-        axios.post(`admin/emails_list`, body)
+        axios.post(`emails_list`, body)
             .then((res) => {
                 if(res?.data?.data){
                     setEmailsList(res?.data?.data)

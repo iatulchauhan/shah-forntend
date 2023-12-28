@@ -266,12 +266,12 @@ const User = () => {
 
     const _getUsers = () => {
         toggleLoader();
-        // let body = `admin/users?limit=${rowsPerPage}&page=${page + 1}`
+        // let body = `/users?limit=${rowsPerPage}&page=${page + 1}`
         let body = {
             limit: rowsPerPage,
             page: page + 1
         }
-        axios.post('admin/users', body).then((res) => {
+        axios.post('/users', body).then((res) => {
             if (res?.data?.data) {
                 setUserDetails(res?.data?.data)
             }
@@ -284,15 +284,18 @@ const User = () => {
     }
 
     const _getBranches = () => {
-        axios.get("/admin/branch")
-            .then((res) => {
-                if (res?.data?.data?.response) {
-                    setBranches(res?.data?.data?.response)
-                }
-            }).catch((err) => {
-                toggleLoader();
-                OnUpdateError(err.data.message);
-            })
+        let body = {
+            limit: rowsPerPage,
+            page: page + 1
+        }
+        axios.post(`/branch`, body).then((res) => {
+            if (res?.data?.data?.response) {
+                setBranches(res?.data?.data?.response)
+            }
+        }).catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+        })
     }
 
     const _getCountries = async () => {
@@ -373,7 +376,7 @@ const User = () => {
     const _handleDelete = () => {
         if (deleteId) {
             toggleLoader();
-            axios.delete(`/admin/users/delete/${deleteId}`)
+            axios.delete(`/users/delete/${deleteId}`)
                 .then((res) => {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     toggleLoader();
@@ -419,7 +422,7 @@ const User = () => {
             }
             // if (data?._id && data?.userType === 1)
 
-            axios.post(`admin/users/${data?._id ? "update" : "create"}`, body).then((res) => {
+            axios.post(`/users/${data?._id ? "update" : "create"}`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     handleClear()

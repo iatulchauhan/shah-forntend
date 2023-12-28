@@ -180,7 +180,7 @@ const Visitor = () => {
             page: page + 1,
             userType: [Roles.Visitor]
         }
-        axios.post('admin/users', body).then((res) => {
+        axios.post('/users', body).then((res) => {
             if (res?.data?.data) {
                 setVisitorDetails(res?.data?.data)
             }

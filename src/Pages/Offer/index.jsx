@@ -106,7 +106,7 @@ const OfferPage = () => {
 
     const _getOffer = () => {
         toggleLoader();
-        axios.get("admin/offer").then((res) => {
+        axios.get("offer").then((res) => {
             if (res?.data?.data) {
                 setOfferDetails(res?.data?.data)
             }
@@ -121,7 +121,7 @@ const OfferPage = () => {
     const _handleDelete = () => {
         if (deleteId) {
             toggleLoader();
-            axios.delete(`/admin/offer/delete/${deleteId}`)
+            axios.delete(`/offer/delete/${deleteId}`)
                 .then((res) => {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     toggleLoader();
@@ -147,7 +147,7 @@ const OfferPage = () => {
             if (data?._id) {
                 body.id = data?._id
             }
-            axios.post(`admin/offer/${data?._id ? "update" : "create"}`, body).then((res) => {
+            axios.post(`offer/${data?._id ? "update" : "create"}`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     setModel(false)

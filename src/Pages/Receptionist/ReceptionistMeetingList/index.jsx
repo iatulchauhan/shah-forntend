@@ -265,7 +265,7 @@ const ReceptionistMeetingList = () => {
 
     const _getMeeting = () => {
         toggleLoader();
-        axios.get(`admin/branch?limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
+        axios.get(`branch?limit=${rowsPerPage}&page=${page + 1}`).then((res) => {
             if (res?.data?.data) {
                 // setMeetingDetails(res?.data?.data)
             }
