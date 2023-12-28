@@ -172,7 +172,7 @@ export default function SideBar(props) {
   const location = useLocation();
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
-  const { user, logout, toggleSideBar, toggleLoader, OnUpdateError } = useAppContext();
+  const { user, logout, toggleSideBar, toggleLoader, OnUpdateError ,auth_token} = useAppContext();
 
   const [menuList, setMenuList] = useState([]);
 
@@ -319,8 +319,10 @@ export default function SideBar(props) {
 
 
   React.useEffect(() => {
-    getMenuListByRole()
-  }, [])
+    if(auth_token){
+      getMenuListByRole()
+    }
+  }, [auth_token])
   return (
     <>
       {location?.pathname === "/login" || location?.pathname === "/register" ? <>{props.children}</> : <Box sx={{ display: "flex" }}>
