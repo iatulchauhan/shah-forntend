@@ -11,7 +11,7 @@ const useStyles = makeStyles()((theme) => {
   return {
     root: {
       width: "100%",
-      backgroundColor: '#fffcfc',
+      // backgroundColor: '#fffcfc',
       borderRadius: '5px',
       border: `1px solid ${theme.palette.bgLightExtraGray.main}`,
       fontSize: "12px",
@@ -27,9 +27,10 @@ const useStyles = makeStyles()((theme) => {
       borderTop: `1px solid ${theme.palette.bgLightExtraGray.main}`,
       // borderRadius: theme.shape.borderRadius,
       fontSize: "12px",
+      marginLeft: '10px'
     },
     editorContainer: {
-      margin: `${theme.spacing(1)} 0px 0px ${theme.spacing(1)} !important`,
+      margin: `${theme.spacing(1)} 0px 0px ${theme.spacing(3)} !important`,
       fontSize: "14px",
     },
     anchorLink: {

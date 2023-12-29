@@ -102,7 +102,12 @@ const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, co
                         <DemoContainer components={['DesktopDatePicker']}                        >
                             <DemoItem label="Meeting Date" >
                                 <DesktopDatePicker className={classes.dateBox} inputFormat="MM/dd/yyyy" name='date'
-                                    value={dayjs(data?.meetingDate)} defaultValue={dayjs(data?.meetingDate)} onChange={(newValue) => setData({ ...data, meetingDate: newValue })} />
+                                    value={data?.meetingDate ? dayjs(new Date(data.meetingDate)) : null}
+                                    defaultValue={data?.meetingDate ? dayjs(new Date(data.meetingDate)) : null}
+                                    onChange={(newValue) => {
+                                        console.log(newValue, "newValue")
+                                        setData({ ...data, meetingDate: newValue })
+                                    }} />
                             </DemoItem>
                         </DemoContainer>
                     </LocalizationProvider>
@@ -118,10 +123,10 @@ const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, co
                                 label={`${convertToAmPm(e?.startTime)}`}
                                 style={{
                                     borderRadius: '10px',
-                                    border: `1px solid ${e.isBooked === true ? 'var(--selected, #EDF2F6)' : 'var(--border, #EDF2F6)'}`,
-                                    background: e.isBooked === true ? 'var(--border, #EDF2F6)' : 'var(--White, #FFF)',
+                                    border: `1px solid ${e.isSelected === true ? 'var(--selected, #EDF2F6)' : 'var(--border, #EDF2F6)'}`,
+                                    background: e.isSelected === true ? 'var(--border, #EDF2F6)' : 'var(--White, #FFF)',
                                     height: '42px',
-                                    color: e.isBooked === true ? 'var(--White, #000)' : 'var(--text, #000)',
+                                    color: e.isSelected === true ? 'var(--White, #000)' : 'var(--text, #000)',
                                 }}
                                 onClick={() => handleSlotClick(e.startTime)}
                                 disabled={e.isBooked}

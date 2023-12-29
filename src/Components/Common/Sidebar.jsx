@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -13,14 +13,9 @@ import ListItemText from "@mui/material/ListItemText";
 import Header from "./Header";
 // import FeatherIcon from "feather-icons-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Collapse, Typography } from "@mui/material";
 import Footer from "./Footer";
 import { useAppContext } from "../../Context/context";
 import Swal from "sweetalert2";
-import { useRef } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
 import Assets from "./ImageContainer";
 import { makeStyles } from "tss-react/mui";
 import { getLSItem } from "../../APiSetUp/LocalStorage";
@@ -172,7 +167,7 @@ export default function SideBar(props) {
   const location = useLocation();
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
-  const { user, logout, toggleSideBar, toggleLoader, OnUpdateError ,auth_token} = useAppContext();
+  const { user, logout, toggleSideBar, toggleLoader, OnUpdateError, auth_token } = useAppContext();
 
   const [menuList, setMenuList] = useState([]);
 
@@ -319,7 +314,7 @@ export default function SideBar(props) {
 
 
   React.useEffect(() => {
-    if(auth_token){
+    if (auth_token) {
       getMenuListByRole()
     }
   }, [auth_token])

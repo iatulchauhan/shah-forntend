@@ -30,14 +30,16 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const FileUpload = ({ handleFileChange, selectedFile, OnDelate, text }) => {
+const FileUpload = ({ handleFileChange, selectedFile, OnDelate, text, acceptFile }) => {
     const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"];
     const { classes } = useStyles();
     return (
         <Box p={1} border="1px dashed #ccc" borderRadius={2} textAlign="center" display={'flex'} justifyContent={'space-between'} width={'100%'} alignItems={'center'}>
             <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}  >
                 {text ? text : "Upload Image"}
-                <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+                <VisuallyHiddenInput type="file" onChange={handleFileChange} onClick={(event) => {
+                    event.target.value = null
+                }} accept={acceptFile} />
             </Button>
             {selectedFile && (
                 <Box width={'50%'} display={'flex'} alignItems={'center'} gap={2} textAlign='end' justifyContent={'flex-end'}>

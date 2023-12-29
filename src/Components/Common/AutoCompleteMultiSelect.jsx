@@ -160,6 +160,7 @@ const AutoCompleteMultiSelect = ({ width,
                     onChange={handleChange}
                     getOptionLabel={getOptionLabel}
                     defaultValue={defaultValue}
+                    value={defaultValue}
                     filterSelectedOptions
                     renderInput={(params) => (
                         <TextField
@@ -168,7 +169,7 @@ const AutoCompleteMultiSelect = ({ width,
                             placeholder={placeholder}
                             onChange={handleSearch}
                             disabled={disabled ? disabled : ""}
-                            value={searchValue}
+                            value={defaultValue}
                             name={name}
                             onBlur={onBlur}
                         />

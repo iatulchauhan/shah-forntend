@@ -23,7 +23,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 const Email = () => {
   const { OnUpdateError, toggleLoader } = useAppContext();
   const [data, setData] = useState({});
-  const [user, setUser] = useState([]);
+  const [users, setUsers] = useState([]);
   const [multiSelectedUser, setMultiSelectedUser] = useState([]);
   const [imageData, setImageData] = useState();
   const [pdfData, setPdfData] = useState();
@@ -31,7 +31,8 @@ const Email = () => {
   const [emailsList, setEmailsList] = useState();
   const [emailForm, setEmailForm] = useState(true);
   const [getEmailData, setGetEmailData] = useState("");
-
+  const [description, setDescription] = useState("")
+  console.log(error, "errorerrorerror")
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevState) => ({
@@ -55,7 +56,7 @@ const Email = () => {
       formIsValid = false;
       errors["title"] = "Please enter title.";
     }
-    if (!data?.description || data.description.trim() === "") {
+    if (!description || description.trim() === "") {
       formIsValid = false;
       errors["description"] = "Please enter description.";
     }
@@ -77,7 +78,7 @@ const Email = () => {
       .post("users")
       .then((res) => {
         if (res?.data?.data) {
-          setUser(res?.data?.data);
+          setUsers(res?.data?.data);
         }
         toggleLoader();
       })
@@ -87,108 +88,78 @@ const Email = () => {
       });
   };
 
-  const handleImageUpload = async (val, key) => {
+  const handleUpload = async (file, key) => {
     const formData = new FormData();
-    formData.append("image", val);
+    formData.append("image", file);
     toggleLoader();
-    axios
-      .post("/upload/image/attachment", formData)
-      .then((res) => {
-        if (res?.data?.data) {
-          if (key === "Edit") {
-            setImageData(res?.data?.data?.image);
-          } else {
-            setImageData(res?.data?.data);
+    if (file?.size <= 10000000) {
+      axios.post("/upload/image/attachment", formData)
+        .then((res) => {
+          if (res?.data?.data) {
+            if (key === "image") {
+              setImageData(res?.data?.data?.image);
+            } else {
+              setPdfData(res?.data?.data?.image);
+            }
           }
-        }
-        toggleLoader();
-      })
-      .catch((err) => {
-        toggleLoader();
-        OnUpdateError(err.data.message);
-      });
+          setError({ ...error, imageSizeValid: "", pdfSizeValid: "" })
+        })
+        .catch((err) => {
+          toggleLoader();
+          OnUpdateError(err.data.message);
+        });
+    } else {
+      if (key === 'image') {
+        setError({ ...error, imageSizeValid: "Upload file allowed size is 10MB" })
+      } else {
+        setError({ ...error, pdfSizeValid: "Upload file allowed size is 10MB" })
+      }
+    }
+    toggleLoader();
   };
 
-  const handleDeleteImage = () => {
+  const handleDeleteFile = (type) => {
     let body = {
-      url: imageData,
+      url: type === 'image' ? imageData : pdfData,
     };
-    axios
-      .post(`/upload/delete_file`, body)
+    axios.post(`/upload/delete_file`, body)
       .then((res) => {
         swal(res?.data?.message, { icon: "success", timer: 5000 });
-        setImageData(null);
+        type === 'image' ? setImageData(null) : setPdfData(null)
       })
       .catch((err) => {
         OnUpdateError(err.data.message);
       });
   };
 
-  const handlePdfUpload = async (val, key) => {
-    const formData = new FormData();
-    formData.append("image", val);
-    toggleLoader();
-    axios
-      .post("/upload/image/attachment", formData)
-      .then((res) => {
-        if (res?.data?.data) {
-          if (key === "Edit") {
-            setPdfData(res?.data?.data?.image);
-          } else {
-            setPdfData(res?.data?.data);
-          }
-        }
-        toggleLoader();
-      })
-      .catch((err) => {
-        toggleLoader();
-        OnUpdateError(err.data.message);
-      });
-  };
 
-  const handleDeletePdf = () => {
-    let body = {
-      url: pdfData,
-    };
-    axios
-      .post(`/upload/delete_file`, body)
-      .then((res) => {
-        swal(res?.data?.message, { icon: "success", timer: 5000 });
-        setPdfData(null);
-      })
-      .catch((err) => {
-        OnUpdateError(err.data.message);
-      });
-  };
 
   const _sendEmail = () => {
     if (handleValidation()) {
       toggleLoader();
       const selectedUserEmail = multiSelectedUser?.map((item) => item.email);
-      const anotherUserEmail = data?.anotherUser
-        ?.split(",")
-        .map((email) => email.trim());
+      const anotherUserEmail = data?.anotherUser?.split(",").map((email) => email.trim());
 
       let body = {
         emails: [...selectedUserEmail, ...anotherUserEmail],
         title: data?.title,
-        content: data?.description,
+        content: description,
         pdf: imageData,
         image: pdfData,
       };
-      axios
-        .post(`send_email`, body)
-        .then((res) => {
-          if (res?.data?.data) {
-            console.log("res?.data?.data😲", res?.data?.data);
-            toggleLoader();
-            _getEmailsList();
-            setData({});
-            setMultiSelectedUser([]);
-            setImageData(null);
-            setPdfData(null);
-          }
-        })
+      axios.post(`send_email`, body).then((res) => {
+        console.log(res?.data?.data, "res?.data?.data")
+        if (res?.data?.data) {
+          console.log("res?.data?.data😲", res?.data?.data);
+          toggleLoader();
+          setData({});
+          setDescription("")
+          setMultiSelectedUser([]);
+          setImageData(null);
+          setPdfData(null);
+          _getEmailsList();
+        }
+      })
         .catch((err) => {
           toggleLoader();
           OnUpdateError(err.data.message);
@@ -260,9 +231,7 @@ const Email = () => {
           lg={4}
           padding={2}
           sx={{
-            background: "var(--LightGrey, #F9FAFB)",
-            height: "81.7vh",
-            overflow: "scroll",
+            background: "var(--LightGrey, #F9FAFB)", height: "81.7vh", overflow: "scroll",
             "::-webkit-scrollbar": {
               width: "0.5px",
             },
@@ -271,17 +240,24 @@ const Email = () => {
             },
           }}
         >
-          <TextLabel
-            fontSize={"18px"}
-            fontWeight={"600"}
-            color={lightTheme.palette.bgDarkPrimary.main}
-            title={"Inbox"}
-          />
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+            <TextLabel
+              fontSize={"18px"}
+              fontWeight={"600"}
+              color={lightTheme.palette.bgDarkPrimary.main}
+              title={"Email History"}
+            />
+            <CommonButton
+              text={"New Message"}
+              onClick={() => setEmailForm(true)}
+            />
+          </Box>
+
           {emailsList?.response?.map((data) => {
             return (
               <Box
                 padding={2}
-                mt={1}
+                mt={2}
                 pe={3}
                 sx={{
                   background: lightTheme.palette.bgWhite.main,
@@ -334,7 +310,7 @@ const Email = () => {
                         WebkitBoxOrient: "vertical",
                         WebkitLineClamp: 3,
                       }}
-                      title={data.content}
+                      title={<div dangerouslySetInnerHTML={{ __html: data?.content }} />}
                     />
                   </Box>
                 </Box>
@@ -369,11 +345,7 @@ const Email = () => {
                 fontSize={"18px"}
                 fontWeight={"600"}
                 color={lightTheme.palette.bgDarkPrimary.main}
-                title={"Email"}
-              />
-              <CommonButton
-                text={"New Message"}
-                onClick={() => setEmailForm(true)}
+                title={"Compose New Mail"}
               />
             </Grid>
             {emailForm === true ? (
@@ -382,12 +354,10 @@ const Email = () => {
                   <AutoCompleteMultiSelect
                     fullWidth
                     text="Select User"
+                    options={users?.response || []}
                     placeholder={"Select User"}
-                    handleChange={(e, newValue) =>
-                      setMultiSelectedUser(newValue)
-                    }
-                    options={user?.response || []}
-                    name="selectUser"
+                    handleChange={(e, newValue) => setMultiSelectedUser(newValue)}
+                    name="name"
                     getOptionLabel={(option) => option.name}
                     defaultValue={multiSelectedUser || {}}
                     mappingLabel="name"
@@ -437,11 +407,12 @@ const Email = () => {
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                   <TextEditor
-                    // value={data?.description || ""}
+                    // value={description}
                     category={"Description"}
-                    onChange={(value) =>
-                      setData({ ...data, description: value })
-                    }
+                    onChange={(value) => {
+                      console.log(value, "value")
+                      setDescription(value)
+                    }}
                   />
                   <TextLabel
                     fontSize={"12px"}
@@ -461,17 +432,26 @@ const Email = () => {
                     />
                   </Grid>
                   <FileUpload
-                    handleFileChange={(e) =>
-                      handleImageUpload(e.target.files[0], "Edit")
+                    handleFileChange={(e) => {
+                      console.log(e.target.files, "e.target.files")
+                      handleUpload(e.target.files[0], "image")
+                    }
                     }
                     selectedFile={imageData}
-                    OnDelate={handleDeleteImage}
+                    OnDelate={() => handleDeleteFile('image')}
+                    acceptFile="image/png, image/gif, image/jpeg"
                   />
                   <TextLabel
                     fontSize={"12px"}
                     color={"red"}
                     fontWeight={"400"}
                     title={!imageData ? error?.selectImage : ""}
+                  />
+                  <TextLabel
+                    fontSize={"12px"}
+                    color={"red"}
+                    fontWeight={"400"}
+                    title={error?.imageSizeValid}
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -486,11 +466,13 @@ const Email = () => {
                   </Grid>
                   <FileUpload
                     text={"Upload PDF"}
-                    handleFileChange={(e) =>
-                      handlePdfUpload(e.target.files[0], "Edit")
-                    }
+                    handleFileChange={(e) => {
+                      console.log(e.target.files[0], "e.target.files")
+                      handleUpload(e.target.files[0], "pdf")
+                    }}
                     selectedFile={pdfData}
-                    OnDelate={handleDeletePdf}
+                    OnDelate={() => handleDeleteFile('pdf')}
+                    acceptFile='application/pdf'
                   />
                   <TextLabel
                     fontSize={"12px"}
@@ -498,15 +480,15 @@ const Email = () => {
                     fontWeight={"400"}
                     title={!pdfData ? error?.selectPdf : ""}
                   />
+                  <TextLabel
+                    fontSize={"12px"}
+                    color={"red"}
+                    fontWeight={"400"}
+                    title={error?.pdfSizeValid}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
-                  <Box
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginTop: "35px",
-                    }}
-                  >
+                  <Box style={{ display: "flex", justifyContent: "center", marginTop: "35px", }}                  >
                     <CommonButton
                       width={"30%"}
                       text={`Send`}
@@ -551,7 +533,7 @@ const Email = () => {
                         fontSize={"15px"}
                         color={lightTheme.palette.bgLightExtraLightGray.main}
                         variant={"body2"}
-                        title={getEmailData?.content}
+                        title={<div dangerouslySetInnerHTML={{ __html: getEmailData?.content }} />}
                       />
                     </Box>
                     <Box display={"flex"} flexDirection={"column"} gap={"15px"}>
@@ -567,9 +549,7 @@ const Email = () => {
                           />
                           <SectionHeading
                             variant={"caption"}
-                            color={
-                              lightTheme.palette.bgLightExtraLightGray.main
-                            }
+                            color={lightTheme.palette.bgLightExtraLightGray.main}
                             title={"1.50 Mb"}
                           />
                         </Box>
@@ -586,9 +566,7 @@ const Email = () => {
                           />
                           <SectionHeading
                             variant={"caption"}
-                            color={
-                              lightTheme.palette.bgLightExtraLightGray.main
-                            }
+                            color={lightTheme.palette.bgLightExtraLightGray.main}
                             title={"1.50 Mb"}
                           />
                         </Box>

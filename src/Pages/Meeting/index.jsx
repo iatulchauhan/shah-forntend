@@ -136,7 +136,7 @@ const MeetingList = () => {
     const [selectedInviteTo, setSelectedInviteTo] = useState([]);
     const [meetingDetails, setMeetingDetails] = useState([]);
     const [meetingId, setMeetingId] = useState("");
-    console.log(selectedClient, "selectedClient")
+    console.log(data, "datadata")
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -163,7 +163,7 @@ const MeetingList = () => {
         axios.post('/slotTimes', body).then((res) => {
             if (res?.data?.data) {
                 console.log(res?.data?.data?.response, "slot response")
-                setSlotTimes(res?.data?.data?.slot_time)
+                setSlotTimes(res?.data?.data)
             }
             toggleLoader();
         }).catch((err) => {
@@ -205,9 +205,9 @@ const MeetingList = () => {
         // Update the isBooked property in the state
         const updatedData = slotTimes.map((slot) => {
             if (updatedSlots.includes(slot.startTime)) {
-                return { ...slot, isBooked: true };
+                return { ...slot, isSelected: true };
             } else {
-                return { ...slot, isBooked: false };
+                return { ...slot, isSelected: false };
             }
         });
 
@@ -283,6 +283,7 @@ const MeetingList = () => {
     const _addUpdateMeetingSchedule = () => {
         if (handleValidation()) {
             toggleLoader();
+       
             let body = {
                 "title": data?.title,
                 "client": clients?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
@@ -296,6 +297,7 @@ const MeetingList = () => {
             axios.post(`meeting/create`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
+                    _getMeetingList()
                     handleClear()
                 }
                 toggleLoader();
@@ -306,7 +308,7 @@ const MeetingList = () => {
             );
         }
     }
-
+    console.log(selectedClient?.length, data?.meetingDate, selectedInviteTo?.length, "selectedInviteTo?.length")
     useEffect(() => {
         if (selectedClient?.length > 0 && data?.meetingDate && selectedInviteTo?.length > 0) {
             _getSlotTimes()
@@ -326,10 +328,11 @@ const MeetingList = () => {
                 toggleLoader()
                 await axios.get(`meeting/by_id/${meetingId}`).then((res) => {
                     if (res?.data?.data) {
-                        const updatedMeetingDetails = res?.data?.data?.[0]
-                        setData({ ...data, title: updatedMeetingDetails?.title, meetingDate: updatedMeetingDetails?.meetingDate })
+                        console.log(res?.data?.data, "res?.data?.data")
+                        const updatedMeetingDetails = res?.data?.data
                         setSelectedClient(updatedMeetingDetails?.clientDetails?.name || "")
                         setSelectedInviteTo(updatedMeetingDetails?.meetingWithDetails?.name || "")
+                        setData({ ...data, title: updatedMeetingDetails?.title, meetingDate: updatedMeetingDetails?.meetingDate })
                         console.log(updatedMeetingDetails, "meetingDetails")
                     }
                     toggleLoader();
