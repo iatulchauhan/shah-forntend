@@ -15,12 +15,54 @@ import { useAppContext } from "../../Context/context";
 import AutoCompleteMultiSelect from "../../Components/Common/AutoCompleteMultiSelect";
 import swal from "sweetalert";
 import DataNotFound from "../../Components/Common/DataNotFound";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
+import { makeStyles } from "tss-react/mui";
+
+const useStyles = makeStyles()((theme) => {
+  return {
+    emailsList: {
+      background: "var(--LightGrey, #F9FAFB)",
+      height: "81.7vh",
+      overflow: "scroll",
+      "::-webkit-scrollbar": {
+        width: "0.5px",
+      },
+      "::-webkit-scrollbar-thumb": {
+        backgroundColor: "transparent",
+      },
+    },
+    listBox: {
+      background: lightTheme.palette.bgWhite.main,
+      borderRadius: "20px",
+      border: "1px solid #F8F9FA",
+      boxShadow: "0px 4px 20px 0px rgba(238, 238, 238, 0.50)",
+      alignItems: "center",
+    },
+    listBoxText: {
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      display: "-webkit-box",
+      WebkitBoxOrient: "vertical",
+      WebkitLineClamp: 4,
+    },
+    emailContain: {
+      background: "var(--White, #FFF)",
+      height: "81.7vh",
+      overflow: "scroll",
+      "::-webkit-scrollbar": {
+        width: "0.5px",
+      },
+      "::-webkit-scrollbar-thumb": {
+        backgroundColor: "transparent",
+      },
+    },
+    wordBreak: {
+      wordBreak: "break-all",
+    },
+  };
+});
 
 const Email = () => {
+  const { classes } = useStyles();
   const { OnUpdateError, toggleLoader } = useAppContext();
   const [data, setData] = useState({});
   const [users, setUsers] = useState([]);
@@ -31,8 +73,7 @@ const Email = () => {
   const [emailsList, setEmailsList] = useState();
   const [emailForm, setEmailForm] = useState(true);
   const [getEmailData, setGetEmailData] = useState("");
-  const [description, setDescription] = useState("")
-  console.log(error, "errorerrorerror")
+  const [description, setDescription] = useState("");
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevState) => ({
@@ -60,14 +101,14 @@ const Email = () => {
       formIsValid = false;
       errors["description"] = "Please enter description.";
     }
-    if (!imageData) {
-      formIsValid = false;
-      errors["selectImage"] = "Please select Image.";
-    }
-    if (!pdfData) {
-      formIsValid = false;
-      errors["selectPdf"] = "Please enter selectPdf.";
-    }
+    // if (!imageData) {
+    //   formIsValid = false;
+    //   errors["selectImage"] = "Please select Image.";
+    // }
+    // if (!pdfData) {
+    //   formIsValid = false;
+    //   errors["selectPdf"] = "Please enter selectPdf.";
+    // }
     setError(errors);
     return formIsValid;
   };
@@ -93,7 +134,8 @@ const Email = () => {
     formData.append("image", file);
     toggleLoader();
     if (file?.size <= 10000000) {
-      axios.post("/upload/image/attachment", formData)
+      axios
+        .post("/upload/image/attachment", formData)
         .then((res) => {
           if (res?.data?.data) {
             if (key === "image") {
@@ -102,17 +144,23 @@ const Email = () => {
               setPdfData(res?.data?.data?.image);
             }
           }
-          setError({ ...error, imageSizeValid: "", pdfSizeValid: "" })
+          setError({ ...error, imageSizeValid: "", pdfSizeValid: "" });
         })
         .catch((err) => {
           toggleLoader();
           OnUpdateError(err.data.message);
         });
     } else {
-      if (key === 'image') {
-        setError({ ...error, imageSizeValid: "Upload file allowed size is 10MB" })
+      if (key === "image") {
+        setError({
+          ...error,
+          imageSizeValid: "Upload file allowed size is 10MB",
+        });
       } else {
-        setError({ ...error, pdfSizeValid: "Upload file allowed size is 10MB" })
+        setError({
+          ...error,
+          pdfSizeValid: "Upload file allowed size is 10MB",
+        });
       }
     }
     toggleLoader();
@@ -120,46 +168,47 @@ const Email = () => {
 
   const handleDeleteFile = (type) => {
     let body = {
-      url: type === 'image' ? imageData : pdfData,
+      url: type === "image" ? imageData : pdfData,
     };
-    axios.post(`/upload/delete_file`, body)
+    axios
+      .post(`/upload/delete_file`, body)
       .then((res) => {
         swal(res?.data?.message, { icon: "success", timer: 5000 });
-        type === 'image' ? setImageData(null) : setPdfData(null)
+        type === "image" ? setImageData(null) : setPdfData(null);
       })
       .catch((err) => {
         OnUpdateError(err.data.message);
       });
   };
 
-
-
   const _sendEmail = () => {
     if (handleValidation()) {
       toggleLoader();
       const selectedUserEmail = multiSelectedUser?.map((item) => item.email);
-      const anotherUserEmail = data?.anotherUser?.split(",").map((email) => email.trim());
+      const anotherUserEmail = data?.anotherUser
+        ?.split(",")
+        .map((email) => email.trim());
 
       let body = {
         emails: [...selectedUserEmail, ...anotherUserEmail],
         title: data?.title,
         content: description,
-        pdf: imageData,
-        image: pdfData,
+        pdf: imageData || "",
+        image: pdfData || "",
       };
-      axios.post(`send_email`, body).then((res) => {
-        console.log(res?.data?.data, "res?.data?.data")
-        if (res?.data?.data) {
-          console.log("res?.data?.data😲", res?.data?.data);
-          toggleLoader();
-          setData({});
-          setDescription("")
-          setMultiSelectedUser([]);
-          setImageData(null);
-          setPdfData(null);
-          _getEmailsList();
-        }
-      })
+      axios
+        .post(`send_email`, body)
+        .then((res) => {
+          if (res?.data?.data) {
+            toggleLoader();
+            setData({});
+            setDescription("");
+            setMultiSelectedUser([]);
+            setImageData(null);
+            setPdfData(null);
+            _getEmailsList();
+          }
+        })
         .catch((err) => {
           toggleLoader();
           OnUpdateError(err.data.message);
@@ -192,6 +241,7 @@ const Email = () => {
         .then((res) => {
           swal(res?.data?.message, { icon: "success", timer: 5000 });
           _getEmailsList();
+          setGetEmailData();
         })
         .catch((err) => {
           toggleLoader();
@@ -222,7 +272,7 @@ const Email = () => {
 
   return (
     <>
-      <Grid container spacing={0} style={{ marginLeft: "0px" }}>
+      <Grid container spacing={0} ml={0}>
         <Grid
           item
           xs={4}
@@ -230,23 +280,26 @@ const Email = () => {
           md={4}
           lg={4}
           padding={2}
-          sx={{
-            background: "var(--LightGrey, #F9FAFB)", height: "81.7vh", overflow: "scroll",
-            "::-webkit-scrollbar": {
-              width: "0.5px",
-            },
-            "::-webkit-scrollbar-thumb": {
-              backgroundColor: "transparent",
-            },
-          }}
+          className={classes.emailsList}
         >
-          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-            <TextLabel
-              fontSize={"18px"}
-              fontWeight={"600"}
-              color={lightTheme.palette.bgDarkPrimary.main}
-              title={"Email History"}
-            />
+          <Box
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <Box>
+              <TextLabel
+                fontSize={"18px"}
+                fontWeight={"600"}
+                color={lightTheme.palette.bgDarkPrimary.main}
+                title={"Email History"}
+              />
+              <TextLabel
+                color={lightTheme.palette.bgLightExtraLightGray.main}
+                variant={"body2"}
+                title={"512 messages"}
+              />
+            </Box>
             <CommonButton
               text={"New Message"}
               onClick={() => setEmailForm(true)}
@@ -255,47 +308,29 @@ const Email = () => {
 
           {emailsList?.response?.map((data) => {
             return (
-              <Box
-                padding={2}
-                mt={2}
-                pe={3}
-                sx={{
-                  background: lightTheme.palette.bgWhite.main,
-                  borderRadius: "20px",
-                  border: "1px solid #F8F9FA",
-                  boxShadow: "0px 4px 20px 0px rgba(238, 238, 238, 0.50)",
-                  alignItems: "center",
-                }}
-              >
-                <Box
-                  display={"flex"}
-                  justifyContent={"end"}
-                  alignItems={"start"}
-                >
-                  <Assets
-                    src={"/assets/icons/delete.svg"}
-                    absolutePath={true}
-                    onClick={() => _deleteEmail(data?._id)}
-                  />
-                </Box>
-
+              <Box padding={2} mt={2} pe={3} className={classes.listBox}>
                 <Box onClick={() => _getEmailById(data?._id)}>
                   <Box display={"flex"} justifyContent={"space-between"} mb={1}>
                     <Box display={"flex"} gap={1} alignItems={"center"}>
                       <Avatar />
                       <Box>
-                        <SectionHeading variant={"caption"} title={data._id} />
-                        <SectionHeading
-                          variant={"caption"}
-                          title={data.title}
+                        <TextLabel
+                          className={classes.wordBreak}
+                          fontWeight={"600"}
+                          variant={"body2"}
+                          title={data._id}
+                        />
+                        <TextLabel
                           color={lightTheme.palette.bgLightExtraLightGray.main}
+                          variant={"body2"}
+                          title={data.title}
                         />
                       </Box>
                     </Box>
-                    <SectionHeading
-                      variant={"caption"}
+                    <TextLabel
                       color={lightTheme.palette.bgLightExtraLightGray.main}
-                      title={data.time}
+                      variant={"body2"}
+                      title={"Jul 19, 2022, 10:20 PM"}
                     />
                   </Box>
                   <Box>
@@ -303,14 +338,12 @@ const Email = () => {
                       variant={"body2"}
                       color={lightTheme.palette.bgLightExtraLightGray.main}
                       fontWeight={"400"}
-                      style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        display: "-webkit-box",
-                        WebkitBoxOrient: "vertical",
-                        WebkitLineClamp: 3,
-                      }}
-                      title={<div dangerouslySetInnerHTML={{ __html: data?.content }} />}
+                      className={classes.listBoxText}
+                      title={
+                        <div
+                          dangerouslySetInnerHTML={{ __html: data?.content }}
+                        />
+                      }
                     />
                   </Box>
                 </Box>
@@ -319,44 +352,32 @@ const Email = () => {
           })}
         </Grid>
         <Grid item xs={8} sm={8} md={8} lg={8}>
-          <Box
-            padding={2}
-            sx={{
-              background: "var(--White, #FFF)",
-              height: "81.7vh",
-              overflow: "scroll",
-              "::-webkit-scrollbar": {
-                width: "0.5px",
-              },
-              "::-webkit-scrollbar-thumb": {
-                backgroundColor: "transparent",
-              },
-            }}
-          >
-            <Grid
-              item
-              xs={12}
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              mb={2}
-            >
-              <TextLabel
-                fontSize={"18px"}
-                fontWeight={"600"}
-                color={lightTheme.palette.bgDarkPrimary.main}
-                title={"Compose New Mail"}
-              />
-            </Grid>
+          <Box padding={2} className={classes.emailContain}>
             {emailForm === true ? (
-              <Grid container spacing={2} xs={12} md={12} lg={12} sm={12} p={2}>
+              <Grid container spacing={2} xs={12} p={2}>
+                <Grid
+                  item
+                  xs={12}
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
+                  <TextLabel
+                    fontSize={"18px"}
+                    fontWeight={"600"}
+                    color={lightTheme.palette.bgDarkPrimary.main}
+                    title={"Compose New Mail"}
+                  />
+                </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                   <AutoCompleteMultiSelect
                     fullWidth
                     text="Select User"
                     options={users?.response || []}
                     placeholder={"Select User"}
-                    handleChange={(e, newValue) => setMultiSelectedUser(newValue)}
+                    handleChange={(e, newValue) =>
+                      setMultiSelectedUser(newValue)
+                    }
                     name="name"
                     getOptionLabel={(option) => option.name}
                     defaultValue={multiSelectedUser || {}}
@@ -410,8 +431,8 @@ const Email = () => {
                     // value={description}
                     category={"Description"}
                     onChange={(value) => {
-                      console.log(value, "value")
-                      setDescription(value)
+                      console.log(value, "value");
+                      setDescription(value);
                     }}
                   />
                   <TextLabel
@@ -428,25 +449,23 @@ const Email = () => {
                       color={"#151D48"}
                       fontWeight={"400"}
                       title={"Upload Image"}
-                      style={{ padding: "3px" }}
                     />
                   </Grid>
                   <FileUpload
                     handleFileChange={(e) => {
-                      console.log(e.target.files, "e.target.files")
-                      handleUpload(e.target.files[0], "image")
-                    }
-                    }
+                      console.log(e.target.files, "e.target.files");
+                      handleUpload(e.target.files[0], "image");
+                    }}
                     selectedFile={imageData}
-                    OnDelate={() => handleDeleteFile('image')}
+                    OnDelate={() => handleDeleteFile("image")}
                     acceptFile="image/png, image/gif, image/jpeg"
                   />
-                  <TextLabel
+                  {/* <TextLabel
                     fontSize={"12px"}
                     color={"red"}
                     fontWeight={"400"}
                     title={!imageData ? error?.selectImage : ""}
-                  />
+                  /> */}
                   <TextLabel
                     fontSize={"12px"}
                     color={"red"}
@@ -461,25 +480,24 @@ const Email = () => {
                       color={"#151D48"}
                       fontWeight={"400"}
                       title={"Upload PDF"}
-                      style={{ padding: "3px" }}
                     />
                   </Grid>
                   <FileUpload
                     text={"Upload PDF"}
                     handleFileChange={(e) => {
-                      console.log(e.target.files[0], "e.target.files")
-                      handleUpload(e.target.files[0], "pdf")
+                      console.log(e.target.files[0], "e.target.files");
+                      handleUpload(e.target.files[0], "pdf");
                     }}
                     selectedFile={pdfData}
-                    OnDelate={() => handleDeleteFile('pdf')}
-                    acceptFile='application/pdf'
+                    OnDelate={() => handleDeleteFile("pdf")}
+                    acceptFile="application/pdf"
                   />
-                  <TextLabel
+                  {/* <TextLabel
                     fontSize={"12px"}
                     color={"red"}
                     fontWeight={"400"}
                     title={!pdfData ? error?.selectPdf : ""}
-                  />
+                  /> */}
                   <TextLabel
                     fontSize={"12px"}
                     color={"red"}
@@ -488,7 +506,7 @@ const Email = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
-                  <Box style={{ display: "flex", justifyContent: "center", marginTop: "35px", }}                  >
+                  <Box display={"flex"} justifyContent={"center"} mt={"35px"}>
                     <CommonButton
                       width={"30%"}
                       text={`Send`}
@@ -512,7 +530,7 @@ const Email = () => {
                         <Box>
                           <SectionHeading
                             variant={"h6"}
-                            title={getEmailData?.createdBy}
+                            title={getEmailData?._id}
                           />
                           <SectionHeading
                             fontWeight={"400"}
@@ -528,48 +546,89 @@ const Email = () => {
                         title={"Jul 19, 2022, 10:20 PM"}
                       />
                     </Box>
-                    <Box mt={8} mb={4}>
+                    <Box mt={8} mb={4} minHeight={"35vh"}>
                       <TextLabel
                         fontSize={"15px"}
                         color={lightTheme.palette.bgLightExtraLightGray.main}
                         variant={"body2"}
-                        title={<div dangerouslySetInnerHTML={{ __html: getEmailData?.content }} />}
+                        title={
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: getEmailData?.content,
+                            }}
+                          />
+                        }
                       />
                     </Box>
                     <Box display={"flex"} flexDirection={"column"} gap={"15px"}>
-                      <Box display={"flex"} gap={1}>
+                      {console.log("getEmailData😲", getEmailData)}
+                      {getEmailData.image && (
+                        <Box display={"flex"} gap={1}>
+                          <Assets
+                            src={"/assets/image/projectDetail.png"}
+                            absolutePath={true}
+                          />
+                          <Box>
+                            <TextLabel
+                              className={classes.wordBreak}
+                              fontWeight={"600"}
+                              variant={"body2"}
+                              title={getEmailData?.image}
+                            />
+                            <TextLabel
+                              variant={"body2"}
+                              fontWeight={"600"}
+                              color={
+                                lightTheme.palette.bgLightExtraLightGray.main
+                              }
+                              title={"1.50 Mb"}
+                            />
+                          </Box>
+                        </Box>
+                      )}
+                      {getEmailData.pdf && (
+                        <Box display={"flex"} gap={1}>
+                          <Assets
+                            src={"/assets/image/screenShot.png"}
+                            absolutePath={true}
+                          />
+                          <Box>
+                            <TextLabel
+                              className={classes.wordBreak}
+                              fontWeight={"600"}
+                              variant={"body2"}
+                              title={getEmailData?.pdf}
+                            />
+                            <TextLabel
+                              variant={"body2"}
+                              fontWeight={"600"}
+                              color={
+                                lightTheme.palette.bgLightExtraLightGray.main
+                              }
+                              title={"1.50 Mb"}
+                            />
+                          </Box>
+                        </Box>
+                      )}
+                      <Box
+                        display={"flex"}
+                        justifyContent={"end"}
+                        alignItems={"start"}
+                        gap={2}
+                      >
                         <Assets
-                          src={"/assets/image/projectDetail.png"}
+                          src={"/assets/icons/trash.png"}
+                          absolutePath={true}
+                          onClick={() => _deleteEmail(getEmailData?._id)}
+                        />
+                        <Assets
+                          src={"/assets/icons/star.png"}
                           absolutePath={true}
                         />
-                        <Box>
-                          <SectionHeading
-                            variant={"caption"}
-                            title={getEmailData?.image}
-                          />
-                          <SectionHeading
-                            variant={"caption"}
-                            color={lightTheme.palette.bgLightExtraLightGray.main}
-                            title={"1.50 Mb"}
-                          />
-                        </Box>
-                      </Box>
-                      <Box display={"flex"} gap={1}>
                         <Assets
-                          src={"/assets/image/screenShot.png"}
+                          src={"/assets/icons/share.png"}
                           absolutePath={true}
                         />
-                        <Box>
-                          <SectionHeading
-                            variant={"caption"}
-                            title={getEmailData?.pdf}
-                          />
-                          <SectionHeading
-                            variant={"caption"}
-                            color={lightTheme.palette.bgLightExtraLightGray.main}
-                            title={"1.50 Mb"}
-                          />
-                        </Box>
                       </Box>
                     </Box>
                   </Box>

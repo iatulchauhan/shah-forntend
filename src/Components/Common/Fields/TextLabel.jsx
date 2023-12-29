@@ -14,6 +14,7 @@ export default function TextLabel({
     marginBottom,
     marginTop,
     textAlign,
+    className,
 }) {
     const variantToFontSize = {
         h1: "40px",
@@ -57,6 +58,7 @@ export default function TextLabel({
         <Box fontWeight={fontWeight || "fontWeightBold"}>
             <Typography
                 noWrap={noWrap}
+                className={className}
                 variant={variant || "subtitle2"}
                 style={{
                     fontWeight: fontWeight || 400,
