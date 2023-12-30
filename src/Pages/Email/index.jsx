@@ -1,4 +1,12 @@
-import { Avatar, Box, Divider, Grid, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Divider,
+  Fab,
+  Grid,
+  Hidden,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CommonSearch from "../../Components/Common/CommonSearch";
 import SectionHeading from "../../Components/Common/SectionHeading";
@@ -16,6 +24,10 @@ import AutoCompleteMultiSelect from "../../Components/Common/AutoCompleteMultiSe
 import swal from "sweetalert";
 import DataNotFound from "../../Components/Common/DataNotFound";
 import { makeStyles } from "tss-react/mui";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import SendIcon from "@mui/icons-material/Send";
+import StarIcon from "@mui/icons-material/Star";
+import CamposeEmail from "../../Components/Common/CamposeEmail";
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -43,6 +55,7 @@ const useStyles = makeStyles()((theme) => {
       display: "-webkit-box",
       WebkitBoxOrient: "vertical",
       WebkitLineClamp: 4,
+      minHeight: "50px",
     },
     emailContain: {
       background: "var(--White, #FFF)",
@@ -58,6 +71,9 @@ const useStyles = makeStyles()((theme) => {
     wordBreak: {
       wordBreak: "break-all",
     },
+    assets: {
+      cursor: "pointer",
+    },
   };
 });
 
@@ -71,9 +87,10 @@ const Email = () => {
   const [pdfData, setPdfData] = useState();
   const [error, setError] = useState({});
   const [emailsList, setEmailsList] = useState();
-  const [emailForm, setEmailForm] = useState(true);
+  const [emailForm, setEmailForm] = useState(false);
   const [getEmailData, setGetEmailData] = useState("");
   const [description, setDescription] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevState) => ({
@@ -270,375 +287,303 @@ const Email = () => {
     _getEmailsList();
   }, []);
 
+  useEffect(() => {
+    if (window.innerWidth >= 900) {
+      setEmailForm(true);
+    }
+  }, []);
+
+  const resetEmailData = () => {
+    setGetEmailData('')
+  };
+
   return (
     <>
       <Grid container spacing={0} ml={0}>
-        <Grid
-          item
-          xs={4}
-          sm={4}
-          md={4}
-          lg={4}
-          padding={2}
-          className={classes.emailsList}
-        >
-          <Box
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <Box>
-              <TextLabel
-                fontSize={"18px"}
-                fontWeight={"600"}
-                color={lightTheme.palette.bgDarkPrimary.main}
-                title={"Email History"}
-              />
-              <TextLabel
-                color={lightTheme.palette.bgLightExtraLightGray.main}
-                variant={"body2"}
-                title={"512 messages"}
-              />
-            </Box>
-            <CommonButton
-              text={"New Message"}
-              onClick={() => setEmailForm(true)}
-            />
-          </Box>
-
-          {emailsList?.response?.map((data) => {
-            return (
-              <Box padding={2} mt={2} pe={3} className={classes.listBox}>
-                <Box onClick={() => _getEmailById(data?._id)}>
-                  <Box display={"flex"} justifyContent={"space-between"} mb={1}>
-                    <Box display={"flex"} gap={1} alignItems={"center"}>
-                      <Avatar />
-                      <Box>
-                        <TextLabel
-                          className={classes.wordBreak}
-                          fontWeight={"600"}
-                          variant={"body2"}
-                          title={data._id}
-                        />
-                        <TextLabel
-                          color={lightTheme.palette.bgLightExtraLightGray.main}
-                          variant={"body2"}
-                          title={data.title}
-                        />
-                      </Box>
-                    </Box>
-                    <TextLabel
-                      color={lightTheme.palette.bgLightExtraLightGray.main}
-                      variant={"body2"}
-                      title={"Jul 19, 2022, 10:20 PM"}
-                    />
-                  </Box>
-                  <Box>
-                    <TextLabel
-                      variant={"body2"}
-                      color={lightTheme.palette.bgLightExtraLightGray.main}
-                      fontWeight={"400"}
-                      className={classes.listBoxText}
-                      title={
-                        <div
-                          dangerouslySetInnerHTML={{ __html: data?.content }}
-                        />
-                      }
-                    />
-                  </Box>
+        {/* {console.log('getEmailData?._id😲', getEmailData?._id, window.innerWidth)} */}
+        {window.innerWidth <= 900 ? (
+          <>
+            {!getEmailData?._id && !emailForm && window.innerWidth <= 900 ? (
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={5}
+                lg={5}
+                padding={2}
+                className={classes.emailsList}
+              >
+                <Box mb={3}>
+                  <CommonSearch />
                 </Box>
-              </Box>
-            );
-          })}
-        </Grid>
-        <Grid item xs={8} sm={8} md={8} lg={8}>
-          <Box padding={2} className={classes.emailContain}>
-            {emailForm === true ? (
-              <Grid container spacing={2} xs={12} p={2}>
-                <Grid
-                  item
-                  xs={12}
+                <Box
                   display={"flex"}
                   justifyContent={"space-between"}
                   alignItems={"center"}
                 >
+                  <Box>
+                    <TextLabel
+                      fontSize={"18px"}
+                      fontWeight={"600"}
+                      color={lightTheme.palette.bgDarkPrimary.main}
+                      title={"Emails"}
+                    />
+                    <TextLabel
+                      color={lightTheme.palette.bgLightExtraLightGray.main}
+                      variant={"body2"}
+                      title={`${emailsList?.count} messages`}
+                    />
+                  </Box>
+                  <CommonButton
+                    text={"New Message"}
+                    onClick={() => setEmailForm(true)}
+                  />
+                </Box>
+                <Box className={classes.listBox} mt={3}>
+                  {emailsList?.response?.map((data) => {
+                    return (
+                      <>
+                        <Box
+                          padding={2}
+                          sx={{
+                            backgroundColor:
+                              getEmailData._id === data._id
+                                ? "#F5F6FD"
+                                : lightTheme.palette.bgWhite.main,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <Box onClick={() => _getEmailById(data?._id)}>
+                            <Box
+                              display={"flex"}
+                              justifyContent={"space-between"}
+                              mb={2}
+                            >
+                              <Box
+                                display={"flex"}
+                                gap={1}
+                                alignItems={"center"}
+                              >
+                                <Avatar />
+                                <Box>
+                                  <TextLabel
+                                    className={classes.wordBreak}
+                                    fontWeight={"600"}
+                                    variant={"body2"}
+                                    title={data.createdBy}
+                                  />
+                                  <TextLabel
+                                    color={
+                                      lightTheme.palette.bgLightExtraLightGray
+                                        .main
+                                    }
+                                    variant={"body2"}
+                                    title={"Jul 19, 2022, 10:20 PM"}
+                                  />
+                                  <TextLabel
+                                    color={
+                                      lightTheme.palette.bgLightExtraLightGray
+                                        .main
+                                    }
+                                    variant={"body2"}
+                                    title={data.title}
+                                  />
+                                </Box>
+                              </Box>
+                            </Box>
+                            <Box>
+                              <TextLabel
+                                variant={"body2"}
+                                color={
+                                  lightTheme.palette.bgLightExtraLightGray.main
+                                }
+                                fontWeight={"400"}
+                                className={classes.listBoxText}
+                                title={
+                                  <div
+                                    dangerouslySetInnerHTML={{
+                                      __html: data?.content,
+                                    }}
+                                  />
+                                }
+                              />
+                            </Box>
+                          </Box>
+                        </Box>
+                        <Divider />
+                      </>
+                    );
+                  })}
+                </Box>
+              </Grid>
+            ) : (
+              <CamposeEmail
+                emailForm={emailForm}
+                setEmailForm={setEmailForm}
+                users={users}
+                setUsers={setUsers}
+                multiSelectedUser={multiSelectedUser}
+                setMultiSelectedUser={setMultiSelectedUser}
+                error={error}
+                setError={setError}
+                handleChange={handleChange}
+                data={data}
+                setData={setData}
+                description={description}
+                setDescription={setDescription}
+                getEmailData={getEmailData}
+                setGetEmailData={setGetEmailData}
+                pdfData={pdfData}
+                setPdfData={setPdfData}
+                imageData={imageData}
+                setImageData={setImageData}
+                handleUpload={handleUpload}
+                handleDeleteFile={handleDeleteFile}
+                _sendEmail={_sendEmail}
+                _deleteEmail={_deleteEmail}
+                resetEmailData={() => resetEmailData()}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={5}
+              lg={5}
+              padding={2}
+              className={classes.emailsList}
+            >
+              <Box mb={3}>
+                <CommonSearch />
+              </Box>
+              <Box
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+              >
+                <Box>
                   <TextLabel
                     fontSize={"18px"}
                     fontWeight={"600"}
                     color={lightTheme.palette.bgDarkPrimary.main}
-                    title={"Compose New Mail"}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6}>
-                  <AutoCompleteMultiSelect
-                    fullWidth
-                    text="Select User"
-                    options={users?.response || []}
-                    placeholder={"Select User"}
-                    handleChange={(e, newValue) =>
-                      setMultiSelectedUser(newValue)
-                    }
-                    name="name"
-                    getOptionLabel={(option) => option.name}
-                    defaultValue={multiSelectedUser || {}}
-                    mappingLabel="name"
+                    title={"Emails"}
                   />
                   <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={
-                      multiSelectedUser.length === 0 ? error?.selectUser : ""
-                    }
+                    color={lightTheme.palette.bgLightExtraLightGray.main}
+                    variant={"body2"}
+                    title={`${emailsList?.count} messages`}
                   />
-                </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6}>
-                  <CommonTextField
-                    fontWeight={400}
-                    text={"Another User"}
-                    placeholder={"ex. test1@gmail.com, test2@gmail.com"}
-                    type="text"
-                    name="anotherUser"
-                    value={data?.anotherUser || ""}
-                    onChange={(e) => handleChange(e, false)}
-                  />
-                  <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={!data?.anotherUser ? error?.anotherUser : ""}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                  <CommonTextField
-                    fontWeight={400}
-                    text={"Title"}
-                    placeholder={"Enter Title"}
-                    type="text"
-                    name="title"
-                    value={data?.title || ""}
-                    onChange={(e) => handleChange(e, false)}
-                  />
-                  <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={!data?.title ? error?.title : ""}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                  <TextEditor
-                    // value={description}
-                    category={"Description"}
-                    onChange={(value) => {
-                      console.log(value, "value");
-                      setDescription(value);
-                    }}
-                  />
-                  <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={!data?.description ? error?.description : ""}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                  <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <TextLabel
-                      fontSize={"15px"}
-                      color={"#151D48"}
-                      fontWeight={"400"}
-                      title={"Upload Image"}
-                    />
-                  </Grid>
-                  <FileUpload
-                    handleFileChange={(e) => {
-                      console.log(e.target.files, "e.target.files");
-                      handleUpload(e.target.files[0], "image");
-                    }}
-                    selectedFile={imageData}
-                    OnDelate={() => handleDeleteFile("image")}
-                    acceptFile="image/png, image/gif, image/jpeg"
-                  />
-                  {/* <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={!imageData ? error?.selectImage : ""}
-                  /> */}
-                  <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={error?.imageSizeValid}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                  <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <TextLabel
-                      fontSize={"15px"}
-                      color={"#151D48"}
-                      fontWeight={"400"}
-                      title={"Upload PDF"}
-                    />
-                  </Grid>
-                  <FileUpload
-                    text={"Upload PDF"}
-                    handleFileChange={(e) => {
-                      console.log(e.target.files[0], "e.target.files");
-                      handleUpload(e.target.files[0], "pdf");
-                    }}
-                    selectedFile={pdfData}
-                    OnDelate={() => handleDeleteFile("pdf")}
-                    acceptFile="application/pdf"
-                  />
-                  {/* <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={!pdfData ? error?.selectPdf : ""}
-                  /> */}
-                  <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={error?.pdfSizeValid}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                  <Box display={"flex"} justifyContent={"center"} mt={"35px"}>
-                    <CommonButton
-                      width={"30%"}
-                      text={`Send`}
-                      type="submit"
-                      onClick={() => _sendEmail()}
-                    />
-                  </Box>
-                </Grid>
-              </Grid>
-            ) : (
-              <>
-                {getEmailData?._id ? (
-                  <Box>
-                    <Box
-                      display={"flex"}
-                      justifyContent={"space-between"}
-                      mb={1}
-                    >
-                      <Box display={"flex"} gap={1} alignItems={"center"}>
-                        <Avatar sx={{ height: "58px", width: "58px" }} />
-                        <Box>
-                          <SectionHeading
-                            variant={"h6"}
-                            title={getEmailData?._id}
-                          />
-                          <SectionHeading
-                            fontWeight={"400"}
-                            variant={"subtitle2"}
-                            title={getEmailData?.title}
-                          />
-                        </Box>
-                      </Box>
-                      <SectionHeading
-                        fontWeight={"400"}
-                        variant={"subtitle2"}
-                        color={lightTheme.palette.bgLightExtraLightGray.main}
-                        title={"Jul 19, 2022, 10:20 PM"}
-                      />
-                    </Box>
-                    <Box mt={8} mb={4} minHeight={"35vh"}>
-                      <TextLabel
-                        fontSize={"15px"}
-                        color={lightTheme.palette.bgLightExtraLightGray.main}
-                        variant={"body2"}
-                        title={
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: getEmailData?.content,
-                            }}
-                          />
-                        }
-                      />
-                    </Box>
-                    <Box display={"flex"} flexDirection={"column"} gap={"15px"}>
-                      {console.log("getEmailData😲", getEmailData)}
-                      {getEmailData.image && (
-                        <Box display={"flex"} gap={1}>
-                          <Assets
-                            src={"/assets/image/projectDetail.png"}
-                            absolutePath={true}
-                          />
-                          <Box>
-                            <TextLabel
-                              className={classes.wordBreak}
-                              fontWeight={"600"}
-                              variant={"body2"}
-                              title={getEmailData?.image}
-                            />
-                            <TextLabel
-                              variant={"body2"}
-                              fontWeight={"600"}
-                              color={
-                                lightTheme.palette.bgLightExtraLightGray.main
-                              }
-                              title={"1.50 Mb"}
-                            />
-                          </Box>
-                        </Box>
-                      )}
-                      {getEmailData.pdf && (
-                        <Box display={"flex"} gap={1}>
-                          <Assets
-                            src={"/assets/image/screenShot.png"}
-                            absolutePath={true}
-                          />
-                          <Box>
-                            <TextLabel
-                              className={classes.wordBreak}
-                              fontWeight={"600"}
-                              variant={"body2"}
-                              title={getEmailData?.pdf}
-                            />
-                            <TextLabel
-                              variant={"body2"}
-                              fontWeight={"600"}
-                              color={
-                                lightTheme.palette.bgLightExtraLightGray.main
-                              }
-                              title={"1.50 Mb"}
-                            />
-                          </Box>
-                        </Box>
-                      )}
+                </Box>
+                <CommonButton
+                  text={"New Message"}
+                  onClick={() => setEmailForm(true)}
+                />
+              </Box>
+              <Box className={classes.listBox} mt={3}>
+                {emailsList?.response?.map((data) => {
+                  return (
+                    <>
                       <Box
-                        display={"flex"}
-                        justifyContent={"end"}
-                        alignItems={"start"}
-                        gap={2}
+                        padding={2}
+                        sx={{
+                          backgroundColor:
+                            getEmailData._id === data._id
+                              ? "#F5F6FD"
+                              : lightTheme.palette.bgWhite.main,
+                          cursor: "pointer",
+                        }}
                       >
-                        <Assets
-                          src={"/assets/icons/trash.png"}
-                          absolutePath={true}
-                          onClick={() => _deleteEmail(getEmailData?._id)}
-                        />
-                        <Assets
-                          src={"/assets/icons/star.png"}
-                          absolutePath={true}
-                        />
-                        <Assets
-                          src={"/assets/icons/share.png"}
-                          absolutePath={true}
-                        />
+                        <Box onClick={() => _getEmailById(data?._id)}>
+                          <Box
+                            display={"flex"}
+                            justifyContent={"space-between"}
+                            mb={2}
+                          >
+                            <Box display={"flex"} gap={1} alignItems={"center"}>
+                              <Avatar />
+                              <Box>
+                                <TextLabel
+                                  className={classes.wordBreak}
+                                  fontWeight={"600"}
+                                  variant={"body2"}
+                                  title={data.createdBy}
+                                />
+                                <TextLabel
+                                  color={
+                                    lightTheme.palette.bgLightExtraLightGray
+                                      .main
+                                  }
+                                  variant={"body2"}
+                                  title={"Jul 19, 2022, 10:20 PM"}
+                                />
+                                <TextLabel
+                                  color={
+                                    lightTheme.palette.bgLightExtraLightGray
+                                      .main
+                                  }
+                                  variant={"body2"}
+                                  title={data.title}
+                                />
+                              </Box>
+                            </Box>
+                          </Box>
+                          <Box>
+                            <TextLabel
+                              variant={"body2"}
+                              color={
+                                lightTheme.palette.bgLightExtraLightGray.main
+                              }
+                              fontWeight={"400"}
+                              className={classes.listBoxText}
+                              title={
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: data?.content,
+                                  }}
+                                />
+                              }
+                            />
+                          </Box>
+                        </Box>
                       </Box>
-                    </Box>
-                  </Box>
-                ) : (
-                  <DataNotFound />
-                )}
-              </>
-            )}
-          </Box>
-        </Grid>
+                      <Divider />
+                    </>
+                  );
+                })}
+              </Box>
+            </Grid>
+
+            <CamposeEmail
+              emailForm={emailForm}
+              setEmailForm={setEmailForm}
+              users={users}
+              setUsers={setUsers}
+              multiSelectedUser={multiSelectedUser}
+              setMultiSelectedUser={setMultiSelectedUser}
+              error={error}
+              setError={setError}
+              handleChange={handleChange}
+              data={data}
+              setData={setData}
+              description={description}
+              setDescription={setDescription}
+              getEmailData={getEmailData}
+              setGetEmailData={setGetEmailData}
+              pdfData={pdfData}
+              setPdfData={setPdfData}
+              imageData={imageData}
+              setImageData={setImageData}
+              handleUpload={handleUpload}
+              handleDeleteFile={handleDeleteFile}
+              _sendEmail={_sendEmail}
+              _deleteEmail={_deleteEmail}
+              resetEmailData={() => resetEmailData()}
+            />
+          </>
+        )}
       </Grid>
     </>
   );
