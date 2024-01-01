@@ -24,7 +24,7 @@ import CommonButton from '../../Components/Common/Button/CommonButton';
 import AddMeeting from '../../Components/Meeting';
 import { useEffect } from 'react';
 import { Roles, meetingStatus } from '../../Utils/enum';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -136,7 +136,7 @@ const MeetingList = () => {
     const [selectedInviteTo, setSelectedInviteTo] = useState([]);
     const [meetingDetails, setMeetingDetails] = useState([]);
     const [meetingId, setMeetingId] = useState("");
-    console.log(data, "datadata")
+    const [meetingDate, setMeetingDate] = React.useState(dayjs());
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -154,12 +154,12 @@ const MeetingList = () => {
 
     const _getSlotTimes = () => {
         toggleLoader();
+        console.log("meetingDate", meetingDate);
         let body = {
             "client": clients?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
             "meetingWith": clients?.response?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
-            "meetingDate": dayjs(data?.meetingDate).format('DD/MM/YYYY'),
+            "meetingDate": meetingDate,
         }
-
         axios.post('/slotTimes', body).then((res) => {
             if (res?.data?.data) {
                 console.log(res?.data?.data?.response, "slot response")
@@ -230,7 +230,7 @@ const MeetingList = () => {
             formIsValid = false
             errors['selectedInviteTo'] = 'Please select invite.'
         }
-        if (!data?.meetingDate) {
+        if (!meetingDate) {
             formIsValid = false
             errors['meetingDate'] = 'Please select meeting date.'
         }
@@ -283,12 +283,12 @@ const MeetingList = () => {
     const _addUpdateMeetingSchedule = () => {
         if (handleValidation()) {
             toggleLoader();
-       
+
             let body = {
                 "title": data?.title,
                 "client": clients?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
                 "meetingWith": clients?.response?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
-                "meetingDate": dayjs(data?.meetingDate).format('DD/MM/YYYY'),
+                "meetingDate": meetingDate,
                 "slot_time": slotTimes
             }
             if (data?._id) {
@@ -308,12 +308,12 @@ const MeetingList = () => {
             );
         }
     }
-    console.log(selectedClient?.length, data?.meetingDate, selectedInviteTo?.length, "selectedInviteTo?.length")
+    console.log(selectedClient?.length, meetingDate, selectedInviteTo?.length, "selectedInviteTo?.length")
     useEffect(() => {
-        if (selectedClient?.length > 0 && data?.meetingDate && selectedInviteTo?.length > 0) {
+        if (selectedClient?.length > 0 && meetingDate && selectedInviteTo?.length > 0 && clients?.response?.length > 0) {
             _getSlotTimes()
         }
-    }, [data?.meetingDate])
+    }, [meetingDate, clients?.response])
 
     useEffect(() => {
         if (model) {
@@ -333,6 +333,7 @@ const MeetingList = () => {
                         setSelectedClient(updatedMeetingDetails?.clientDetails?.name || "")
                         setSelectedInviteTo(updatedMeetingDetails?.meetingWithDetails?.name || "")
                         setData({ ...data, title: updatedMeetingDetails?.title, meetingDate: updatedMeetingDetails?.meetingDate })
+                        setMeetingDate(updatedMeetingDetails?.meetingDate || dayjs('2014-08-18T21:11:54'))
                         console.log(updatedMeetingDetails, "meetingDetails")
                     }
                     toggleLoader();
@@ -442,7 +443,7 @@ const MeetingList = () => {
                 onClose={handleClear}
                 title={`${isEdit ? "Update" : "Schedule"} Meeting`}
                 content={<AddMeeting data={data} setData={setData} error={error} handleChange={handleChange} onSubmit={_addUpdateMeetingSchedule} isEdit={isEdit} slotTimes={slotTimes} setSlotTimes={setSlotTimes}
-                    convertToAmPm={convertToAmPm} setSelectedSlot={setSelectedSlots} clients={clients} selectedInviteTo={selectedInviteTo} setSelectedInviteTo={setSelectedInviteTo} selectedClient={selectedClient} setSelectedClient={setSelectedClient} selectedSlot={selectedSlots} handleSlotClick={handleSlotClick} />}
+                    convertToAmPm={convertToAmPm} setSelectedSlot={setSelectedSlots} clients={clients} selectedInviteTo={selectedInviteTo} setSelectedInviteTo={setSelectedInviteTo} selectedClient={selectedClient} setSelectedClient={setSelectedClient} selectedSlot={selectedSlots} handleSlotClick={handleSlotClick} meetingDate={meetingDate} setMeetingDate={setMeetingDate}/>}
             />
         </>
     )

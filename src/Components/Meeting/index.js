@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid, TextField, } from "@mui/material";
+import { Box, Grid, TextField, Tooltip, useTheme, } from "@mui/material";
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 import CommonTextField from '../../Components/Common/Fields/TextField';
 import CommonButton from '../../Components/Common/Button/CommonButton';
-import dayjs from 'dayjs';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { makeStyles } from "tss-react/mui";
 import AutoCompleteSearch from '../Common/commonAutoComplete';
 import { Roles } from '../../Utils/enum';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -49,8 +48,9 @@ const useStyles = makeStyles()((theme) => {
     };
 });
 
-const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, convertToAmPm, setSelectedSlot, selectedSlot, setData, clients, setSelectedInviteTo, selectedInviteTo, selectedClient, setSelectedClient, handleSlotClick }) => {
+const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, convertToAmPm, setMeetingDate, meetingDate, setData, clients, setSelectedInviteTo, selectedInviteTo, selectedClient, setSelectedClient, handleSlotClick }) => {
     const { classes } = useStyles();
+    const theme = useTheme()
     return (
         <Box>
             <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -98,18 +98,20 @@ const AddMeeting = ({ data, error, handleChange, isEdit, onSubmit, slotTimes, co
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedInviteTo ? error?.selectedInviteTo : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={6} className={classes.customLabel}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} >
-                        <DemoContainer components={['DesktopDatePicker']}                        >
-                            <DemoItem label="Meeting Date" >
-                                <DesktopDatePicker className={classes.dateBox} inputFormat="MM/dd/yyyy" name='date'
-                                    value={data?.meetingDate ? dayjs(new Date(data.meetingDate)) : null}
-                                    defaultValue={data?.meetingDate ? dayjs(new Date(data.meetingDate)) : null}
-                                    onChange={(newValue) => {
-                                        console.log(newValue, "newValue")
-                                        setData({ ...data, meetingDate: newValue })
-                                    }} />
-                            </DemoItem>
-                        </DemoContainer>
+               
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <TextLabel fontSize={"15px"} style={{ marginRight: "3px", padding: '3px' }} fontWeight={"400"} title={"Meeting date"} color={theme.palette.bgDarkPrimary.main} />
+                        <DesktopDatePicker
+                            className={classes.dateBox}
+                            // label="Date desktop"
+                            inputFormat="MM/DD/YYYY"
+                            value={dayjs(meetingDate) || dayjs()}
+                            onChange={(newValue) => {
+                                setMeetingDate(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                        {/* </DemoItem> */}
                     </LocalizationProvider>
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.meetingDate ? error?.meetingDate : ""} />
                 </Grid>
