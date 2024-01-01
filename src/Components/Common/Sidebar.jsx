@@ -168,7 +168,7 @@ export default function SideBar(props) {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
   const { user, logout, toggleSideBar, toggleLoader, OnUpdateError, auth_token } = useAppContext();
-
+console.log("auth_token",auth_token);
   const [menuList, setMenuList] = useState([]);
 
   const [open, setOpen] = useState(width > 991 ? true : false);
