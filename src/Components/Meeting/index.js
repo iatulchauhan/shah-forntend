@@ -7,7 +7,7 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import { makeStyles } from "tss-react/mui";
 import AutoCompleteSearch from "../Common/commonAutoComplete";
-import { Roles } from "../../Utils/enum";
+import { Roles, meetingStatus } from "../../Utils/enum";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -58,17 +58,22 @@ const AddMeeting = ({
   convertToAmPm,
   setMeetingDate,
   meetingDate,
-  setData,
-  clients,
+  updatedMeetingDetails,
+  meetinStatusConfig,
   setSelectedInviteTo,
   selectedInviteTo,
   selectedClient,
   setSelectedClient,
   handleSlotClick,
-  visitorDetails
+  visitorDetails,
+  setUpdateMeetingStatus,
+  updateMeetingStatus,
+  statusColors,
+  _deleteScheduleMeeting
 }) => {
   const { classes } = useStyles();
   const theme = useTheme();
+  console.log(updateMeetingStatus, "updateMeetingStatus")
   return (
     <Box>
       <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -81,6 +86,7 @@ const AddMeeting = ({
             name="title"
             value={data?.title}
             onChange={(e) => handleChange(e, false)}
+            disabled={updatedMeetingDetails?.isEdit ? false : true}
           />
           <TextLabel
             fontSize={"12px"}
@@ -95,14 +101,13 @@ const AddMeeting = ({
             backgroundColor="white"
             text="Client"
             handleChange={(e, newValue) => setSelectedClient(newValue)}
-            options={
-                visitorDetails?.map((e) => e?.name) || []
-            }
+            options={visitorDetails?.map((e) => e?.name) || []}
             name="selectedClient"
             defaultValue={selectedClient || ""}
             freeSolo
             blurOnSelect
             placeholder={"Select Client"}
+            disabled={updatedMeetingDetails?.isEdit ? false : true}
           />
           <TextLabel
             fontSize={"12px"}
@@ -124,6 +129,7 @@ const AddMeeting = ({
             freeSolo
             blurOnSelect
             placeholder={"Select Invite"}
+            disabled={updatedMeetingDetails?.isEdit ? false : true}
           />
           <TextLabel
             fontSize={"12px"}
@@ -132,14 +138,7 @@ const AddMeeting = ({
             title={!selectedInviteTo ? error?.selectedInviteTo : ""}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={6}
-          className={classes.customLabel}
-        >
+        <Grid item xs={12} sm={12} md={12} lg={6} className={classes.customLabel}        >
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TextLabel
               fontSize={"15px"}
@@ -154,9 +153,11 @@ const AddMeeting = ({
               inputFormat="MM/DD/YYYY"
               value={dayjs(meetingDate) || dayjs()}
               onChange={(newValue) => {
+                console.log(newValue, "newValue")
                 setMeetingDate(newValue);
               }}
               renderInput={(params) => <TextField {...params} />}
+              disabled={updatedMeetingDetails?.isEdit ? false : true}
             />
             {/* </DemoItem> */}
           </LocalizationProvider>
@@ -192,29 +193,51 @@ const AddMeeting = ({
                 label={`${convertToAmPm(e?.startTime)}`}
                 style={{
                   borderRadius: "10px",
-                  border: `1px solid ${
-                    e.isBooked === true
-                      ? "var(--selected, #EDF2F6)"
-                      : "var(--border, #EDF2F6)"
-                  }`,
-                  background:
-                    e.isBooked === true
-                      ? "var(--border, #EDF2F6)"
-                      : "var(--White, #FFF)",
-                  height: "42px",
-                  color:
-                    e.isBooked === true
-                      ? "var(--White, #000)"
-                      : "var(--text, #000)",
+                  border: `1px solid ${e.isBooked === true ? "var(--selected, #A1E3FF)" : "var(--border, #A1E3FF)"}`,
+                  background: e.isBooked === true ? "var(--border, #A1E3FF)" : "var(--White, #FFF)",
+                  height: "36px",
+                  color: e.isBooked === true ? "var(--White, #000)" : "var(--text, #000)",
                 }}
                 onClick={() => handleSlotClick(e.startTime)}
-                disabled={e.isSelected}
+                // disabled={updatedMeetingDetails?.isEdit ? false : e.isSelected ? true : true}
+                disabled={!updatedMeetingDetails?.isEdit ? true : e.isSelected ? true : false}
               />
             );
           })}
         </Grid>
+        {console.log(updatedMeetingDetails?.status, meetingStatus?.completed, "updatedMeetingDetails")}
+        {!updatedMeetingDetails?.isEdit &&
+          <Grid item xs={12} sm={12} md={12} lg={12} >
+            {!(updatedMeetingDetails?.status === meetingStatus?.completed || updatedMeetingDetails?.status === meetingStatus?.canceled) ?
+              <AutoCompleteSearch
+                fullWidth
+                backgroundColor="white"
+                text="Update Status"
+                handleChange={(e, status) => {
+                  setUpdateMeetingStatus(status)
+                }}
+                options={meetinStatusConfig?.map((e) => e?.statusName) || []}
+                name="updateMeetingStatus"
+                defaultValue={updateMeetingStatus || ""}
+                freeSolo
+                blurOnSelect
+                placeholder={"Select Status"}
+                disabled={updatedMeetingDetails?.status === 3}
+              />
+              :
+              <Box display={'flex'} justifyContent={'center'} mt={2}>
+                <TextLabel
+                  fontSize={"12px"} color={"white"} fontWeight={"400"}
+                  title={`Meeting has been ${meetinStatusConfig?.find((e) => e?.statusId === updatedMeetingDetails?.status)?.statusName}`}
+                  textAlign={"center"}
+                  style={{ backgroundColor: statusColors[updatedMeetingDetails?.status], borderRadius: "20px", width: "220px", padding: "5px 5px", }}
+                />
+              </Box>
 
-        <Grid item xs={12} sm={12} md={12} lg={12}>
+            }
+          </Grid>
+        }
+        {updatedMeetingDetails && !(updatedMeetingDetails?.status === meetingStatus?.completed || updatedMeetingDetails?.status === meetingStatus?.canceled) && <Grid item xs={12} sm={12} md={12} lg={12}>
           <Box
             style={{
               display: "flex",
@@ -229,7 +252,7 @@ const AddMeeting = ({
               onClick={onSubmit}
             />
           </Box>
-        </Grid>
+        </Grid>}
       </Grid>
     </Box>
   );

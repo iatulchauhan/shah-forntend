@@ -26,6 +26,7 @@ import { useEffect } from "react";
 import { Roles, meetingStatus } from "../../Utils/enum";
 import dayjs, { Dayjs } from "dayjs";
 import TextLabel from "../../Components/Common/Fields/TextLabel";
+import { useLocation } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -81,45 +82,43 @@ const useStyles = makeStyles()((theme) => {
   };
 });
 
-const rows = [
+const meetinStatusConfig = [
   {
-    key: "1",
-    title: "Lorem ipsum Dolor",
-    meeting: "John Doe",
-    date: "30-10-2023",
-    startTime: "10:00 AM",
-    status: "Pending Approval",
-    creator: "William Danny",
+    statusName: "Approval Pending",
+    statusId: 0,
   },
   {
-    key: "2",
-    title: "Lorem ipsum Dolor",
-    meeting: "John Doe",
-    date: "30-10-2023",
-    startTime: "10:00 AM",
-    status: "Accepted",
-    creator: "William Danny",
+    statusName: "Approve",
+    statusId: 1,
   },
   {
-    key: "3",
-    title: "Lorem ipsum Dolor",
-    meeting: "John Doe",
-    date: "30-10-2023",
-    startTime: "10:00 AM",
-    status: "Completed",
-    creator: "William Danny",
+    statusName: "On Going",
+    statusId: 2,
   },
-];
+  {
+    statusName: "Complete",
+    statusId: 3,
+  },
+  {
+    statusName: "Cancel",
+    statusId: 4,
+  }
+]
+
+const statusColors = {
+  0: "#FDCF71",
+  1: "#72C75F",
+  2: "#36A4F4",
+  3: "#2DB70E",
+  4: "#FF7474",
+};
+
+
 const MeetingList = () => {
   const { classes } = useStyles();
-  const { OnUpdateError, toggleLoader, user } = useAppContext();
-  const statusColors = {
-    0: "#ffcc00",
-    1: "#00cc00",
-    2: "#3366cc",
-    3: "#339933",
-    4: "#cc0000",
-  };
+  const location = useLocation()
+  const { OnUpdateError, toggleLoader, user, menuList } = useAppContext();
+  // console.log(menuList, location?.pathname, menuList?.find((e) => e?.path === location?.pathname), "menuList")
   //States
   const [model, setModel] = useState(false);
   const [data, setData] = useState({ meetingDate: null });
@@ -129,7 +128,6 @@ const MeetingList = () => {
   const [slotTimes, setSlotTimes] = useState([]);
   const [page, setPage] = React.useState(0);
   const [selectedSlots, setSelectedSlots] = useState([]);
-  const [clients, setClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState([]);
   const [selectedInviteTo, setSelectedInviteTo] = useState([]);
   const [meetingDetails, setMeetingDetails] = useState([]);
@@ -137,13 +135,23 @@ const MeetingList = () => {
   const [visitorDetails, setVisitorDetails] = useState([]);
   const [meetingId, setMeetingId] = useState("");
   const [meetingDate, setMeetingDate] = React.useState(dayjs());
+  const [updatedMeetingDetails, setUpdatedMeetingDetails] = useState(null);
+  const [updateMeetingStatus, setUpdateMeetingStatus] = useState([]);
+  const [permissions, setPermissions] = useState({
+    isView: false,
+    isCreate: false,
+    isUpdate: false,
+    isDelete: false,
+  })
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
+
   const handleChangeRowsPerPage = (value) => {
     setRowsPerPage(value);
     setPage(0);
   };
+
   const convertToAmPm = (timeInMinutes) => {
     const hours = Math.floor(timeInMinutes / 60);
     const minutes = timeInMinutes % 60;
@@ -154,13 +162,10 @@ const MeetingList = () => {
 
   const _getSlotTimes = () => {
     toggleLoader();
-    console.log("meetingDate", meetingDate);
     let body = {
-      client: visitorDetails?.filter((e) => e?.name == selectedClient)[0]?._id,
-      meetingWith: counsellorDetails?.filter(
-        (e) => e?.name == selectedInviteTo
-      )[0]?._id,
-      meetingDate: meetingDate,
+      client: updatedMeetingDetails ? updatedMeetingDetails?.client : visitorDetails?.filter((e) => e?.name == selectedClient)[0]?._id,
+      meetingWith: updatedMeetingDetails ? updatedMeetingDetails?.meetingWith : counsellorDetails?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
+      meetingDate: updatedMeetingDetails ? dayjs(updatedMeetingDetails?.meetingDate).format('YYYY-MM-DD') : dayjs(meetingDate).format('YYYY-MM-DD'),
     };
     axios
       .post("/slotTimes", body)
@@ -177,21 +182,6 @@ const MeetingList = () => {
       });
   };
 
-  const _getClients = () => {
-    toggleLoader();
-    axios
-      .post(`users`)
-      .then((res) => {
-        if (res?.data?.data) {
-          setClients(res?.data?.data);
-        }
-        toggleLoader();
-      })
-      .catch((err) => {
-        toggleLoader();
-        OnUpdateError(err.data.message);
-      });
-  };
 
   const _getVisitor = () => {
     toggleLoader();
@@ -274,12 +264,16 @@ const MeetingList = () => {
     setData({});
     setError({});
     setIsEdit(false);
-    setClients([]);
+    setVisitorDetails([])
+    setCounsellorDetails([])
     setSelectedInviteTo([]);
     setSelectedClient([]);
     setSelectedSlots([]);
     setSlotTimes([]);
     setMeetingId("");
+    setMeetingDate(dayjs())
+    setUpdatedMeetingDetails([])
+    setUpdateMeetingStatus([])
   };
 
   const _getMeetingList = () => {
@@ -288,13 +282,10 @@ const MeetingList = () => {
       limit: rowsPerPage,
       page: page + 1,
     };
-    axios
-      .post(`meetingList`, body)
+    axios.post(`meetingList`, body)
       .then((res) => {
-        console.log(res, "resres");
         if (res?.data?.data) {
           setMeetingDetails(res?.data?.data);
-          // toggleLoader()
         }
         toggleLoader();
       })
@@ -305,13 +296,25 @@ const MeetingList = () => {
   };
   const _getCounselor = () => {
     toggleLoader();
-    axios
-      .post(user?.userType === 2 ? `counsellor` : `accountant`)
+    axios.post(user?.userType === 2 ? `counsellor` : `accountant`)
       .then((res) => {
-        console.log(res, "resres");
         if (res?.data?.data) {
           setCounsellorDetails(res?.data?.data);
-          // toggleLoader()
+        }
+        toggleLoader();
+      })
+      .catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
+      });
+  };
+  const _deleteScheduleMeeting = (meetingId) => {
+    toggleLoader();
+    axios.delete(`meeting/delete/${meetingId}`)
+      .then((res) => {
+        if (res?.data?.data) {
+          swal(res?.data?.message, { icon: "success", timer: 5000 });
+          _getMeetingList();
         }
         toggleLoader();
       })
@@ -326,21 +329,16 @@ const MeetingList = () => {
 
       let body = {
         title: data?.title,
-        client: visitorDetails?.filter((e) => e?.name == selectedClient)[0]
-          ?._id,
-        meetingWith: counsellorDetails?.filter(
-          (e) => e?.name == selectedInviteTo
-        )[0]?._id,
-        meetingDate: meetingDate,
+        client: visitorDetails?.filter((e) => e?.name == selectedClient)[0]?._id,
+        meetingWith: counsellorDetails?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
+        meetingDate: dayjs(meetingDate).format('YYYY-MM-DD'),
         slot_time: slotTimes,
+        status: meetinStatusConfig?.find((e) => e?.statusName === updateMeetingStatus)?.statusId
       };
       if (data?._id) {
         body.id = data?._id;
       }
-      axios?.[data?._id ? "put" : "post"](
-        data?._id ? "meeting/update" : `meeting/create`,
-        body
-      )
+      axios?.post(data?._id ? "meeting/update" : `meeting/create`, body)
         .then((res) => {
           if (res?.data?.data) {
             swal(res?.data?.message, { icon: "success", timer: 5000 });
@@ -355,69 +353,56 @@ const MeetingList = () => {
         });
     }
   };
-  console.log(
-    selectedClient?.length,
-    meetingDate,
-    selectedInviteTo?.length,
-    "selectedInviteTo?.length"
-  );
+  const _getMeetingDetailsById = async () => {
+    toggleLoader();
+    await axios.get(`meeting/by_id/${meetingId}`)
+      .then((res) => {
+        if (res?.data?.data) {
+          setUpdatedMeetingDetails(res?.data?.data)
+        }
+        toggleLoader();
+      })
+      .catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
+      });
+  }
+
   useEffect(() => {
-    if (
-      selectedClient?.length > 0 &&
-      meetingDate &&
-      selectedInviteTo?.length > 0 &&
-      visitorDetails?.length > 0
-    ) {
+    if (visitorDetails?.length > 0 && counsellorDetails?.length > 0 && selectedClient?.length > 0 && selectedInviteTo?.length > 0 && meetingDate) {
       _getSlotTimes();
     }
-  }, [meetingDate, visitorDetails]);
+  }, [model, meetingDate, visitorDetails, selectedClient, selectedInviteTo, counsellorDetails]);
 
   useEffect(() => {
     if (model) {
-      _getClients();
       _getVisitor();
       _getCounselor();
     }
   }, [model]);
 
+
   useEffect(() => {
     (async () => {
-      console.log(meetingId, model, "meetingId");
       if (model && meetingId) {
-        toggleLoader();
-        await axios
-          .get(`meeting/by_id/${meetingId}`)
-          .then((res) => {
-            if (res?.data?.data) {
-              console.log(res?.data?.data, "res?.data?.data");
-              const updatedMeetingDetails = res?.data?.data;
-              setSelectedClient(
-                updatedMeetingDetails?.clientDetails?.name || ""
-              );
-              setSelectedInviteTo(
-                updatedMeetingDetails?.meetingWithDetails?.name || ""
-              );
-              setData({
-                ...data,
-                title: updatedMeetingDetails?.title,
-                meetingDate: updatedMeetingDetails?.meetingDate,
-                _id: updatedMeetingDetails?._id,
-              });
-              setMeetingDate(
-                updatedMeetingDetails?.meetingDate ||
-                  dayjs("2014-08-18T21:11:54")
-              );
-              console.log(updatedMeetingDetails, "meetingDetails");
-            }
-            toggleLoader();
-          })
-          .catch((err) => {
-            toggleLoader();
-            OnUpdateError(err.data.message);
-          });
+        _getMeetingDetailsById()
       }
     })();
   }, [model, meetingId]);
+
+  useEffect(() => {
+    if (updatedMeetingDetails) {
+      setSelectedClient(updatedMeetingDetails?.clientDetails?.name || "");
+      setSelectedInviteTo(updatedMeetingDetails?.meetingWithDetails?.name || "");
+      setData({
+        ...data,
+        title: updatedMeetingDetails?.title,
+        _id: updatedMeetingDetails?._id,
+      });
+      setMeetingDate(updatedMeetingDetails?.meetingDate || dayjs());
+      setUpdateMeetingStatus(meetinStatusConfig?.find((e) => e?.statusId === updatedMeetingDetails?.status)?.statusName)
+    }
+  }, [updatedMeetingDetails])
 
   React.useEffect(() => {
     _getMeetingList();
@@ -473,59 +458,47 @@ const MeetingList = () => {
                       <StyledTableCell align="center">
                         {row?.startTime}
                       </StyledTableCell>
-                      <StyledTableCell
-                        className={classes.paddedRow}
-                        align="center"
-                      >
-                        <TextLabel
-                          fontSize={"12px"}
-                          color={"white"}
-                          fontWeight={"400"}
-                          title={
-                            row?.status === meetingStatus?.approvalPending
-                              ? "Approval Pending"
-                              : row?.status === meetingStatus?.approved
-                              ? "Approved"
-                              : row?.status === meetingStatus?.onGoing
-                              ? "onGoing"
-                              : row?.status === meetingStatus?.completed
-                              ? "Completed"
-                              : row?.status === meetingStatus?.canceled
-                              ? "Canceled"
-                              : ""
-                          }
-                          textAlign={"center"}
-                          style={{
-                            backgroundColor: statusColors[row?.status],
-                            borderRadius: "20px",
-                            width: "130px",
-                            padding: "5px 5px",
-                          }}
-                        />
+                      <StyledTableCell className={classes.paddedRow} >
+                        <Box display={'flex'} justifyContent={'center'}>
+                          <TextLabel
+                            fontSize={"12px"}
+                            color={"white"}
+                            fontWeight={"400"}
+                            title={meetinStatusConfig?.find((e) => e?.statusId === row.status)?.statusName}
+                            textAlign={"center"}
+                            style={{
+                              backgroundColor: statusColors[row?.status],
+                              borderRadius: "20px",
+                              width: "130px",
+                              padding: "5px 5px",
+                            }}
+                          />
+                        </Box>
                       </StyledTableCell>
                       <StyledTableCell>
                         {row?.creatorDetails?.name}
                       </StyledTableCell>
                       <StyledTableCell>
                         <Box display={"flex"} justifyContent={"end"} gap={1}>
+                          {/* <Assets
+                            className={classes.viewBox}
+                            src={"/assets/icons/view.svg"}
+                            absolutePath={true}
+                          /> */}
                           <Assets
                             className={classes.writeBox}
                             src={"/assets/icons/write.svg"}
                             absolutePath={true}
-                            onClick={() => {
-                              setModel(true);
-                              setMeetingId(row?._id);
-                            }}
+                            onClick={() => { setIsEdit(true); setModel(true); setMeetingId(row?._id); }}
                           />
-                          <Assets
-                            className={classes.viewBox}
-                            src={"/assets/icons/view.svg"}
-                            absolutePath={true}
-                          />
+
                           <Assets
                             className={classes.deleteBox}
                             src={"/assets/icons/delete.svg"}
                             absolutePath={true}
+                            onClick={() => {
+                              _deleteScheduleMeeting(row?._id);
+                            }}
                           />
                         </Box>
                       </StyledTableCell>
@@ -564,7 +537,6 @@ const MeetingList = () => {
             setSlotTimes={setSlotTimes}
             convertToAmPm={convertToAmPm}
             setSelectedSlot={setSelectedSlots}
-            clients={clients}
             selectedInviteTo={selectedInviteTo}
             setSelectedInviteTo={setSelectedInviteTo}
             selectedClient={selectedClient}
@@ -573,6 +545,12 @@ const MeetingList = () => {
             handleSlotClick={handleSlotClick}
             meetingDate={meetingDate}
             setMeetingDate={setMeetingDate}
+            onDelete={_deleteScheduleMeeting}
+            updatedMeetingDetails={updatedMeetingDetails}
+            meetinStatusConfig={meetinStatusConfig}
+            setUpdateMeetingStatus={setUpdateMeetingStatus}
+            updateMeetingStatus={updateMeetingStatus}
+            statusColors={statusColors}
           />
         }
       />

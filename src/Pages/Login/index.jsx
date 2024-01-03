@@ -18,7 +18,7 @@ const Login = () => {
   const [data, setData] = useState({})
   const [error, setError] = useState({})
   const [isSubmit, setIsSubmit] = useState(false)
-  const { OnUpdateError, toggleLoader, onUpdateUser, updateToken } = useAppContext();
+  const { OnUpdateError, toggleLoader, onUpdateUser, updateToken, getMenuListByRole } = useAppContext();
 
   //Validation
   const handleValidation = () => {
@@ -66,6 +66,7 @@ const Login = () => {
         if (res?.data?.data) {
           onUpdateUser(res?.data?.data);
           updateToken(res?.data?.data?.token)
+          getMenuListByRole()
           swal(res?.data?.message, {
             icon: "success",
             timer: 5000,

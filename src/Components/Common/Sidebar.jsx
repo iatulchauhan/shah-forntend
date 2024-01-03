@@ -99,67 +99,7 @@ const useStyles = makeStyles()((theme) => {
 
   };
 });
-const menuIconList = [
-  {
-    title: "Dashboard",
-    icon: (<Assets src="/assets/icons/dashboard.svg" absolutePath={true} />),
 
-  },
-  {
-    title: "Create User",
-    icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Create Branch",
-    icon: <Assets src="/assets/icons/branches.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Client List",
-    icon: <Assets src="/assets/icons/client.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Visitor List",
-    icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Email",
-    icon: <Assets src="/assets/icons/sms.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Offer",
-    icon: <Assets src="/assets/icons/discount-shape.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Financial Data",
-    icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Meeting List",
-    icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Expiring Plan List",
-    icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Visitor History",
-    icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
-
-  },
-  {
-    title: "Payment",
-    icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
-  },
-];
 
 export default function SideBar(props) {
   const width = window.innerWidth;
@@ -167,33 +107,9 @@ export default function SideBar(props) {
   const location = useLocation();
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
-  const { user, logout, toggleSideBar, toggleLoader, OnUpdateError, auth_token } = useAppContext();
-console.log("auth_token",auth_token);
-  const [menuList, setMenuList] = useState([]);
+  const { user, logout, toggleSideBar, menuList } = useAppContext();
 
   const [open, setOpen] = useState(width > 991 ? true : false);
-  const userType = JSON.parse(getLSItem("user"))?.userType
-  console.log(menuList, "menuListmenuList")
-
-  const getMenuListByRole = () => {
-    toggleLoader();
-    axios.post(`/permissions`).then((res) => {
-      if (res?.data?.data) {
-        const dynamicMenuList = res.data.data.map((menuItem) => ({
-          ...menuItem,
-          activeLinks: (menuItem.path && menuItem.path.substring(1).split('/').filter(Boolean)) || [""],
-          icon: menuIconList?.length > 0 && menuIconList?.map((e) => { if (e?.title === menuItem?.page) return e?.icon })
-        }));
-
-        setMenuList(dynamicMenuList);
-      }
-      toggleLoader();
-    }).catch((err) => {
-      toggleLoader();
-      OnUpdateError(err.data.message);
-    });
-  }
-
 
   const handleDrawerOpen = () => {
     setOpen(!open);
@@ -218,82 +134,6 @@ console.log("auth_token",auth_token);
   }, []);
 
 
-
-  const adminMenus = [
-    {
-      title: "Dashboard",
-      icon: (<Assets src="/assets/icons/dashboard.svg" absolutePath={true} />),
-      link: "/",
-      activeLinks: [""],
-    },
-    {
-      title: "Create User",
-      icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
-      link: "/user",
-      activeLinks: ["user"],
-    },
-    {
-      title: "Create Branches",
-      icon: <Assets src="/assets/icons/branches.svg" absolutePath={true} />,
-      link: "/branches",
-      activeLinks: ["branches"],
-    },
-    {
-      title: "Client List",
-      icon: <Assets src="/assets/icons/client.svg" absolutePath={true} />,
-      link: "/client",
-      activeLinks: ["client"],
-    },
-    {
-      title: "Visitor List",
-      icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
-      link: "/visitor",
-      activeLinks: ["visitor"],
-    },
-    {
-      title: "Email",
-      icon: <Assets src="/assets/icons/sms.svg" absolutePath={true} />,
-      link: "/email",
-      activeLinks: ["email"],
-    },
-    {
-      title: "Offer",
-      icon: <Assets src="/assets/icons/discount-shape.svg" absolutePath={true} />,
-      link: "/offer",
-      activeLinks: ["offer"],
-    },
-    {
-      title: "Financial Data",
-      icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
-      link: "/financial-data",
-      activeLinks: ["financial-data"],
-    },
-    {
-      title: "Meeting List",
-      icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
-      link: "/meeting",
-      activeLinks: ["meeting"],
-    },
-    {
-      title: "Expiring Plan List",
-      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
-      link: "/expiring-plan",
-      activeLinks: ["expiring-plan"],
-    },
-    {
-      title: "Visitor History",
-      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
-      link: "/visitor-history",
-      activeLinks: ["visitor-history"],
-    },
-    {
-      title: "Payment",
-      icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
-      link: "/payment",
-      activeLinks: ["payment"],
-    },
-  ];
-
   const logoutAdmin = () => {
     Swal.fire({
       title: "<strong>Warning</strong>",
@@ -313,11 +153,6 @@ console.log("auth_token",auth_token);
   };
 
 
-  React.useEffect(() => {
-    if (auth_token) {
-      getMenuListByRole()
-    }
-  }, [auth_token])
   return (
     <>
       {location?.pathname === "/login" || location?.pathname === "/register" ? <>{props.children}</> : <Box sx={{ display: "flex" }}>
@@ -421,7 +256,6 @@ console.log("auth_token",auth_token);
                           color: "#FFFFFF",
                         },
                       },
-
                     }}
                   >
                     <ListItemIcon
@@ -432,11 +266,10 @@ console.log("auth_token",auth_token);
                         justifyContent: "center",
                       }}
                     >
-
-                      {item?.icon}
+                      {item?.icon && <img src={item.icon.props.src} alt={item.page} />}
                     </ListItemIcon>
                     <ListItemText
-                      style={{ whiteSpace: "nowrap", }}
+                      style={{ whiteSpace: "nowrap" }}
                       primary={item?.page}
                       sx={{
                         color: item?.activeLinks?.includes(
@@ -451,6 +284,7 @@ console.log("auth_token",auth_token);
                 </ListItem>
               </Link>
             ))}
+ 
             <Link
               onClick={() => logoutAdmin()}
               className={
