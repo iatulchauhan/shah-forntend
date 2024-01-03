@@ -104,7 +104,6 @@ const Branches = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(0);
 
-
     const handleChangePage = (newPage) => { setPage(newPage); };
     const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
 
