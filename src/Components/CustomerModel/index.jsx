@@ -247,7 +247,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                     <TextLabel fontSize={"16px"} fontWeight={"400"} title={'Enter Investment Details'} />
                     <Box display={'flex'} gap={2} alignItems={'center'} >
                         <CommonButton
-                            // width={'15%'}
+                            width={'120px'}
                             text={'Add Plan'}
                             onClick={() => setUserPurchasePlanAdd()}
                             startIcon={<AddIcon />}
@@ -339,7 +339,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
-                        width={'15%'}
+                    width={"280px"}
                         text={`${isEdit ? "Update" : "Create"} Customer`}
                         type="submit"
                         onClick={onSubmit}

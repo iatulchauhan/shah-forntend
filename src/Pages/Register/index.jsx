@@ -135,7 +135,7 @@ return (
                 <TextLabel fontSize={"12px"} color={"red"} title={data?.password === data?.confirmPassword ? "" : error?.passwordsMatch} />
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
-                        width={'25%'}
+                        width={'200px'}
                         text="Register"
                         type="submit"
                         onClick={handleLoginClick}

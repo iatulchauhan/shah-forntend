@@ -1,55 +1,164 @@
-import { Avatar, Box, Grid, Hidden } from '@mui/material'
-import React from 'react'
-import TextLabel from './Fields/TextLabel'
-import CommonSearch from './CommonSearch'
-import Assets from './ImageContainer'
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import MenuIcon from '@mui/icons-material/Menu';
-import Logout from '@mui/icons-material/Logout';
-import { lightTheme } from '../../theme'
+import { Avatar, Box, Divider, Grid, Hidden, styled } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import TextLabel from "./Fields/TextLabel";
+import CommonSearch from "./CommonSearch";
+import Assets from "./ImageContainer";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import MenuIcon from "@mui/icons-material/Menu";
+import { lightTheme } from "../../theme";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import Swal from "sweetalert2";
+import { useAppContext } from "../../Context/context";
+import { useNavigate } from "react-router-dom";
+import { userType } from "../../Utils/enum";
+import { makeStyles } from "tss-react/mui";
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import axios from "../../APiSetUp/axios";
+
+
+const useStyles = makeStyles()((theme) => {
+  return {
+          profileImage: {
+            height: "40px",
+            width: "40px",
+            objectFit: "cover",
+            borderRadius: "8px"
+          }
+  };
+});
+
+const StyledMenu = styled(Menu)(({ theme }) => ({
+  "& .MuiPaper-root": {
+    boxShadow: "0px",
+  },
+  "& .MuiMenu-list": {
+    paddingBottom: "0px !important",
+    paddingTop: "0px !important",
+  },
+}));
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  padding: "10px",
+  "&:hover": {},
+}));
 
 const Header = ({ onClick }) => {
+  
+  const { OnUpdateError, toggleLoader, user } = useAppContext();
+  const [data, setData] = useState({});
+  const { classes } = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { logout } = useAppContext();
+  const navigate = useNavigate();
+  const getLoginData = JSON.parse(localStorage.getItem("user"))
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+
+  const handleProfileClose = () => {
     setAnchorEl(null);
   };
+
+  const _getUserDetails = () => {
+    if (getLoginData?._id) {
+      axios
+        .get(`users/by_id/${getLoginData?._id}`)
+        .then((res) => {
+          if (res?.data?.data) {
+            setData(res?.data?.data);
+          }
+        })
+        .catch((err) => {
+          toggleLoader();
+          OnUpdateError(err.data.message);
+        });
+    }
+  };
+console.log('data😲', data)
+  const logoutAdmin = () => {
+    handleProfileClose()
+    Swal.fire({
+      title: "<strong>Warning</strong>",
+      icon: "warning",
+      html: "Are you sure you want to logout?",
+      showCancelButton: true,
+      confirmButtonColor: "#0492c2",
+      iconColor: "#0492c2",
+      confirmButtonText: "Yes",
+      cancelButtonColor: "#1A1B2F",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        logout();
+        navigate("/login")
+      }
+    });
+  };
+  useEffect(() => {
+    _getUserDetails();
+  }, [])
+  
+
   return (
-    <Grid container sx={{ backgroundColor: "white", padding: 1.5, display: "flex", justifyContent: "space-between" }}>
+    <Grid
+      container
+      sx={{
+        backgroundColor: "white",
+        padding: 1.5,
+        display: "flex",
+        justifyContent: "space-between",
+      }}
+    >
       <Box display={"flex"} alignItems={"center"} gap={{ md: 2, xs: 1 }}>
-        <MenuIcon sx={{ color: "black", alignSelf: "center", width: { xs: "25px", sm: "30px" }, height: { xs: "25px", sm: "30px" }, cursor: "pointer" }} onClick={onClick} />
+        <MenuIcon
+          sx={{
+            color: "black",
+            alignSelf: "center",
+            width: { xs: "25px", sm: "30px" },
+            height: { xs: "25px", sm: "30px" },
+            cursor: "pointer",
+          }}
+          onClick={onClick}
+        />
         <TextLabel title="Dashboard" variant={"h4"} fontWeight={"600"} />
       </Box>
-      <Box display={"flex"} justifyContent={"center"} alignItems={"center"} gap={2}>
+      <Box
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={2}
+      >
         <Hidden mdDown>
           <CommonSearch width={"500px"} />
-          <Box sx={{ backgroundColor: "#FFFAF1", display: "flex", justifyContent: "center", alignItems: "center", width: "45px", height: "45px", borderRadius: "16px" }}>
-            <Assets src={"/assets/icons/notification.svg"} absolutePath={true} />
+          <Box sx={{ backgroundColor: "#FFFAF1", display: "flex", justifyContent: "center", alignItems: "center", width: "45px", height: "45px", borderRadius: "8px" }}>
+            <Assets
+              src={"/assets/icons/notification.svg"}
+              absolutePath={true}
+            />
           </Box>
         </Hidden>
-        <Box display={"flex"} gap={1} onClick={handleClick}>
-          <Avatar sx={{ height: { xs: "30px", md: "40px" }, width: { xs: "30px", md: "40px" } }} />
+        <Box display={"flex"} alignItems={"center"} gap={1} onClick={handleProfileClick} sx={{cursor: "pointer"}}>
+          {getLoginData?.avtar ? 
+          <Assets src={`https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/${data?.avtar}`} className={classes.profileImage}  absolutePath={true}/> 
+          : 
+          <AccountBoxIcon style={{ color: "#cacaca", fontSize: "50px" }}/>
+          }
+
           <Box>
             <Box display={"flex"} gap={{ md: 2, xs: 1 }}>
-              <TextLabel title={"John Doe"} fontWeight={"500"} variant={"subtitle2"} />
+              <TextLabel title={data?.name} fontWeight={"500"} variant={"subtitle2"} />
               <Assets src={"/assets/icons/downArrow.svg"} absolutePath={true} />
             </Box>
-            <TextLabel title={"Admin"} fontWeight={"400"} variant={"body1"} color={lightTheme.palette.bgLightExtraLightGray.main} />
+            <TextLabel title={userType.filter((e)=> e?.id === data?.userType)[0]?.label} fontWeight={"400"} variant={"body1"} color={lightTheme.palette.bgLightExtraLightGray.main} />
           </Box>
         </Box>
       </Box>
-      <Menu
+      <StyledMenu
         anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
+        open={Boolean(anchorEl)}
+        onClose={handleProfileClose}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -62,12 +171,12 @@ const Header = ({ onClick }) => {
               ml: -0.5,
               mr: 1,
             },
-            '&:before': {
+            '&::before': {
               content: '""',
               display: 'block',
               position: 'absolute',
               top: 0,
-              right: 14,
+              right: "50%",
               width: 10,
               height: 10,
               bgcolor: 'background.paper',
@@ -76,21 +185,38 @@ const Header = ({ onClick }) => {
             },
           },
         }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: 'center', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
-      </Menu>
+        <Box>
+          <StyledMenuItem>
+            <Box display={"flex"} justifyContent={"center"} alignItems={"center"} minWidth={"150px"} padding={"10px"} gap={"10px"} backgroundColor={"#f3f3f3"} borderRadius={"10px"}>
+            {data?.avtar ? 
+          <Assets src={`https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/${data?.avtar}`} className={classes.profileImage}  absolutePath={true}/> 
+          : 
+          <AccountBoxIcon style={{ color: "#cacaca", fontSize: "50px" }}/>
+          }
+              <Box>
+                <TextLabel title={data?.name} fontWeight={"500"} variant={"subtitle2"}/>
+                <TextLabel title={userType.filter((e)=> e?.id === data?.userType)[0]?.label} fontWeight={"500"} variant={"body2"}/>
+              </Box>
+            </Box>
+          </StyledMenuItem>
+          <StyledMenuItem sx={{ paddingLeft: "15px" }} onClick={()=> {handleProfileClose(); navigate("/profile")}}>
+            <ListItemIcon><PersonOutlineOutlinedIcon /></ListItemIcon>
+            <TextLabel title={"Profile"} fontWeight={"500"} variant={"subtitle2"} />
+          </StyledMenuItem>
+        </Box>
+        <Divider />
+        <StyledMenuItem  onClick={() => logoutAdmin()}>
+          <Box display={"flex"} justifyContent={"center"} alignItems={"center"} width={"-webkit-fill-available"}>
+            <ListItemIcon><LogoutOutlinedIcon style={{ color: lightTheme.palette.primary.main, fontSize: "20px" }}/></ListItemIcon>
+            <TextLabel title={"Logout"} fontWeight={"600"} variant={"subtitle2"} color={lightTheme.palette.primary.main}/>
+          </Box>
+        </StyledMenuItem>
+      </StyledMenu>
     </Grid>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

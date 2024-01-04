@@ -274,7 +274,7 @@ const CamposeEmail = ({
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box display={"flex"} justifyContent={"center"} mt={"35px"}>
                   <CommonButton
-                    width={"30%"}
+                    width={"200px"}
                     text={`Send`}
                     type="submit"
                     onClick={() => _sendEmail()}

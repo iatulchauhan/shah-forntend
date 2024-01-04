@@ -91,7 +91,7 @@ const ForgetPassword = () => {
                     <Grid item xs={10} sm={10} md={10} lg={10}>
                         <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '8rem' }}>
                             <CommonButton
-                                width={'25%'}
+                                width={'200px'}
                                 text="Send OTP"
                                 type="submit"
                                 onClick={handleLoginClick}

@@ -6,6 +6,6 @@ export default function Assets({ absolutePath, className, style, ...props }) {
     };
 
     return (
-        <img {...props} src={convertAssetsPath(props.src)} alt="img" style={{style}} className={className}/>
+        <img {...props} src={convertAssetsPath(props.src)} alt="img" style={{style}} className={className} />
     );
 }

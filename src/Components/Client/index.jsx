@@ -219,7 +219,7 @@ const AddClient = ({ data, setData, branches, roles, selectedRole, setSelectedRo
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
-                        width={'60%'}
+                        width={'280px'}
                         text={`${isEdit ? "Update" : "Create"} Client`}
                         type="submit"
                         onClick={onSubmit}

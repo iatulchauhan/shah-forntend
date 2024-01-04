@@ -246,7 +246,7 @@ const AddMeeting = ({
             }}
           >
             <CommonButton
-              width={"60%"}
+              width={"280px"}
               text={`${isEdit ? "Update" : "Schedule"} Meeting`}
               type="submit"
               onClick={onSubmit}

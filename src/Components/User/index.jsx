@@ -260,7 +260,7 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setMult
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
-                        width={'10%'}
+                        width={'280px'}
                         text={`${isEdit ? "Update" : "Create"} User`}
                         type="submit"
                         onClick={onSubmit}

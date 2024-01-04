@@ -62,7 +62,6 @@ const Login = () => {
         email: data?.email,
         password: data?.password
       }).then((res) => {
-        console.log("res", res);
         if (res?.data?.data) {
           onUpdateUser(res?.data?.data);
           updateToken(res?.data?.data?.token)
@@ -118,7 +117,7 @@ const Login = () => {
             <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', marginTop: '40px', color: lightTheme.palette.primary.main, cursor: "pointer" }} onClick={() => navigate("/forgot-password")}>{'Forgot Password ?'}</Typography >
             <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
               <CommonButton
-                width={'25%'}
+                width={'200px'}
                 text="Login"
                 type="submit"
                 onClick={handleLoginClick}

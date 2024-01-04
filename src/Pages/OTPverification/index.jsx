@@ -107,7 +107,7 @@ const OTPverification = () => {
                         <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', color: lightTheme.palette.primary.main }}>{'Resend OTP'}</Typography>
                         <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '7rem' }}>
                             <CommonButton
-                                width={'25%'}
+                                width={'200px'}
                                 text="Submit"
                                 type="submit"
                                 onClick={handleLoginClick}

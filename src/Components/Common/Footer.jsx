@@ -12,14 +12,11 @@ const useStyles = makeStyles()((theme) => {
             bottom: "0",
             background: theme.palette.bgWhite.main,
             boxShadow: '0px -1px 0px 0px rgba(0, 0, 0, 0.05)',
-            [theme.breakpoints.down(500)]: {
-                padding: '12px 20px',
-            },
             [theme.breakpoints.down("md")]: {
+                    padding: '10px 20px',
                 width: `100% !important`,
                 marginLeft: "-16px !important"
             },
-
         },
         miniFooterItems: {
             display: "flex",

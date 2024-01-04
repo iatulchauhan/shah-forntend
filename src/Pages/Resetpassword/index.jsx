@@ -101,7 +101,7 @@ const Resetpassword = () => {
                     <TextLabel fontSize={"12px"} color={"red"} title={data?.password === data?.confirmPassword ? "" : error?.passwordsMatch} />
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: "8rem" }}>
                         <CommonButton
-                            width={'25%'}
+                            width={'200px'}
                             text="Submit"
                             type="submit"
                             onClick={handleLoginClick}

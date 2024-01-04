@@ -155,7 +155,7 @@ export default function SideBar(props) {
 
   return (
     <>
-      {location?.pathname === "/login" || location?.pathname === "/register" ? <>{props.children}</> : <Box sx={{ display: "flex" }}>
+      {location?.pathname === "/login" || location?.pathname === "/register" || location?.pathname === "/forgot-password" || location?.pathname === "/otp-verification" || location?.pathname === "/reset-password" ? <>{props.children}</> : <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="fixed" open={open} style={{
           boxShadow: '0px 1px 0px 0px rgba(0, 0, 0, 0.05)',
@@ -285,7 +285,7 @@ export default function SideBar(props) {
               </Link>
             ))}
  
-            <Link
+            {/* <Link
               onClick={() => logoutAdmin()}
               className={
                 location.pathname === "/logout" ? "active" : "nav-link width-100"
@@ -312,16 +312,6 @@ export default function SideBar(props) {
                     color: 'White'
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      color: "#424448",
-                      mr: open ? 1 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {/* <FeatherIcon icon="lock" /> */}
-                  </ListItemIcon>
                   <ListItemText
                     style={{ whiteSpace: "nowrap" }}
                     primary={"Logout"}
@@ -334,7 +324,7 @@ export default function SideBar(props) {
                   />
                 </ListItemButton>
               </ListItem>
-            </Link>
+            </Link>  */}
           </List>
         </Drawer>
         <Box sx={{ marginTop: 8, width: "100%", overflow: "auto", marginBottom: '64px' }}>
