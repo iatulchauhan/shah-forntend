@@ -269,7 +269,6 @@ const Branches = () => {
         }
     }
 
-
     React.useEffect(() => {
         _getCountries()
     }, [])

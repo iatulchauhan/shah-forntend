@@ -47,6 +47,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         border: 0,
     },
 }));
+
 const closeDate = (date, days) => {
     const initialDate = new Date(date);
     const newDate = new Date(initialDate);
@@ -55,6 +56,7 @@ const closeDate = (date, days) => {
     const formattedDate = newDate.toISOString();
     return dayjs(formattedDate).format('DD/MM/YYYY')
 }
+
 const useStyles = makeStyles()((theme) => {
     return {
         paddedRow: {
@@ -94,8 +96,8 @@ const FinancialData = () => {
     const [error, setError] = useState({})
     const [isEdit, setIsEdit] = useState(false)
     const [financialId, setFinancialId] = useState("");
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [page, setPage] = useState(0);
 
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -161,7 +163,7 @@ const FinancialData = () => {
                         setData({
                             ...data,
                             name: res?.data?.data?.userDetails?.name,
-                            returnAmount: res?.data?.data?.returnOfInvestment,
+                            returnAmount: `${res?.data?.data?.returnOfInvestment}%`,
                             totalBalance: res?.data?.data?.investment,
                         });
                     }
@@ -213,6 +215,7 @@ const FinancialData = () => {
         setData({})
         setError({})
         setIsEdit(false)
+        setFinancialId("")
     }
 
     React.useEffect(() => {
@@ -224,6 +227,7 @@ const FinancialData = () => {
             _getFinancialById(financialId);
         }
     }, [financialId]);
+
     return (
         <>
             <PaperContainer elevation={0} square={false}>
@@ -236,7 +240,7 @@ const FinancialData = () => {
                             <Table sx={{ minWidth: 600 }} aria-label="customized table">
                                 <TableHead >
                                     <TableRow>
-                                        <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
+                                        <StyledTableCell>#</StyledTableCell>
                                         <StyledTableCell>Name</StyledTableCell>
                                         <StyledTableCell align='center'>Investment Date</StyledTableCell>
                                         <StyledTableCell align='center'>Closing Date</StyledTableCell>
@@ -249,7 +253,7 @@ const FinancialData = () => {
                                     {financialDetails?.response?.length > 0 && financialDetails?.response?.map((row, index) => {
                                         return (
                                             <StyledTableRow key={index} >
-                                                <StyledTableCell style={{ paddingLeft: '10px' }}>{index + 1}</StyledTableCell>
+                                                <StyledTableCell style={{ paddingLeft: '15px' }}>{index + 1}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetails?.name} </StyledTableCell>
                                                 <StyledTableCell align='center'>{dayjs(row.createdAt).format('DD/MM/YYYY')}</StyledTableCell>
                                                 <StyledTableCell align='center'>{closeDate(row.createdAt, row?.investmentDays)}</StyledTableCell>
@@ -263,7 +267,6 @@ const FinancialData = () => {
                                                             absolutePath={true}
                                                             onClick={() => {
                                                                 setData(row); setIsEdit(true); setModel(true);
-                                                                { console.log("row.id", row.id) }
                                                                 setFinancialId(row?._id);
                                                             }}
                                                         />
