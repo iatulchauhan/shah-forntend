@@ -20,6 +20,9 @@ import Assets from "./ImageContainer";
 import { makeStyles } from "tss-react/mui";
 import { getLSItem } from "../../APiSetUp/LocalStorage";
 import axios from "../../APiSetUp/axios";
+import DashboardIcon from "../Icons/dashboardIcon";
+import { useTheme } from "@mui/material";
+import ProfileIcon from "../Icons/profileIcon";
 
 const drawerWidth = 275;
 
@@ -94,12 +97,12 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 
+
 const useStyles = makeStyles()((theme) => {
   return {
 
   };
 });
-
 
 export default function SideBar(props) {
   const width = window.innerWidth;
@@ -108,8 +111,101 @@ export default function SideBar(props) {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
   const { user, logout, toggleSideBar, menuList } = useAppContext();
-
+  const theme = useTheme()
   const [open, setOpen] = useState(width > 991 ? true : false);
+
+  const menuIconList = [
+    {
+      title: "Dashboard",
+      icon: <DashboardIcon color={location?.pathname === "/" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+    },
+    {
+      title: "Create User",
+      icon: <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+    },
+    {
+      title: "User List",
+      icon:  <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+    },
+    {
+      title: "Create Branch",
+      icon: <Assets src="/assets/icons/branches.svg" absolutePath={true} />,
+
+    },
+    {
+      title: "Client List",
+      icon: <Assets src="/assets/icons/client.svg" absolutePath={true} />,
+
+    },
+    {
+      title: "Visitor List",
+      icon: <ProfileIcon color={location?.pathname === "/visitor" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+
+    },
+    {
+      title: "Email",
+      icon: <Assets src="/assets/icons/sms.svg" absolutePath={true} />,
+
+    },
+    {
+      title: "Offer",
+      icon: <Assets src="/assets/icons/discount-shape.svg" absolutePath={true} />,
+
+    },
+    {
+      title: "Financial Data",
+      icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
+
+    },
+    {
+      title: "Meeting List",
+      icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
+
+    },
+    {
+      title: "View Meeting",
+      icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
+    },
+    {
+      title: "Schedule Meeting",
+      icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
+
+    },
+    {
+      title: "Assign File",
+      icon: <ProfileIcon color={location?.pathname === "/assign-file" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+    },
+    {
+      title: "New File",
+      icon: <ProfileIcon color={location?.pathname === "/new-file" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+    },
+    {
+      title: "Modify Plan",
+      icon: <Assets src="/assets/icons/profile-tick.svg" absolutePath={true} />,
+    },
+    {
+      title: "Expiring Plan List",
+      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
+
+    },
+    {
+      title: "Investment",
+      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
+    },
+    {
+      title: "Reminder",
+      icon: <Assets src="/assets/icons/reminder.svg" absolutePath={true} />,
+    },
+    {
+      title: "Visitor History",
+      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
+
+    },
+    {
+      title: "Payment",
+      icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
+    },
+  ];
 
   const handleDrawerOpen = () => {
     setOpen(!open);
@@ -151,6 +247,11 @@ export default function SideBar(props) {
       }
     });
   };
+
+  const getIcon = (page) => {
+    const icon = menuIconList.find(e => e?.title === page)?.icon
+    return icon
+  }
 
 
   return (
@@ -219,72 +320,76 @@ export default function SideBar(props) {
               backgroundColor: "transparent"
             }
           }}>
-            {menuList.map((item, index) => (
-              <Link
-                to={item.path}
-                className={
-                  item?.activeLinks?.includes(location.pathname.split("/")?.[1])
-                    ? "active"
-                    : "nav-link width-100"
-                }
-                onClick={width > 991 ? () => { } : () => handleDrawerOpen()}
-              >
-                <ListItem
-                  key={index}
-                  disablePadding
-                  sx={{
-                    display: "block",
-                    marginBottom: 0.5,
-                    borderRadius: '18px',
-                  }}
+            {menuList.map((item, index) => {
+              console.log(item, "item")
+              return (
+                <Link
+                  to={item.path}
+                  className={
+                    item?.activeLinks?.includes(location.pathname.split("/")?.[1])
+                      ? "active"
+                      : "nav-link width-100"
+                  }
+                  onClick={width > 991 ? () => { } : () => handleDrawerOpen()}
                 >
-                  <ListItemButton
+                  <ListItem
+                    key={index}
+                    disablePadding
                     sx={{
-                      minHeight: 50,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                      marginBottom: 2,
-                      backgroundColor: item?.activeLinks?.includes(
-                        location.pathname.split("/")?.[1]
-                      )
-                        ? "#5D5FEF"
-                        : "#FFFFFF",
-                      borderRadius: '16px',
-                      "&:hover": {
-                        backgroundColor: "#5D5FEF",
-                        ".MuiListItemText-root .MuiTypography-root": {
-                          color: "#FFFFFF",
-                        },
-                      },
+                      display: "block",
+                      marginBottom: 0.5,
+                      borderRadius: '18px',
                     }}
                   >
-                    <ListItemIcon
+                    <ListItemButton
                       sx={{
-                        minWidth: 0,
-                        color: "#424448",
-                        mr: open ? 1 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {item?.icon && <img src={item.icon.props.src} alt={item.page} />}
-                    </ListItemIcon>
-                    <ListItemText
-                      style={{ whiteSpace: "nowrap" }}
-                      primary={item?.page}
-                      sx={{
-                        color: item?.activeLinks?.includes(
+                        minHeight: 50,
+                        justifyContent: open ? "initial" : "center",
+                        px: 2.5,
+                        marginBottom: 2,
+                        backgroundColor: item?.activeLinks?.includes(
                           location.pathname.split("/")?.[1]
                         )
-                          ? "#FFFFFF"
-                          : "#737791",
-                        opacity: open ? 1 : 0,
+                          ? "#5D5FEF"
+                          : "#FFFFFF",
+                        borderRadius: '16px',
+                        "&:hover": {
+                          backgroundColor: "#5D5FEF",
+                          ".MuiListItemText-root .MuiTypography-root": {
+                            color: "#FFFFFF",
+                          },
+                        },
                       }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              </Link>
-            ))}
- 
+                    >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          color: "#424448",
+                          mr: open ? 1 : "auto",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {getIcon(item?.page)}
+
+                      </ListItemIcon>
+                      <ListItemText
+                        style={{ whiteSpace: "nowrap" }}
+                        primary={item?.page}
+                        sx={{
+                          color: item?.activeLinks?.includes(
+                            location.pathname.split("/")?.[1]
+                          )
+                            ? "#FFFFFF"
+                            : "#737791",
+                          opacity: open ? 1 : 0,
+                        }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+              )
+            })}
+
             {/* <Link
               onClick={() => logoutAdmin()}
               className={
