@@ -23,6 +23,15 @@ import axios from "../../APiSetUp/axios";
 import DashboardIcon from "../Icons/dashboardIcon";
 import { useTheme } from "@mui/material";
 import ProfileIcon from "../Icons/profileIcon";
+import BranchIcon from "../Icons/branchIcon";
+import ClientIcon from "../Icons/clientIcon";
+import SmsIcon from "../Icons/smsIcon";
+import DiscountIcon from "../Icons/discountIcon";
+import DolorIcon from "../Icons/dolorIcon";
+import CalenderIcon from "../Icons/calenderIcon";
+import ProfileTicIcon from "../Icons/profileTicIcon";
+import InfoIcon from "../Icons/infoIcon";
+import ReminderIcon from "../Icons/reminderIcon";
 
 const drawerWidth = 275;
 
@@ -129,47 +138,39 @@ export default function SideBar(props) {
     },
     {
       title: "Create Branch",
-      icon: <Assets src="/assets/icons/branches.svg" absolutePath={true} />,
-
+      icon:  <BranchIcon color={location?.pathname === "/branches" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,      
     },
     {
       title: "Client List",
-      icon: <Assets src="/assets/icons/client.svg" absolutePath={true} />,
-
+      icon:  <ClientIcon color={location?.pathname === "/client" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
     },
     {
       title: "Visitor List",
       icon: <ProfileIcon color={location?.pathname === "/visitor" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
-
     },
     {
       title: "Email",
-      icon: <Assets src="/assets/icons/sms.svg" absolutePath={true} />,
-
+      icon: <SmsIcon color={location?.pathname === "/email" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,      
     },
     {
       title: "Offer",
-      icon: <Assets src="/assets/icons/discount-shape.svg" absolutePath={true} />,
-
+      icon: <DiscountIcon color={location?.pathname === "/offer" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,      
     },
     {
       title: "Financial Data",
-      icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
-
+      icon: <DolorIcon color={location?.pathname === "/financial-data" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,      
     },
     {
       title: "Meeting List",
-      icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
-
+      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
     },
     {
       title: "View Meeting",
-      icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
+      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
     },
     {
       title: "Schedule Meeting",
-      icon: <Assets src="/assets/icons/calendar-edit.svg" absolutePath={true} />,
-
+      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
     },
     {
       title: "Assign File",
@@ -181,29 +182,26 @@ export default function SideBar(props) {
     },
     {
       title: "Modify Plan",
-      icon: <Assets src="/assets/icons/profile-tick.svg" absolutePath={true} />,
-    },
+      icon: <ProfileTicIcon color={location?.pathname === "/modify-plan" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,    },
     {
       title: "Expiring Plan List",
-      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
-
+      icon: <InfoIcon color={location?.pathname === "/expiring-plan" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
     },
     {
       title: "Investment",
-      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
+      icon: <InfoIcon color={location?.pathname === "/investment" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
     },
     {
       title: "Reminder",
-      icon: <Assets src="/assets/icons/reminder.svg" absolutePath={true} />,
+      icon: <ReminderIcon color={location?.pathname === "/reminder" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
     },
     {
       title: "Visitor History",
-      icon: <Assets src="/assets/icons/info-circle.svg" absolutePath={true} />,
-
+      icon: <InfoIcon color={location?.pathname === "/visitor-history" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
     },
     {
       title: "Payment",
-      icon: <Assets src="/assets/icons/dollar-square.svg" absolutePath={true} />,
+      icon: <DolorIcon color={location?.pathname === "/payment" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
     },
   ];
 
