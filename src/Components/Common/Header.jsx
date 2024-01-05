@@ -54,7 +54,7 @@ const Header = ({ onClick }) => {
   const location = useLocation();
 
 
-  const activePage = menuList?.filter((e) => e?.path === location?.pathname)[0]?.page 
+  const activePage = menuList?.filter((e) => e?.path === location?.pathname)[0]?.page || location?.pathname?.split("/")?.[1]
 
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
