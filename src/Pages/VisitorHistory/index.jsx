@@ -164,7 +164,7 @@ const VisitorHistory = () => {
                 </Grid>
                 <Box p={1}>
                     <CommonPagination
-                        count={100}
+                        count={visitorHistoryDetails?.count}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onRowsPerPageChange={handleChangeRowsPerPage}

@@ -14,6 +14,9 @@ import axios from "../../APiSetUp/axios";
 import swal from "sweetalert";
 import Assets from "../../Components/Common/ImageContainer";
 import AddIcon from "@mui/icons-material/Add";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { lightTheme } from "../../theme";
+
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -29,14 +32,18 @@ const useStyles = makeStyles()((theme) => {
       position: "absolute",
       bottom: "14px",
       right: "8px",
-      backgroundColor: theme.palette.bgGray.main,
-      height: "25px",
-      width: "25px",
+      backgroundColor: "#d4d4d4",
+      height: "30px",
+      width: "30px",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       borderRadius: "50%",
     },
+    editIcon: {
+      fontSize: "20px",
+      color: theme.palette.primary.main,
+    }
   };
 });
 
@@ -52,7 +59,7 @@ const Profile = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedState, setSelectedState] = useState("");
 
-  const getLoginData = JSON.parse(localStorage.getItem("user"));
+  const getLoginData = JSON.parse(localStorage.getItem("userData"));
 
   const handleValidation = () => {
     let formIsValid = true;
@@ -105,7 +112,6 @@ const Profile = () => {
   };
 
   const _getDefaultId = (data, name) => {
-    console.log(name, data, "namename");
     return data?.length > 0 && data?.filter((e) => e?.name == name)?.[0]?.id;
   };
 
@@ -124,7 +130,12 @@ const Profile = () => {
       axios
         .post("update_profile", body)
         .then((res) => {
-            console.log('res?.data?.data❤️❤️❤️', res?.data?.data)
+          const updatedUserData = {
+            ...getLoginData,
+            name: data?.name,
+            avtar: data?.avtar,
+          };
+          localStorage.setItem("userData", JSON.stringify(updatedUserData));
           swal(res?.data?.message, { icon: "success", timer: 5000 });
           _getUserById();
           onUpdateUser(res?.data?.data)
@@ -158,7 +169,6 @@ const Profile = () => {
       })
       .then((res) => {
         if (res?.data?.data) {
-          console.log(res?.data?.data, "res?.data?.data");
           setStates(res?.data?.data);
         }
         toggleLoader();
@@ -170,7 +180,6 @@ const Profile = () => {
   };
   const _getCities = async () => {
     toggleLoader();
-    console.log(states?.response, selectedState, "selectedState");
     await axios
       .post("/cities", {
         state_id: _getDefaultId(states?.response, selectedState),
@@ -226,9 +235,8 @@ const Profile = () => {
     }
   };
 
-  console.log("data❤️❤️❤️❤️", data);
   useEffect(() => {
-    _getUserById();
+    _getUserById(); 
     _getCountries();
   }, []);
 
@@ -269,7 +277,7 @@ const Profile = () => {
                   <Avatar className={classes.profileImage} />
                 )}
                 <label htmlFor="image-upload" className={classes.imageEditIcon}>
-                  <AddIcon />
+                  <EditOutlinedIcon className={classes.editIcon}  />
                 </label>
                 <input
                   type="file"
@@ -464,6 +472,12 @@ const Profile = () => {
           </Grid>
         </Box>
       </PaperContainer>
+      {/* {imageShow && <CommonModal
+                open={model}
+                onClose={handleClear}
+                title={`${isEdit ? "Update" : "Add"} Branch`}
+                content={<AddBranch data={data} setData={setData} error={error} handleChange={handleChange} cities={cities} states={states} onSubmit={_addUpdateBranch} isEdit={isEdit} selectedCity={selectedCity} setSelectedCity={setSelectedCity} setSelectedState={setSelectedState} selectedState={selectedState} countries={countries} setSelectedCountry={setSelectedCountry} selectedCountry={selectedCountry} />}
+            />} */}
     </>
   );
 };
