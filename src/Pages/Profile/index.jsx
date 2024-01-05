@@ -42,7 +42,7 @@ const useStyles = makeStyles()((theme) => {
 
 const Profile = () => {
   const { classes } = useStyles();
-  const { OnUpdateError, toggleLoader, user } = useAppContext();
+  const { OnUpdateError, toggleLoader, user, onUpdateUser } = useAppContext();
   const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [countries, setCountries] = useState([]);
@@ -115,6 +115,7 @@ const Profile = () => {
         id: getLoginData?._id,
         name: data?.name,
         address: data?.address,
+        avtar: data?.avtar,
         country: _getDefaultId(countries?.response, selectedCountry),
         state: _getDefaultId(states?.response, selectedState),
         city: _getDefaultId(cities?.response, selectedCity),
@@ -123,8 +124,10 @@ const Profile = () => {
       axios
         .post("update_profile", body)
         .then((res) => {
+            console.log('res?.data?.data❤️❤️❤️', res?.data?.data)
           swal(res?.data?.message, { icon: "success", timer: 5000 });
           _getUserById();
+          onUpdateUser(res?.data?.data)
         })
         .catch((err) => {
           toggleLoader();
@@ -206,16 +209,15 @@ const Profile = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-
     if (file) {
       const formData = new FormData();
       formData.append("image", file);
-
       axios
         .post("/upload/image/attachment", formData)
         .then((res) => {
-        //   console.log("res😲", res);
-        //   //   _getUserById();
+          if (res?.data?.data) {
+            setData({ ...data, avtar: res?.data?.data.image });
+          }
         })
         .catch((err) => {
           toggleLoader();
@@ -224,6 +226,7 @@ const Profile = () => {
     }
   };
 
+  console.log("data❤️❤️❤️❤️", data);
   useEffect(() => {
     _getUserById();
     _getCountries();

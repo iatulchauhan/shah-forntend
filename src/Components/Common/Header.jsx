@@ -46,7 +46,7 @@ const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
 
 const Header = ({ onClick }) => {
   
-  const { OnUpdateError, toggleLoader, user } = useAppContext();
+  const { OnUpdateError, toggleLoader, user, onUpdateUser  } = useAppContext();
   const [data, setData] = useState({});
   const { classes } = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -97,8 +97,10 @@ console.log('data😲', data)
     });
   };
   useEffect(() => {
-    _getUserDetails();
-  }, [])
+    if(onUpdateUser){
+      _getUserDetails();
+    }
+  }, [onUpdateUser])
   
 
   return (
