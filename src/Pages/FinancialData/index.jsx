@@ -24,6 +24,8 @@ import CommonModal from '../../Components/Common/CommonModel';
 import swal from 'sweetalert';
 import { permissionStatus } from '../../Utils/enum';
 import { useLocation } from 'react-router-dom';
+import DataNotFound from '../../Components/Common/DataNotFound';
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -273,7 +275,7 @@ const FinancialData = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
-                            <Table sx={{ minWidth: 600 }} aria-label="customized table">
+                            {financialDetails?.response?.length > 0 ? <Table sx={{ minWidth: 600 }} aria-label="customized table">
                                 <TableHead >
                                     <TableRow>
                                         <StyledTableCell>#</StyledTableCell>
@@ -317,13 +319,23 @@ const FinancialData = () => {
                                         )
                                     })}
                                 </TableBody>
-                            </Table>
+                            </Table> :
+                             <DataNotFound
+                                icon={
+                                    <ErrorOutlineIcon
+                                        color="primary"
+                                        style={{ fontSize: "3rem" }}
+                                    />
+                                }
+                                elevation={2}
+                            />}
+
                         </TableContainer>
                     </Grid>
                 </Grid>
                 <Box p={1}>
                     <CommonPagination
-                        count={100}
+                        count={financialDetails?.count}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onRowsPerPageChange={handleChangeRowsPerPage}

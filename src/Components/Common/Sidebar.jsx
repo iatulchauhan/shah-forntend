@@ -130,78 +130,83 @@ export default function SideBar(props) {
     },
     {
       title: "Create User",
-      icon: <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "User List",
-      icon:  <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Create Branch",
-      icon:  <BranchIcon color={location?.pathname === "/branches" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,      
+      icon: <BranchIcon color={location?.pathname === "/branches" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Client List",
-      icon:  <ClientIcon color={location?.pathname === "/client" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <ClientIcon color={location?.pathname === "/client" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Visitor List",
-      icon: <ProfileIcon color={location?.pathname === "/visitor" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <ProfileIcon color={location?.pathname === "/visitor" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Email",
-      icon: <SmsIcon color={location?.pathname === "/email" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,      
+      icon: <SmsIcon color={location?.pathname === "/email" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Offer",
-      icon: <DiscountIcon color={location?.pathname === "/offer" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,      
+      icon: <DiscountIcon color={location?.pathname === "/offer" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Financial Data",
-      icon: <DolorIcon color={location?.pathname === "/financial-data" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,      
+      icon: <DolorIcon color={location?.pathname === "/financial-data" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Meeting List",
-      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "View Meeting",
-      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Schedule Meeting",
-      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Assign File",
-      icon: <ProfileIcon color={location?.pathname === "/assign-file" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <ProfileIcon color={location?.pathname === "/assign-file" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "New File",
-      icon: <ProfileIcon color={location?.pathname === "/new-file" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <ProfileIcon color={location?.pathname === "/new-file" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Modify Plan",
-      icon: <ProfileTicIcon color={location?.pathname === "/modify-plan" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,    },
+      icon: <ProfileTicIcon color={location?.pathname === "/modify-plan" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+    },
     {
       title: "Expiring Plan List",
-      icon: <InfoIcon color={location?.pathname === "/expiring-plan" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <InfoIcon color={location?.pathname === "/expiring-plan" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Investment",
-      icon: <InfoIcon color={location?.pathname === "/investment" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <InfoIcon color={location?.pathname === "/investment" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Reminder",
-      icon: <ReminderIcon color={location?.pathname === "/reminder" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <ReminderIcon color={location?.pathname === "/reminder" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Visitor History",
-      icon: <InfoIcon color={location?.pathname === "/visitor-history" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <ProfileIcon color={location?.pathname === "/visitor-history" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Payment",
-      icon: <DolorIcon color={location?.pathname === "/payment" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main}/>,
+      icon: <DolorIcon color={location?.pathname === "/payment" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+    },
+    {
+      title: "Verify Attendance",
+      icon: <ProfileTicIcon color={location?.pathname === "/verify-attendance" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
   ];
 
