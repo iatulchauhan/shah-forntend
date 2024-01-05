@@ -23,10 +23,11 @@ import axios from "../../APiSetUp/axios";
 import swal from "sweetalert";
 import DataNotFound from "../../Components/Common/DataNotFound";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { Roles, roles } from "../../Utils/enum";
+import { Roles, permissionStatus, roles } from "../../Utils/enum";
 import VisitorModel from "../../Components/VisitorModel";
 import CommonButton from "../../Components/Common/Button/CommonButton";
 import CustomerModel from "../../Components/CustomerModel";
+import { useLocation } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -84,23 +85,19 @@ const useStyles = makeStyles()((theme) => {
 
 const User = () => {
   const { classes } = useStyles();
-  const { OnUpdateError, toggleLoader, user } = useAppContext();
-  console.log(user, "user");
+  const { OnUpdateError, toggleLoader, user, menuList } = useAppContext();
+  const location = useLocation()
+  const { pathname } = location
   //States
   const [model, setModel] = useState(false);
   const [visitorModel, setVisitorModel] = useState(false);
   const [customerModel, setCustomerModel] = useState(false);
-  const [data, setData] = useState({
-    userPurchasePlan: [
-      { _id: null, investment: "", investmentDays: "", returnOfInvestment: "" },
-    ],
-  });
+  const [data, setData] = useState({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
   const [error, setError] = useState({});
-  console.log("error", error, data);
   const [deleteId, setDeleteId] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [userDetails, setUserDetails] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [multiSelectedBranch, setMultiSelectedBranch] = useState([]);
@@ -112,14 +109,10 @@ const User = () => {
   const [selectedState, setSelectedState] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [page, setPage] = useState(0);
+  const [permissions, setPermissions] = useState({})
 
   //Validation
-  console.log(
-    error,
-    multiSelectedBranch,
-    multiSelectedBranch.map((item) => item._id),
-    "multiSelectedBranch"
-  );
+
   const handleValidation = () => {
     let formIsValid = true;
     let errors = {};
@@ -238,10 +231,6 @@ const User = () => {
     setPage(0);
   };
 
-  const handleChangetable = (e, id) => {
-    // Implement your handleChange logic here
-    // You may want to update the specific row in the state
-  };
 
   const _getDefaultId = (data, name) => {
     console.log(name, data, "namename");
@@ -353,7 +342,6 @@ const User = () => {
         OnUpdateError(err.data.message);
       });
   };
-  console.log(selectedCountry, selectedState, "states?.response");
   const _getCities = async () => {
     toggleLoader();
     console.log(states?.response, selectedState, "selectedState");
@@ -378,11 +366,7 @@ const User = () => {
     setModel(false);
     setVisitorModel(false);
     setCustomerModel(false);
-    setData({
-      userPurchasePlan: [
-        { _id: null, investment: "", investmentDays: "", returnOfInvestment: "" },
-      ],
-    });
+    setData({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
     setError({});
     setIsEdit(false);
     setSelectedBranch("");
@@ -392,6 +376,7 @@ const User = () => {
     setSelectedRole("");
     setMultiSelectedBranch([]);
   };
+
   const handleEdit = (row) => {
     const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0];
     setData(row);
@@ -509,6 +494,19 @@ const User = () => {
     }
   }, [selectedState, selectedCountry, states?.response]);
 
+
+  React.useEffect(() => {
+    const menu = menuList?.find((e) => e?.path === pathname);
+    if (menu) {
+      const menuPermissions = menu.permissions;
+      setPermissions({
+        view: menuPermissions.includes(permissionStatus.view) ? true : false,
+        create: menuPermissions.includes(permissionStatus.create) ? true : false,
+        update: menuPermissions.includes(permissionStatus.update) ? true : false,
+        delete: menuPermissions.includes(permissionStatus.delete) ? true : false,
+      });
+    }
+  }, [menuList, location]);
   return (
     <>
       <PaperContainer elevation={0} square={false}>
@@ -525,7 +523,7 @@ const User = () => {
             >
               <CommonButton
                 width={"120px"}
-                text={"Add Visitor"}
+                text={permissions?.create ? "Add Visitor" : ""}
                 onClick={() => {
                   handleClear();
                   setVisitorModel(true);
@@ -537,7 +535,7 @@ const User = () => {
                 <>
                   <CommonButton
                     width={"120px"}
-                    text={"Add Client"}
+                    text={permissions?.create ? "Add Client" : ""}
                     onClick={() => {
                       handleClear();
                       setCustomerModel(true);
@@ -547,7 +545,7 @@ const User = () => {
                   />
                   <CommonButton
                     width={"120px"}
-                    text={"Add Role"}
+                    text={permissions?.create ? "Add Role" : ""}
                     onClick={() => {
                       handleClear();
                       setModel(true);
@@ -743,20 +741,20 @@ const User = () => {
                                     justifyContent={"end"}
                                     gap={1}
                                   >
-                                    <Assets
+                                    {permissions?.update && <Assets
                                       className={classes.writeBox}
                                       src={"/assets/icons/write.svg"}
                                       absolutePath={true}
                                       onClick={() => {
                                         handleEdit(row);
                                       }}
-                                    />
+                                    />}
                                     <Assets
                                       className={classes.viewBox}
                                       src={"/assets/icons/view.svg"}
                                       absolutePath={true}
                                     />
-                                    <Assets
+                                    {permissions?.delete && <Assets
                                       className={classes.deleteBox}
                                       src={"/assets/icons/delete.svg"}
                                       absolutePath={true}
@@ -764,7 +762,7 @@ const User = () => {
                                         setDeleteId(row?._id);
                                         _handleDelete();
                                       }}
-                                    />
+                                    />}
                                   </Box>
                                 </StyledTableCell>
                               </StyledTableRow>

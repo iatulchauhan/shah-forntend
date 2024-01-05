@@ -347,7 +347,7 @@ const Email = () => {
                           padding={2}
                           sx={{
                             backgroundColor:
-                              getEmailData._id === data._id
+                              getEmailData?._id === data?._id
                                 ? "#F5F6FD"
                                 : lightTheme.palette.bgWhite.main,
                             cursor: "pointer",
@@ -490,7 +490,7 @@ const Email = () => {
                         padding={2}
                         sx={{
                           backgroundColor:
-                            getEmailData._id === data._id
+                            getEmailData?._id === data?._id
                               ? "#F5F6FD"
                               : lightTheme.palette.bgWhite.main,
                           cursor: "pointer",

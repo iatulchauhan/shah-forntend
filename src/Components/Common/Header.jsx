@@ -52,13 +52,9 @@ const Header = ({ onClick }) => {
   const { logout } = useAppContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const getLoginData = JSON.parse(localStorage.getItem("user"));
-  console.log('getLoginData😲', getLoginData)
 
-  const activePage = menuList?.filter((e) => e?.path === location?.pathname)[0]
-    ?.activeLinks[0]
-    ? menuList?.filter((e) => e.path === location.pathname)[0]?.activeLinks[0]
-    : "Dashboard";
+
+  const activePage = menuList?.filter((e) => e?.path === location?.pathname)[0]?.page 
 
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -147,9 +143,9 @@ const Header = ({ onClick }) => {
           onClick={handleProfileClick}
           sx={{ cursor: "pointer" }}
         >
-          {getLoginData?.avtar ? (
+          {user?.avtar ? (
             <Assets
-              src={`https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/${getLoginData?.avtar}`}
+              src={`https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/${user?.avtar}`}
               className={classes.profileImage}
               absolutePath={true}
             />
@@ -160,7 +156,7 @@ const Header = ({ onClick }) => {
             <Box>
               <Box display={"flex"} gap={{ md: 2, xs: 1 }}>
                 <TextLabel
-                  title={getLoginData?.name}
+                  title={user?.name}
                   fontWeight={"500"}
                   variant={"subtitle2"}
                 />
@@ -172,7 +168,7 @@ const Header = ({ onClick }) => {
               </Box>
               <TextLabel
                 title={
-                  userType.filter((e) => e?.id === getLoginData?.userType)[0]?.label
+                  userType.filter((e) => e?.id === user?.userType)[0]?.label
                 }
                 fontWeight={"400"}
                 variant={"body1"}
@@ -227,9 +223,9 @@ const Header = ({ onClick }) => {
               backgroundColor={"#f3f3f3"}
               borderRadius={"10px"}
             >
-              {getLoginData?.avtar ? (
+              {user?.avtar ? (
                 <Assets
-                  src={`https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/${getLoginData?.avtar}`}
+                  src={`https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/${user?.avtar}`}
                   className={classes.profileImage}
                   absolutePath={true}
                 />
@@ -240,13 +236,13 @@ const Header = ({ onClick }) => {
               )}
               <Box>
                 <TextLabel
-                  title={getLoginData?.name}
+                  title={user?.name}
                   fontWeight={"500"}
                   variant={"subtitle2"}
                 />
                 <TextLabel
                   title={
-                    userType.filter((e) => e?.id === getLoginData?.userType)[0]?.label
+                    userType.filter((e) => e?.id === user?.userType)[0]?.label
                   }
                   fontWeight={"500"}
                   variant={"body2"}

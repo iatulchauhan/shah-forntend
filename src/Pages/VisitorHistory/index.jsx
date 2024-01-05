@@ -143,6 +143,8 @@ const VisitorHistory = () => {
                                         <StyledTableCell>Name</StyledTableCell>
                                         <StyledTableCell>Address</StyledTableCell>
                                         <StyledTableCell>Email Id</StyledTableCell>
+                                        <StyledTableCell>Reason</StyledTableCell>
+                                        <StyledTableCell>Reference</StyledTableCell>
                                         <StyledTableCell>Contact No.</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
@@ -154,6 +156,8 @@ const VisitorHistory = () => {
                                                 <StyledTableCell>{row?.userDetail?.name}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.address}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.email}</StyledTableCell>
+                                                <StyledTableCell>{row?.reason}</StyledTableCell>
+                                                <StyledTableCell>{row?.reference}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.mobileNo}</StyledTableCell>
                                             </StyledTableRow>
                                         ))}

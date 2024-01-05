@@ -99,7 +99,7 @@ const ReceptionistVisitorData = () => {
     const [branches, setBranches] = useState([])
     const [selectedBranch, setSelectedBranch] = useState("");
     const [selectedRole, setSelectedRole] = useState("")
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
     const handleChangePage = (newPage) => { setPage(newPage); };
     const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };

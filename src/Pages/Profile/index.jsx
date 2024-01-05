@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PaperContainer from "../../Components/Common/PaperContainer";
 import CommonButton from "../../Components/Common/Button/CommonButton";
-import { Avatar, Box, Grid } from "@mui/material";
+import { Avatar, Box, Grid, useTheme } from "@mui/material";
 import TextLabel from "../../Components/Common/Fields/TextLabel";
 import SelectDropDown from "../../Components/Common/SelectDropDown";
 import CommonTextField from "../../Components/Common/Fields/TextField";
@@ -16,6 +16,7 @@ import Assets from "../../Components/Common/ImageContainer";
 import AddIcon from "@mui/icons-material/Add";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { lightTheme } from "../../theme";
+import { useNavigate } from "react-router-dom";
 
 
 const useStyles = makeStyles()((theme) => {
@@ -25,7 +26,7 @@ const useStyles = makeStyles()((theme) => {
       width: "130px",
       objectFit: "cover",
       borderRadius: "50%",
-      border: `1px solid ${theme.palette.bgGray.main}`,
+      border: `1px solid ${theme.palette.bgBlue.main}`,
       padding: "4px",
     },
     imageEditIcon: {
@@ -49,7 +50,9 @@ const useStyles = makeStyles()((theme) => {
 
 const Profile = () => {
   const { classes } = useStyles();
-  const { OnUpdateError, toggleLoader, user, onUpdateUser } = useAppContext();
+  const theme = useTheme()
+  const navigate = useNavigate()
+  const { OnUpdateError, toggleLoader, user, onUpdateUser, menuList } = useAppContext();
   const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [countries, setCountries] = useState([]);
@@ -58,8 +61,6 @@ const Profile = () => {
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedState, setSelectedState] = useState("");
-
-  const getLoginData = JSON.parse(localStorage.getItem("userData"));
 
   const handleValidation = () => {
     let formIsValid = true;
@@ -115,10 +116,10 @@ const Profile = () => {
     return data?.length > 0 && data?.filter((e) => e?.name == name)?.[0]?.id;
   };
 
-  const updateProfile = () => {
+  const updateProfile = async () => {
     if (handleValidation()) {
       let body = {
-        id: getLoginData?._id,
+        id: user?._id,
         name: data?.name,
         address: data?.address,
         avtar: data?.avtar,
@@ -127,18 +128,21 @@ const Profile = () => {
         city: _getDefaultId(cities?.response, selectedCity),
         postalCode: data?.postalCode,
       };
-      axios
+      await axios
         .post("update_profile", body)
-        .then((res) => {
+        .then(async (res) => {
+          console.log(res?.data?.data,
+            " res?.data?.data")
           const updatedUserData = {
-            ...getLoginData,
-            name: data?.name,
-            avtar: data?.avtar,
+            ...user,
+            name: res?.data?.data?.name,
+            avtar: res?.data?.data?.avtar,
           };
-          localStorage.setItem("userData", JSON.stringify(updatedUserData));
+          console.log(updatedUserData, "updatedUserData")
           swal(res?.data?.message, { icon: "success", timer: 5000 });
-          _getUserById();
-          onUpdateUser(res?.data?.data)
+          onUpdateUser(updatedUserData)
+          await _getUserById();
+          navigate('/profile')
         })
         .catch((err) => {
           toggleLoader();
@@ -198,9 +202,9 @@ const Profile = () => {
   };
 
   const _getUserById = () => {
-    if (getLoginData?._id) {
+    if (user?._id) {
       axios
-        .get(`users/by_id/${getLoginData?._id}`)
+        .get(`users/by_id/${user?._id}`)
         .then((res) => {
           if (res?.data?.data) {
             setData(res?.data?.data);
@@ -236,9 +240,14 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    _getUserById(); 
     _getCountries();
   }, []);
+  useEffect(() => {
+    if (user?._id) {
+
+      _getUserById();
+    }
+  }, [user?._id]);
 
   useEffect(() => {
     if (selectedCountry && countries?.response) {
@@ -266,18 +275,19 @@ const Profile = () => {
               justifyContent={"center"}
               my={5}
             >
-              <Box position={"relative"}>
+              <Box position={"relative"} >
                 {data?.avtar ? (
                   <Assets
                     src={`https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/${data?.avtar}`}
                     className={classes.profileImage}
                     absolutePath={true}
+
                   />
                 ) : (
                   <Avatar className={classes.profileImage} />
                 )}
                 <label htmlFor="image-upload" className={classes.imageEditIcon}>
-                  <EditOutlinedIcon className={classes.editIcon}  />
+                  <EditOutlinedIcon className={classes.editIcon} />
                 </label>
                 <input
                   type="file"

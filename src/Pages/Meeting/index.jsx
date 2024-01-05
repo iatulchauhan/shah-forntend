@@ -23,7 +23,7 @@ import { lightTheme } from "../../theme";
 import CommonButton from "../../Components/Common/Button/CommonButton";
 import AddMeeting from "../../Components/Meeting";
 import { useEffect } from "react";
-import { Roles, meetingStatus } from "../../Utils/enum";
+import { Roles, meetingStatus, permissionStatus } from "../../Utils/enum";
 import dayjs, { Dayjs } from "dayjs";
 import TextLabel from "../../Components/Common/Fields/TextLabel";
 import { useLocation } from "react-router-dom";
@@ -117,8 +117,8 @@ const statusColors = {
 const MeetingList = () => {
   const { classes } = useStyles();
   const location = useLocation()
+  const { pathname } = location
   const { OnUpdateError, toggleLoader, user, menuList } = useAppContext();
-  // console.log(menuList, location?.pathname, menuList?.find((e) => e?.path === location?.pathname), "menuList")
   //States
   const [model, setModel] = useState(false);
   const [data, setData] = useState({ meetingDate: null });
@@ -137,12 +137,7 @@ const MeetingList = () => {
   const [meetingDate, setMeetingDate] = React.useState(dayjs());
   const [updatedMeetingDetails, setUpdatedMeetingDetails] = useState(null);
   const [updateMeetingStatus, setUpdateMeetingStatus] = useState([]);
-  const [permissions, setPermissions] = useState({
-    isView: false,
-    isCreate: false,
-    isUpdate: false,
-    isDelete: false,
-  })
+  const [permissions, setPermissions] = useState({})
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -408,6 +403,18 @@ const MeetingList = () => {
     _getMeetingList();
   }, [page, rowsPerPage]);
 
+  React.useEffect(() => {
+    const menu = menuList?.find((e) => e?.path === pathname);
+    if (menu) {
+      const menuPermissions = menu.permissions;
+      setPermissions({
+        view: menuPermissions.includes(permissionStatus.view) ? true : false,
+        create: menuPermissions.includes(permissionStatus.create) ? true : false,
+        update: menuPermissions.includes(permissionStatus.update) ? true : false,
+        delete: menuPermissions.includes(permissionStatus.delete) ? true : false,
+      });
+    }
+  }, [menuList, location]);
   return (
     <>
       <PaperContainer elevation={0} square={false}>
@@ -415,7 +422,7 @@ const MeetingList = () => {
           <Grid item xs={12}>
             <TableHeading
               title="Meeting List"
-              buttonText={"Schedule Meeting"}
+              buttonText={permissions?.create ? "Schedule Meeting" : ""}
               onClick={() => setModel(true)}
             />
           </Grid>
@@ -441,14 +448,7 @@ const MeetingList = () => {
                   {meetingDetails?.response?.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell>{index + 1}</StyledTableCell>
-                      {/* <StyledTableCell className={classes.paddedRow} component="th" scope="row">
-                                                {row?.title}
-                                            </StyledTableCell> */}
-                      <StyledTableCell
-                        className={classes.paddedRow}
-                        component="th"
-                        scope="row"
-                      >
+                      <StyledTableCell className={classes.paddedRow} component="th" scope="row"                      >
                         {row?.clientDetails?.name}
                       </StyledTableCell>
                       <StyledTableCell>
@@ -485,21 +485,21 @@ const MeetingList = () => {
                             src={"/assets/icons/view.svg"}
                             absolutePath={true}
                           /> */}
-                          <Assets
+                          {permissions?.update && <Assets
                             className={classes.writeBox}
                             src={"/assets/icons/write.svg"}
                             absolutePath={true}
                             onClick={() => { setIsEdit(true); setModel(true); setMeetingId(row?._id); }}
-                          />
+                          />}
 
-                          <Assets
+                          {permissions?.delete && <Assets
                             className={classes.deleteBox}
                             src={"/assets/icons/delete.svg"}
                             absolutePath={true}
                             onClick={() => {
                               _deleteScheduleMeeting(row?._id);
                             }}
-                          />
+                          />}
                         </Box>
                       </StyledTableCell>
                     </StyledTableRow>

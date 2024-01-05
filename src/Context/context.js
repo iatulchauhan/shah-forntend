@@ -13,7 +13,7 @@ const menuIconList = [
     title: "Create User",
     icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
   },
-   {
+  {
     title: "User List",
     icon: <Assets src="/assets/icons/profile.svg" absolutePath={true} />,
   },
@@ -103,7 +103,7 @@ const AppProvider = ({ children }) => {
   const [auth_token, setAuth_token] = useState(getLSItem("auth_token"));
   const [sideBarOpen, setSideBarOpen] = useState(true);
   const [menuList, setMenuList] = useState(getLSItem("menuList") ? JSON.parse(getLSItem("menuList")) : []);
-
+  console.log(menuList, "menuList")
   console.log(JSON.parse(getLSItem("menuList")), "getLSItem")
   const [user, setUser] = useState(
     getLSItem("user") ? JSON.parse(getLSItem("user")) : null
@@ -166,10 +166,11 @@ const AppProvider = ({ children }) => {
           const matchingIcon = menuIconList.find(e => e?.title === menuItem?.page);
           return {
             ...menuItem,
-            activeLinks: (menuItem.path && menuItem.path.substring(1).split('/').filter(Boolean)) || [""],
+            activeLinks: menuItem.path !== "/" ? menuItem.path.substring(1).split('/').filter(Boolean) : "/",
             icon: matchingIcon?.icon || null,
           };
         });
+
         setLSItem("menuList", JSON.stringify(dynamicMenuList));
         setMenuList(dynamicMenuList);
       }

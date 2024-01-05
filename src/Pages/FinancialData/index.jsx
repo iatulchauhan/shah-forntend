@@ -22,6 +22,8 @@ import dayjs from 'dayjs';
 import AddFinancialData from '../../Components/FinancialData';
 import CommonModal from '../../Components/Common/CommonModel';
 import swal from 'sweetalert';
+import { permissionStatus } from '../../Utils/enum';
+import { useLocation } from 'react-router-dom';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -88,17 +90,22 @@ const useStyles = makeStyles()((theme) => {
 
 const FinancialData = () => {
     const { classes } = useStyles();
-    const { OnUpdateError, toggleLoader } = useAppContext();
+    const { OnUpdateError, toggleLoader, menuList } = useAppContext();
+    const location = useLocation()
+    const { pathname } = location
     //States
+    const [data, setData] = useState({});
     const [financialDetails, setFinancialDetails] = useState([]);
     const [model, setModel] = useState(false);
-    const [data, setData] = useState({})
     const [error, setError] = useState({})
     const [isEdit, setIsEdit] = useState(false)
     const [financialId, setFinancialId] = useState("");
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
-
+    const [permissions, setPermissions] = useState({})
+    const [clients, setClients] = useState([])
+    const [selectedClient, setSelectedClient] = useState("");
+    console.log(selectedClient, "selectedClient")
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -107,29 +114,28 @@ const FinancialData = () => {
         setPage(0);
     };
 
+
+
     //Validation
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
-        if (!data?.name) {
+        if (!selectedClient) {
             formIsValid = false
-            errors['name'] = 'Please enter name.'
+            errors['selectedClient'] = '*Please select Client.'
         }
-        if (!data?.investmentDate) {
-            formIsValid = false
-            errors['investmentDate'] = 'Please enter InvestmentDate.'
+
+        if (!data?.investment) {
+            formIsValid = false;
+            errors["investment"] = "*Please enter Investment.";
         }
-        if (!data?.closingDate) {
-            formIsValid = false
-            errors['closingDate'] = 'Please enter ClosingDate.'
+        if (!data?.investmentDays) {
+            formIsValid = false;
+            errors["investmentDays"] = "*Please enter Investment Days.";
         }
-        if (!data?.returnAmount) {
-            formIsValid = false
-            errors['returnAmount'] = 'Please enter Return Amount Of Interest.'
-        }
-        if (!data?.totalBalance) {
-            formIsValid = false
-            errors['totalBalance'] = 'Please enter Total Balance.'
+        if (!data?.returnOfInvestment) {
+            formIsValid = false;
+            errors["returnOfInvestment"] = "*Please enter Return Of Investment.";
         }
         setError(errors)
         return formIsValid
@@ -141,7 +147,7 @@ const FinancialData = () => {
             limit: rowsPerPage,
             page: page + 1
         }
-        axios.post(`/userParchesPlans`, body).then((res) => {
+        axios.post(`/userPurchasePlanList`, body).then((res) => {
             if (res?.data?.data) {
                 setFinancialDetails(res?.data?.data)
             }
@@ -153,45 +159,39 @@ const FinancialData = () => {
         );
     }
 
-    const _getFinancialById = (id) => {
-        if (id) {
-            axios
-                .get(`userParchesPlans/${id}`)
-                .then((res) => {
-                    if (res?.data?.data) {
-                        setIsEdit(true);
-                        setData({
-                            ...data,
-                            name: res?.data?.data?.userDetails?.name,
-                            returnAmount: `${res?.data?.data?.returnOfInvestment}%`,
-                            totalBalance: res?.data?.data?.investment,
-                        });
-                    }
-                })
-                .catch((err) => {
-                    toggleLoader();
-                    OnUpdateError(err.data.message);
-                });
-        }
+    const _getFinancialById = () => {
+        axios.get(`userPurchasePlan/${financialId}`)
+            .then((res) => {
+                if (res?.data?.data) {
+                    setIsEdit(true);
+                    setData(res?.data?.data);
+                    setSelectedClient(res?.data?.data?.userDetails?.name)
+                }
+            })
+            .catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            });
     };
 
     const _addUpdateFinancialData = () => {
         if (handleValidation()) {
             toggleLoader();
             let body = {
-                "investment": data?.branchName,
-                "returnOfInvestment": data?.address,
-                "investmentDays": data?.postalCode
+                client: clients?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
+                clientBranch: clients?.response?.filter((e) => e?.name == selectedClient)[0]?.branch,
+                investment: data?.investment,
+                investmentDays: data?.investmentDays,
+                returnOfInvestment: data?.returnOfInvestment
             }
             if (data?._id) {
                 body.id = data?._id
             }
-            axios.post(`userParchesPlans/${data?._id ? "update" : "create"}`, body).then((res) => {
+            axios.post(`userPurchasePlan/${data?._id ? "update" : "create"}`, body).then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000, })
                     handleClear()
                     _getFinancialData()
-                    // navigate("/")
                 }
                 toggleLoader();
             }).catch((err) => {
@@ -201,6 +201,22 @@ const FinancialData = () => {
             );
         }
     }
+
+    const _getUsers = () => {
+        toggleLoader();
+
+        axios.post("/users", { userType: [1] })
+            .then((res) => {
+                if (res?.data?.data) {
+                    setClients(res?.data?.data);
+                }
+                toggleLoader();
+            })
+            .catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            });
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -212,10 +228,11 @@ const FinancialData = () => {
 
     const handleClear = () => {
         setModel(false)
-        setData({})
+        setData({});
         setError({})
         setIsEdit(false)
         setFinancialId("")
+        setSelectedClient("")
     }
 
     React.useEffect(() => {
@@ -224,16 +241,35 @@ const FinancialData = () => {
 
     React.useEffect(() => {
         if (financialId) {
-            _getFinancialById(financialId);
+            _getFinancialById();
         }
     }, [financialId]);
+
+    React.useEffect(() => {
+        if (model) {
+            _getUsers()
+        }
+    }, [model]);
+
+    React.useEffect(() => {
+        const menu = menuList?.find((e) => e?.path === pathname);
+        if (menu) {
+            const menuPermissions = menu.permissions;
+            setPermissions({
+                view: menuPermissions.includes(permissionStatus.view) ? true : false,
+                create: menuPermissions.includes(permissionStatus.create) ? true : false,
+                update: menuPermissions.includes(permissionStatus.update) ? true : false,
+                delete: menuPermissions.includes(permissionStatus.delete) ? true : false,
+            });
+        }
+    }, [menuList, location]);
 
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Financial Data History" />
+                        <TableHeading title="Financial Data History" buttonText={permissions?.create ? `Add Financial Data` : ""} onClick={() => setModel(true)} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -261,7 +297,7 @@ const FinancialData = () => {
                                                 <StyledTableCell align='center'>{row.investment}</StyledTableCell>
                                                 <StyledTableCell>
                                                     <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                        <Assets
+                                                        {permissions?.update && <Assets
                                                             className={classes.writeBox}
                                                             src={"/assets/icons/write.svg"}
                                                             absolutePath={true}
@@ -269,12 +305,12 @@ const FinancialData = () => {
                                                                 setData(row); setIsEdit(true); setModel(true);
                                                                 setFinancialId(row?._id);
                                                             }}
-                                                        />
-                                                        <Assets
+                                                        />}
+                                                        {permissions?.delete && <Assets
                                                             className={classes.deleteBox}
                                                             src={"/assets/icons/delete.svg"}
                                                             absolutePath={true}
-                                                        />
+                                                        />}
                                                     </Box>
                                                 </StyledTableCell>
                                             </StyledTableRow>
@@ -300,7 +336,7 @@ const FinancialData = () => {
                 open={model}
                 onClose={handleClear}
                 title={`${isEdit ? "Update" : "Add"} Financial`}
-                content={<AddFinancialData data={data} setData={setData} error={error} handleChange={handleChange} isEdit={isEdit} onSubmit={_addUpdateFinancialData} />}
+                content={<AddFinancialData data={data} setData={setData} error={error} handleChange={handleChange} isEdit={isEdit} onSubmit={_addUpdateFinancialData} setSelectedClient={setSelectedClient} selectedClient={selectedClient} clients={clients} />}
             />}
         </>
     )

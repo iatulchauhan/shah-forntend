@@ -90,7 +90,7 @@ const Clients = () => {
     const [deleteId, setDeleteId] = useState("")
     const [isEdit, setIsEdit] = useState(false)
     const [userDetails, setUserDetails] = useState([]);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [branches, setBranches] = useState([])
     const [selectedBranch, setSelectedBranch] = useState("");
     const [countries, setCountries] = useState([])

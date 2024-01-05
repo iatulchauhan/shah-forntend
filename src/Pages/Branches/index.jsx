@@ -20,11 +20,12 @@ import CommonPagination from '../../Components/Common/Pagination';
 import { useAppContext } from '../../Context/context';
 import axios from "../../APiSetUp/axios";
 import swal from 'sweetalert';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import AddBranch from '../../Components/Branch';
 import DataNotFound from '../../Components/Common/DataNotFound';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { lightTheme } from '../../theme';
+import { permissionStatus } from '../../Utils/enum';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -83,10 +84,10 @@ const useStyles = makeStyles()((theme) => {
 const Branches = () => {
     const { classes } = useStyles();
     const navigate = useNavigate();
-    const { OnUpdateError, toggleLoader } = useAppContext();
+    const location = useLocation()
+    const { pathname } = location
 
-    // const states = [{ code: 1, label: 'Gujarat' }, { code: 2, label: 'Maharashtra' }]
-    // const cities = [{ code: 1, label: 'Surat' }, { code: 2, label: 'Ahmadabad' }]
+    const { OnUpdateError, toggleLoader, menuList } = useAppContext();
 
     //States
     const [model, setModel] = useState(false);
@@ -101,9 +102,11 @@ const Branches = () => {
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
     const [selectedState, setSelectedState] = useState("");
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
+    const [permissions, setPermissions] = useState({})
 
+    
     const handleChangePage = (newPage) => { setPage(newPage); };
     const handleChangeRowsPerPage = (value) => { setRowsPerPage(value); setPage(0); };
 
@@ -289,12 +292,24 @@ const Branches = () => {
         _getBranches()
     }, [page, rowsPerPage])
 
+    React.useEffect(() => {
+        const menu = menuList?.find((e) => e?.path === pathname);
+        if (menu) {
+            const menuPermissions = menu.permissions;
+            setPermissions({
+                view: menuPermissions.includes(permissionStatus.view) ? true : false,
+                create: menuPermissions.includes(permissionStatus.create) ? true : false,
+                update: menuPermissions.includes(permissionStatus.update) ? true : false,
+                delete: menuPermissions.includes(permissionStatus.delete) ? true : false,
+            });
+        }
+    }, [menuList, location]);
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Branch List" buttonText={`Add Branch`} onClick={() => setModel(true)} />
+                        <TableHeading title="Branch List" buttonText={permissions?.create ? `Add Branch` : ""} onClick={() => setModel(true)} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -336,8 +351,8 @@ const Branches = () => {
                                                     </StyledTableCell>
                                                     <StyledTableCell>
                                                         <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                                            <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true); setSelectedCountry(row?.countryDetail?.name); setSelectedCity(row?.cityDetail?.name); setSelectedState(row?.stateDetail?.name) }} />
-                                                            <Assets className={classes.deleteBox} src={"/assets/icons/delete.svg"} absolutePath={true} />
+                                                            {permissions?.update && <Assets className={classes.writeBox} src={"/assets/icons/write.svg"} absolutePath={true} onClick={() => { setData(row); setIsEdit(true); setModel(true); setSelectedCountry(row?.countryDetail?.name); setSelectedCity(row?.cityDetail?.name); setSelectedState(row?.stateDetail?.name) }} />}
+                                                            {permissions?.delete && <Assets className={classes.deleteBox} src={"/assets/icons/delete.svg"} absolutePath={true} />}
                                                         </Box>
                                                     </StyledTableCell>
                                                 </StyledTableRow>

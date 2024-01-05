@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Grid, TextField, } from "@mui/material";
+import React from 'react'
+import { Box, Grid, } from "@mui/material";
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 import CommonTextField from '../../Components/Common/Fields/TextField';
 import CommonButton from '../../Components/Common/Button/CommonButton';
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
 import { makeStyles } from "tss-react/mui";
 import { useTheme } from '@mui/styles';
-
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
+import AutoCompleteSearch from '../Common/commonAutoComplete';
 const useStyles = makeStyles()((theme) => {
     return {
         dateBox: {
@@ -43,75 +41,65 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit }) => {
+const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSelectedClient, selectedClient, clients, }) => {
     const { classes } = useStyles();
     const theme = useTheme();
     return (
         <Box>
             <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
-                <Grid item xs={12} sm={12} md={12} lg={6}>
-                    <CommonTextField
-                        fontWeight={400}
-                        text={'Name'}
-                        placeholder={"Enter Name"}
-                        type='text'
-                        name='name'
-                        value={data?.name}
-                        onChange={(e) => handleChange(e, false)}
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <AutoCompleteSearch
+                        fullWidth
+                        backgroundColor="white"
+                        text="Client"
+                        placeholder={"Select Client"}
+                        handleChange={(e, newValue) => setSelectedClient(newValue)}
+                        options={clients?.response?.map((e) => e?.name) || []}
+                        name="selectedClient"
+                        defaultValue={selectedClient || ""}
+                        freeSolo
+                        blurOnSelect
+                        disabled={isEdit ? true : false}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.name ? error?.name : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} title={!selectedClient ? error?.selectedClient : ""} />
                 </Grid>
-                {/* <Grid item xs={12} sm={12} md={12} lg={6} className={classes.customLabel} >
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <TextLabel
-                            fontSize={"15px"}
-                            style={{ marginRight: "3px", padding: "3px" }}
-                            fontWeight={"400"}
-                            title={"Investment Date"}
-                            color={theme.palette.bgDarkPrimary.main}
-                        />
-                        <DesktopDatePicker
-                            className={classes.dateBox}
-                            inputFormat="MM/DD/YYYY"
-                            value={dayjs(investmentDate) || dayjs()}
-                            onChange={(newValue) => {
-                                setInvestmentDate(newValue);
-                            }}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </LocalizationProvider>
-                    <TextLabel
-                        fontSize={"12px"}
-                        color={"red"}
-                        fontWeight={"400"}
-                        title={!data?.investmentDate ? error?.investmentDate : ""}
-                    />
-                </Grid> */}
-                <Grid item xs={12} sm={12} md={12} lg={6}>
+
+                <Grid item xs={12} sm={12} md={6} lg={6}>
                     <CommonTextField
                         fontWeight={400}
-                        text={'Return Amount Of Interest'}
-                        placeholder={"Enter Return Of Interest"}
-                        type='text'
-                        name='returnAmount'
-                        value={data?.returnAmount}
-                        onChange={(e) => handleChange(e, false)}
+                        text={'Investment Amount'}
+                        placeholder={"Enter Investment"}
+                        type='number'
+                        name='investment'
+                        value={data?.investment}
+                        onChange={(e) => handleChange(e)}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.returnAmount ? error?.returnAmount : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} title={!data?.investment ? error?.investment : ""} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <CommonTextField
                         fontWeight={400}
-                        text={'Total Balance'}
-                        placeholder={"Enter Total Balance"}
+                        text={'Investment Days'}
+                        placeholder={"Enter Investment Days"}
                         type='number'
-                        name='totalBalance'
-                        value={data?.totalBalance}
-                        onChange={(e) => handleChange(e, false)}
+                        name='investmentDays'
+                        value={data?.investmentDays}
+                        onChange={(e) => handleChange(e)}
                     />
-                    <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.totalBalance ? error?.totalBalance : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} title={!data?.investmentDays ? error?.investmentDays : ""} />
                 </Grid>
-
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <CommonTextField
+                        fontWeight={400}
+                        text={'Return Of Investment (%)'}
+                        placeholder={"Enter Return Of Investment"}
+                        type='number'
+                        name='returnOfInvestment'
+                        value={data?.returnOfInvestment}
+                        onChange={(e) => handleChange(e)}
+                    />
+                    <TextLabel fontSize={"12px"} color={"red"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
+                </Grid>
 
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>

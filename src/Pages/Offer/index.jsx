@@ -85,15 +85,10 @@ const OfferPage = () => {
         toggleLoader();
         axios.post("/upload/image/attachment", formData).then((res) => {
             if (res?.data?.data) {
-                if (key === "Edit") {
-                    setData((prevData) => ({
-                        ...prevData,
-                        ["image"]: res?.data?.data?.image,
-                    }));
-                }
-                else {
-                    setOfferDetails(res?.data?.data)
-                }
+                setData((prevData) => ({
+                    ...prevData,
+                    ["image"]: res?.data?.data?.image,
+                }));
             }
             toggleLoader();
         }).catch((err) => {
@@ -139,7 +134,7 @@ const OfferPage = () => {
         if (handleValidation()) {
             toggleLoader();
             let body = {
-                "image": data?._id ? offerDetails?.image : data?.image,
+                "image": data?.image,
                 "title": data?.title,
                 "description": data?.description,
             }
