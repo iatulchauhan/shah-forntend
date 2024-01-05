@@ -17,10 +17,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         fontWeight: 400,
         fontSize: 15,
-        color: '#ffff',
+        color: '#000000',
         fontFamily: "Poppins",
         whiteSpace: 'nowrap',
-        background: theme.palette.primary.main,
+        background: '#d6d7ff',
         padding: '5px',
     },
     [`&.${tableCellClasses.body}`]: {
@@ -259,7 +259,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                 console.log(e, "eee")
                 return (
                     <Grid item xs={12} sm={12} md={12} lg={12}>
-                        <Box bgcolor={'#d6d7ff'} width={'100%'} border={`1px solid ${'#d6d7ff'}`} borderRadius={"10px"}>
+                        <Box bgcolor={theme.palette.bgLightExtraPrimary.main} width={'100%'} border={`1px solid ${theme.palette.bgLightExtraPrimary.main}`} borderRadius={"10px"}>
                             {i > 0 && (
                                 <Box display={"flex"} sx={{ cursor: "pointer" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
                                     <CloseIcon sx={{ color: "#fff", borderRadius: 1, fontSize: "18px", marginRight: "1px", backgroundColor: "#F14336", }} />

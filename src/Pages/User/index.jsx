@@ -92,7 +92,7 @@ const User = () => {
   const [customerModel, setCustomerModel] = useState(false);
   const [data, setData] = useState({
     userPurchasePlan: [
-      { investment: "", investmentDays: "", returnOfInvestment: "" },
+      { _id: null, investment: "", investmentDays: "", returnOfInvestment: "" },
     ],
   });
   const [error, setError] = useState({});
@@ -277,7 +277,7 @@ const User = () => {
       ...data,
       userPurchasePlan: [
         ...data?.userPurchasePlan,
-        { investment: "", investmentDays: "", returnOfInvestment: "" },
+        { _id: null, investment: "", investmentDays: "", returnOfInvestment: "" },
       ],
     });
   };
@@ -380,7 +380,7 @@ const User = () => {
     setCustomerModel(false);
     setData({
       userPurchasePlan: [
-        { investment: "", investmentDays: "", returnOfInvestment: "" },
+        { _id: null, investment: "", investmentDays: "", returnOfInvestment: "" },
       ],
     });
     setError({});
@@ -447,8 +447,8 @@ const User = () => {
         userType: visitorModel
           ? 6
           : customerModel
-          ? 1
-          : roles?.filter((e) => e?.label == selectedRole)[0]?.id,
+            ? 1
+            : roles?.filter((e) => e?.label == selectedRole)[0]?.id,
       };
       if (visitorModel || customerModel) {
         body.reason = data?.reason || null;
