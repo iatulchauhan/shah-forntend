@@ -49,7 +49,7 @@ const Footer = ({ open }) => {
             <Box className={classes.footerMain} style={{ width: !open ? "calc(100% - 48px)" : "calc(100% - 255px)", marginLeft: !open ? "48px" : "255px" }}>
                 <Box className={classes.miniFooterItems} sx={{ display: "flex", flexDirection: { xl: "row", lg: "row", md: "row", sm: "column", xs: "column" }, textAlign: "center" }}>
                     <Typography className={classes.footerLinkText}> 2023 © Copyright - Shah Investment Made with <span style={{ color: "red" }}> ❤ </span> for Investment.</Typography>
-                    <Box sx={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+                    <Box  sx={{ display: "flex", flexDirection: "row", gap: "5px", paddingRight: "10px" }}>
                         <Typography className={classes.footerLinkText}> Privacy policy </Typography>
                         <Divider orientation="vertical" variant="middle" flexItem style={{ borderColor: "black", margin: "5px" }} />
                         <Typography className={classes.footerLinkText}> Terms and Condition</Typography>

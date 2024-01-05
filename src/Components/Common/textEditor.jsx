@@ -3,8 +3,9 @@ import { Typography, Box, InputLabel, useTheme, } from "@mui/material";
 import InvertColorsIcon from "@mui/icons-material/InvertColors";
 import { makeStyles } from "tss-react/mui";
 import { stateToHTML, } from "draft-js-export-html";
-import { convertFromHTML, ContentState, convertToRaw, DefaultDraftBlockRenderMap, } from "draft-js";
+import { ContentState, convertToRaw, DefaultDraftBlockRenderMap, } from "draft-js";
 import MUIRichTextEditor from "mui-rte";
+import {  stateFromHTML } from "draft-js-import-html";
 
 
 const useStyles = makeStyles()((theme) => {
@@ -54,21 +55,22 @@ export default function TextEditor({
   const { classes } = useStyles();
   const theme = useTheme()
   const [content, setContent] = useState("");
-
+console.log("defaultValue",defaultValue);
   useEffect(() => {
     if (defaultValue) {
       const blockRenderMap = DefaultDraftBlockRenderMap.set("br", {
         element: "br",
       });
-      const contentHTML = convertFromHTML(
+      const contentHTML = stateFromHTML(
         defaultValue,
         blockRenderMap
       );
-      const state = ContentState.createFromBlockArray(
-        contentHTML.contentBlocks,
-        contentHTML.entityMap
-      );
-      setContent(JSON.stringify(convertToRaw(state)));
+      console.log("contentHTML",contentHTML);
+      // const state = ContentState.createFromBlockArray(
+      //   contentHTML.contentBlocks,
+      //   contentHTML.entityMap
+      // );
+      setContent(JSON.stringify(convertToRaw(contentHTML)));
     } else {
       setContent("");
     }

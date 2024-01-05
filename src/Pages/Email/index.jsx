@@ -1,6 +1,8 @@
 import {
   Avatar,
   Box,
+  Card,
+  CardContent,
   Divider,
   Fab,
   Grid,
@@ -294,7 +296,7 @@ const Email = () => {
   }, []);
 
   const resetEmailData = () => {
-    setGetEmailData('')
+    setGetEmailData("");
   };
 
   return (
@@ -340,80 +342,87 @@ const Email = () => {
                   />
                 </Box>
                 <Box className={classes.listBox} mt={3}>
-                  {emailsList?.response?.map((data) => {
-                    return (
-                      <>
-                        <Box
-                          padding={2}
-                          sx={{
-                            backgroundColor:
-                              getEmailData?._id === data?._id
-                                ? "#F5F6FD"
-                                : lightTheme.palette.bgWhite.main,
-                            cursor: "pointer",
-                          }}
-                        >
-                          <Box onClick={() => _getEmailById(data?._id)}>
+                  {emailsList?.count > 0 ? (
+                    <>
+                      {emailsList?.response?.map((data) => {
+                        return (
+                          <>
                             <Box
-                              display={"flex"}
-                              justifyContent={"space-between"}
-                              mb={2}
+                              padding={2}
+                              sx={{
+                                backgroundColor:
+                                  getEmailData?._id === data?._id
+                                    ? "#F5F6FD"
+                                    : lightTheme.palette.bgWhite.main,
+                                cursor: "pointer",
+                              }}
                             >
-                              <Box
-                                display={"flex"}
-                                gap={1}
-                                alignItems={"center"}
-                              >
-                                <Avatar />
+                              <Box onClick={() => _getEmailById(data?._id)}>
+                                <Box
+                                  display={"flex"}
+                                  justifyContent={"space-between"}
+                                  mb={2}
+                                >
+                                  <Box
+                                    display={"flex"}
+                                    gap={1}
+                                    alignItems={"center"}
+                                  >
+                                    <Avatar />
+                                    <Box>
+                                      <TextLabel
+                                        className={classes.wordBreak}
+                                        fontWeight={"600"}
+                                        variant={"body2"}
+                                        title={data.createdBy}
+                                      />
+                                      <TextLabel
+                                        color={
+                                          lightTheme.palette
+                                            .bgLightExtraLightGray.main
+                                        }
+                                        variant={"body2"}
+                                        title={"Jul 19, 2022, 10:20 PM"}
+                                      />
+                                      <TextLabel
+                                        color={
+                                          lightTheme.palette
+                                            .bgLightExtraLightGray.main
+                                        }
+                                        variant={"body2"}
+                                        title={data.title}
+                                      />
+                                    </Box>
+                                  </Box>
+                                </Box>
                                 <Box>
                                   <TextLabel
-                                    className={classes.wordBreak}
-                                    fontWeight={"600"}
                                     variant={"body2"}
-                                    title={data.createdBy}
-                                  />
-                                  <TextLabel
                                     color={
                                       lightTheme.palette.bgLightExtraLightGray
                                         .main
                                     }
-                                    variant={"body2"}
-                                    title={"Jul 19, 2022, 10:20 PM"}
-                                  />
-                                  <TextLabel
-                                    color={
-                                      lightTheme.palette.bgLightExtraLightGray
-                                        .main
+                                    fontWeight={"400"}
+                                    className={classes.listBoxText}
+                                    title={
+                                      <div
+                                        dangerouslySetInnerHTML={{
+                                          __html: data?.content,
+                                        }}
+                                      />
                                     }
-                                    variant={"body2"}
-                                    title={data.title}
                                   />
                                 </Box>
                               </Box>
                             </Box>
-                            <Box>
-                              <TextLabel
-                                variant={"body2"}
-                                color={
-                                  lightTheme.palette.bgLightExtraLightGray.main
-                                }
-                                fontWeight={"400"}
-                                className={classes.listBoxText}
-                                title={
-                                  <div
-                                    dangerouslySetInnerHTML={{
-                                      __html: data?.content,
-                                    }}
-                                  />
-                                }
-                              />
-                            </Box>
-                          </Box>
-                        </Box>
-                        <Divider />
-                      </>
-                    );
-                  })}
+                            <Divider />
+                          </>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <DataNotFound title={"No Emails!"}/>
+                  )}
                 </Box>
               </Grid>
             ) : (
@@ -483,76 +492,87 @@ const Email = () => {
                 />
               </Box>
               <Box className={classes.listBox} mt={3}>
-                {emailsList?.response?.map((data) => {
-                  return (
-                    <>
-                      <Box
-                        padding={2}
-                        sx={{
-                          backgroundColor:
-                            getEmailData?._id === data?._id
-                              ? "#F5F6FD"
-                              : lightTheme.palette.bgWhite.main,
-                          cursor: "pointer",
-                        }}
-                      >
-                        <Box onClick={() => _getEmailById(data?._id)}>
+                {emailsList?.count > 0 ? (
+                  <>
+                    {emailsList?.response?.map((data) => {
+                      return (
+                        <>
                           <Box
-                            display={"flex"}
-                            justifyContent={"space-between"}
-                            mb={2}
+                            padding={2}
+                            sx={{
+                              backgroundColor:
+                                getEmailData?._id === data?._id
+                                  ? "#F5F6FD"
+                                  : lightTheme.palette.bgWhite.main,
+                              cursor: "pointer",
+                            }}
                           >
-                            <Box display={"flex"} gap={1} alignItems={"center"}>
-                              <Avatar />
+                            <Box onClick={() => _getEmailById(data?._id)}>
+                              <Box
+                                display={"flex"}
+                                justifyContent={"space-between"}
+                                mb={2}
+                              >
+                                <Box
+                                  display={"flex"}
+                                  gap={1}
+                                  alignItems={"center"}
+                                >
+                                  <Avatar />
+                                  <Box>
+                                    <TextLabel
+                                      className={classes.wordBreak}
+                                      fontWeight={"600"}
+                                      variant={"body2"}
+                                      title={data.createdBy}
+                                    />
+                                    <TextLabel
+                                      color={
+                                        lightTheme.palette.bgLightExtraLightGray
+                                          .main
+                                      }
+                                      variant={"body2"}
+                                      title={"Jul 19, 2022, 10:20 PM"}
+                                    />
+                                    <TextLabel
+                                      color={
+                                        lightTheme.palette.bgLightExtraLightGray
+                                          .main
+                                      }
+                                      variant={"body2"}
+                                      title={data.title}
+                                    />
+                                  </Box>
+                                </Box>
+                              </Box>
                               <Box>
                                 <TextLabel
-                                  className={classes.wordBreak}
-                                  fontWeight={"600"}
                                   variant={"body2"}
-                                  title={data.createdBy}
-                                />
-                                <TextLabel
                                   color={
                                     lightTheme.palette.bgLightExtraLightGray
                                       .main
                                   }
-                                  variant={"body2"}
-                                  title={"Jul 19, 2022, 10:20 PM"}
-                                />
-                                <TextLabel
-                                  color={
-                                    lightTheme.palette.bgLightExtraLightGray
-                                      .main
+                                  fontWeight={"400"}
+                                  className={classes.listBoxText}
+                                  title={
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: data?.content,
+                                      }}
+                                    />
                                   }
-                                  variant={"body2"}
-                                  title={data.title}
                                 />
                               </Box>
                             </Box>
                           </Box>
-                          <Box>
-                            <TextLabel
-                              variant={"body2"}
-                              color={
-                                lightTheme.palette.bgLightExtraLightGray.main
-                              }
-                              fontWeight={"400"}
-                              className={classes.listBoxText}
-                              title={
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: data?.content,
-                                  }}
-                                />
-                              }
-                            />
-                          </Box>
-                        </Box>
-                      </Box>
-                      <Divider />
-                    </>
-                  );
-                })}
+                          <Divider />
+                        </>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <DataNotFound title={"No Emails!"}/>
+                )}
               </Box>
             </Grid>
 

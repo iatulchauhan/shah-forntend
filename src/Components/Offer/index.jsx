@@ -6,7 +6,7 @@ import CommonTextField from '../../Components/Common/Fields/TextField';
 import TextEditor from '../Common/textEditor';
 import FileUpload from '../Common/uploadButton';
 
-const AddOffer = ({ data, setData, error, handleChange, isEdit, onSubmit, handleImageUpload }) => {
+const AddOffer = ({ data, setData, error, handleChange, isEdit, onSubmit, handleImageUpload, description, setDescription }) => {
     const theme = useTheme()
     return (
         <>
@@ -35,12 +35,20 @@ const AddOffer = ({ data, setData, error, handleChange, isEdit, onSubmit, handle
                         <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.title ? error?.title : ""} />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}>
-                        <TextEditor
+                        {/* <TextEditor
                             category={"Description"}
                             onChange={(value) => setData({ ...data, description: value })}
                         // valid={true}
-                        />
-                        <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.description ? error?.description : ""} />
+                        /> */}
+                          <TextEditor
+                            defaultValue={description}
+                            category={"Description"}
+                            onChange={(value) => {
+                                console.log(value, "value");
+                                setDescription(value);
+                            }}
+                            />
+                        <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!description ? error?.description : ""} />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}>
                         <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>

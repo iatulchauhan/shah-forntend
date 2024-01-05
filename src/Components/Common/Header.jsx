@@ -53,8 +53,8 @@ const Header = ({ onClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-
-  const activePage = menuList?.filter((e) => e?.path === location?.pathname)[0]?.page || location?.pathname?.split("/")?.[1]
+  const activePage = menuList?.filter((e) => e?.path === location?.pathname)[0]
+    ?.page;
 
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -63,7 +63,7 @@ const Header = ({ onClick }) => {
   const handleProfileClose = () => {
     setAnchorEl(null);
   };
-  
+
   const logoutAdmin = () => {
     handleProfileClose();
     Swal.fire({
@@ -117,8 +117,10 @@ const Header = ({ onClick }) => {
         alignItems={"center"}
         gap={2}
       >
-        <Hidden mdDown>
+        <Hidden lgDown>
           <CommonSearch width={"500px"} />
+        </Hidden>
+        <Hidden mdDown>
           <Box
             sx={{
               backgroundColor: "#FFFAF1",
