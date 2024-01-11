@@ -110,6 +110,7 @@ const User = () => {
   const [selectedRole, setSelectedRole] = useState("");
   const [page, setPage] = useState(0);
   const [permissions, setPermissions] = useState({})
+  const [search, setSearch] = useState("");
 
   //Validation
 
@@ -277,6 +278,7 @@ const User = () => {
     let body = {
       limit: rowsPerPage,
       page: page + 1,
+      search: search || "",
     };
     axios
       .post("/users", body)
@@ -475,7 +477,7 @@ const User = () => {
 
   useEffect(() => {
     _getUsers();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, search]);
 
   useEffect(() => {
     _getBranches();
@@ -677,6 +679,7 @@ const User = () => {
                   onClick={() => {
                     setModel(true);
                   }}
+                  onSearch={(e) => setSearch(e?.target?.value)}
                 />
               </Grid>
               <Grid item xs={12}>

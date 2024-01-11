@@ -18,7 +18,7 @@ import PaperContainer from "../../Components/Common/PaperContainer";
 const useStyles = makeStyles()((theme) => {
   return {
     card: {
-      padding: "15px",
+      padding: "20px",
       borderRadius: "16px",
       border: "1px solid #F8F9FA",
       boxShadow: "0px 4px 20px 0px rgba(238, 238, 238, 0.50)",
@@ -213,8 +213,8 @@ const OfferPage = () => {
         </Grid>
         <Grid
           container
-          spacing={2}
-          style={{ marginBottom: "50px", padding: "20px" }}
+          spacing={4}
+          style={{ marginBottom: "50px", padding: "30px" }}
         >
           {offerDetails?.response?.length > 0 &&
             offerDetails?.response?.map((item) => {

@@ -100,6 +100,7 @@ const Visitor = () => {
     const [selectedState, setSelectedState] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
+    const [search, setSearch] = useState("");
 
 
     const handleChangePage = (newPage) => { setPage(newPage); };
@@ -178,6 +179,7 @@ const Visitor = () => {
         let body = {
             limit: rowsPerPage,
             page: page + 1,
+            search: search || "",
             userType: [Roles.Visitor]
         }
         axios.post('/users', body).then((res) => {
@@ -303,7 +305,7 @@ const Visitor = () => {
 
     useEffect(() => {
         _getVisitor()
-    }, [page, rowsPerPage])
+    }, [page, rowsPerPage, search]);
 
     useEffect(() => {
         _getCountries()
@@ -326,7 +328,7 @@ const Visitor = () => {
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Visitor List" />
+                        <TableHeading title="Visitor List"  onSearch={(e) => setSearch(e?.target?.value)} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>

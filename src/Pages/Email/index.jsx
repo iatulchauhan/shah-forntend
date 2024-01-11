@@ -302,7 +302,6 @@ const Email = () => {
   return (
     <>
       <Grid container spacing={0} ml={0}>
-        {/* {console.log('getEmailData?._id😲', getEmailData?._id, window.innerWidth)} */}
         {window.innerWidth <= 900 ? (
           <>
             {!getEmailData?._id && !emailForm && window.innerWidth <= 900 ? (

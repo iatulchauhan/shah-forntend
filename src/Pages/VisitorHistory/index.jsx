@@ -98,6 +98,7 @@ const VisitorHistory = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [visitorHistoryDetails, setVisitorHistoryDetails] = useState([]);
     const [page, setPage] = React.useState(0);
+    const [search, setSearch] = useState("");
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -110,7 +111,8 @@ const VisitorHistory = () => {
         toggleLoader();
         let body = {
             limit: rowsPerPage,
-            page: page + 1
+            page: page + 1,
+            search: search || "",
         }
         axios.post('/visitorHistory', body).then((res) => {
             if (res?.data?.data) {
@@ -126,13 +128,13 @@ const VisitorHistory = () => {
     }
     React.useEffect(() => {
         _getVisitorHistory()
-    }, [page, rowsPerPage])
+    }, [page, rowsPerPage, search]);
     return (
         <>
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Visitor History" />
+                        <TableHeading title="Visitor History"  onSearch={(e) => setSearch(e?.target?.value)}/>
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>

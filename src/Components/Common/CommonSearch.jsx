@@ -46,7 +46,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-const CommonSearch = ({ placeholder, width }) => {
+const CommonSearch = ({ placeholder, width, onSearch}) => {
     return (
         <Search>
             <SearchIconWrapper>
@@ -56,6 +56,7 @@ const CommonSearch = ({ placeholder, width }) => {
                 width={width}
                 placeholder={placeholder ? placeholder : "Search here..."}
                 inputProps={{ 'aria-label': 'search' }}
+                onChange={onSearch ? (e) => onSearch(e) : {}}
             />
         </Search>
     )

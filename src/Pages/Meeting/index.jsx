@@ -138,6 +138,7 @@ const MeetingList = () => {
   const [updatedMeetingDetails, setUpdatedMeetingDetails] = useState(null);
   const [updateMeetingStatus, setUpdateMeetingStatus] = useState([]);
   const [permissions, setPermissions] = useState({})
+  const [search, setSearch] = useState("");
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -276,6 +277,7 @@ const MeetingList = () => {
     let body = {
       limit: rowsPerPage,
       page: page + 1,
+      search: search || "",
     };
     axios.post(`meetingList`, body)
       .then((res) => {
@@ -401,7 +403,7 @@ const MeetingList = () => {
 
   React.useEffect(() => {
     _getMeetingList();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, search]);
 
   React.useEffect(() => {
     const menu = menuList?.find((e) => e?.path === pathname);
@@ -424,6 +426,7 @@ const MeetingList = () => {
               title="Meeting List"
               buttonText={permissions?.create ? "Schedule Meeting" : ""}
               onClick={() => setModel(true)}
+              onSearch={(e) => setSearch(e?.target?.value)}
             />
           </Grid>
           <Grid item xs={12}>
