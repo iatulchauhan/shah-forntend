@@ -24,6 +24,7 @@ import Assets from "../ImageContainer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { lightTheme } from "../../../theme";
 import TableHeading from "../CommonTableHeading";
+import { Regex } from "../../../Utils/regex";
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -100,8 +101,6 @@ const CamposeEmail = ({
   resetEmailData,
 }) => {
   const { classes } = useStyles();
-
-  console.log("getEmailData😲", getEmailData);
   return (
     <>
       <Grid item xs={12} sm={12} md={7} lg={7}>
@@ -109,9 +108,12 @@ const CamposeEmail = ({
           {emailForm ? (
             <Grid container spacing={1} xs={12} p={1}>
               {window.innerWidth <= 900 && (
-                <Box ml={1} onClick={() => {
+                <Box
+                  ml={1}
+                  onClick={() => {
                     setEmailForm(false);
-                  }}>
+                  }}
+                >
                   {/* <Fab
                     color="primary"
                     size="small"
@@ -119,7 +121,7 @@ const CamposeEmail = ({
                       setEmailForm(false);
                     }}
                   > */}
-                    <ArrowBackIcon />
+                  <ArrowBackIcon />
                   {/* </Fab> */}
                 </Box>
               )}
@@ -173,6 +175,15 @@ const CamposeEmail = ({
                   color={"red"}
                   fontWeight={"400"}
                   title={!data?.anotherUser ? error?.anotherUser : ""}
+                />
+                <TextLabel
+                  fontSize={"12px"}
+                  color={"red"}
+                  title={
+                    data?.anotherUser?.match(Regex.anotherUserEmailRegex)
+                      ? ""
+                      : error.invalidEmail
+                  }
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>

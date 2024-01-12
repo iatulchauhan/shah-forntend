@@ -30,6 +30,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import SendIcon from "@mui/icons-material/Send";
 import StarIcon from "@mui/icons-material/Star";
 import CamposeEmail from "../../Components/Common/CamposeEmail";
+import { Regex } from "../../Utils/regex";
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -92,6 +93,7 @@ const Email = () => {
   const [emailForm, setEmailForm] = useState(false);
   const [getEmailData, setGetEmailData] = useState("");
   const [description, setDescription] = useState("");
+  const [search, setSearch] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -111,6 +113,9 @@ const Email = () => {
     if (!data?.anotherUser) {
       formIsValid = false;
       errors["anotherUser"] = "Please enter address.";
+    }else if (!data?.email?.match(Regex.emailRegex)) {
+      formIsValid = false;
+      errors["invalidEmail"] = "email addresses separated by commas ";
     }
     if (!data?.title) {
       formIsValid = false;
@@ -270,7 +275,9 @@ const Email = () => {
   };
 
   const _getEmailsList = () => {
-    let body = {};
+    let body = {
+      search: search || "",
+    };
     axios
       .post(`emails_list`, body)
       .then((res) => {
@@ -285,8 +292,11 @@ const Email = () => {
   };
 
   useEffect(() => {
-    _getUsers();
     _getEmailsList();
+  }, [search]);
+
+  useEffect(() => {
+    _getUsers();
   }, []);
 
   useEffect(() => {
@@ -315,7 +325,7 @@ const Email = () => {
                 className={classes.emailsList}
               >
                 <Box mb={3}>
-                  <CommonSearch />
+                  <CommonSearch onSearch={(e) => setSearch(e?.target?.value)} />
                 </Box>
                 <Box
                   display={"flex"}
@@ -420,7 +430,7 @@ const Email = () => {
                       })}
                     </>
                   ) : (
-                    <DataNotFound title={"No Emails!"}/>
+                    <DataNotFound title={"No Emails!"} />
                   )}
                 </Box>
               </Grid>
@@ -465,7 +475,7 @@ const Email = () => {
               className={classes.emailsList}
             >
               <Box mb={3}>
-                <CommonSearch />
+              <CommonSearch onSearch={(e) => setSearch(e?.target?.value)} />
               </Box>
               <Box
                 display={"flex"}
@@ -570,7 +580,7 @@ const Email = () => {
                     })}
                   </>
                 ) : (
-                  <DataNotFound title={"No Emails!"}/>
+                  <DataNotFound title={"No Emails!"} />
                 )}
               </Box>
             </Grid>
