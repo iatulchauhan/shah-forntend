@@ -16,30 +16,31 @@ const AppProvider = ({ children }) => {
   const [menuList, setMenuList] = useState(getLSItem("menuList") ? JSON.parse(getLSItem("menuList")) : []);
   const [loader, setLoader] = useState(false);
 
-
-
-
+  const [deviceToken, setDeviceToken] = useState(
+    getLSItem("deviceToken") ? [getLSItem("deviceToken")] : null
+    );
   const [user, setUser] = useState(
     getLSItem("user") ? JSON.parse(getLSItem("user")) : null
-  );
-  const [cart, setCart] = useState(
-    getLSItem("cart") ? JSON.parse(getLSItem("cart")) : null
-  );
-  const [wishList, setWishList] = useState(
-    getLSItem("wishlist") ? JSON.parse(getLSItem("wishlist")) : null
-  );
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
-  const [profileImagePath, setProfileImagePath] = useState(
-    getLSItem("profileImagePath")
-  );
-
-  const updateToken = (auth) => {
-    // Perform update token logic here
+    );
+    const [cart, setCart] = useState(
+      getLSItem("cart") ? JSON.parse(getLSItem("cart")) : null
+      );
+      const [wishList, setWishList] = useState(
+        getLSItem("wishlist") ? JSON.parse(getLSItem("wishlist")) : null
+        );
+        const [success, setSuccess] = useState("");
+        const [error, setError] = useState("");
+        const [profileImagePath, setProfileImagePath] = useState(
+          getLSItem("profileImagePath")
+          );
+          
+          const updateToken = (auth) => {
+            // Perform update token logic here
     setLSItem("auth_token", auth);
     setAuth_token(auth);
   };
-
+  console.log('loaclstorageItem😲', deviceToken)
+  
   const onUpdateUser = (userData) => {
     // Perform login logic here
     setLSItem("user", JSON.stringify(userData));
@@ -138,6 +139,7 @@ const AppProvider = ({ children }) => {
         onUpdateUserType,
         toggleSideBar,
         getMenuListByRole,
+        deviceToken,
         menuList,
       }}
     >
