@@ -9,9 +9,9 @@ const firebaseConfig = {
   projectId: "shahinvestment-95269",
   storageBucket: "shahinvestment-95269.appspot.com",
   messagingSenderId: "507285511281",
-  appId: "1:507285511281:web:3adc2cc039465ee6438fd0"
+  appId: "1:507285511281:web:3adc2cc039465ee6438fd0",
+  measurementId: "G-SPJDMNNZE4"
 };
-
 firebase.initializeApp(firebaseConfig); 
 
 const messaging = firebase.messaging();

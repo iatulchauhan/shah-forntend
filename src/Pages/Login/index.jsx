@@ -62,22 +62,22 @@ const Login = () => {
     }
   };
 
-  const postDeviceToken = () => {
+  const _deviceToken = () => {
     let body = {
       deviceToken: deviceToken,
     };
     axios
       .post("/deviceToken", body)
       .then((res) => {
-        console.log("res😲", res);
+        console.log("res", res)
       })
       .catch((err) => {
-        console.log("err😲", err);
+        console.log("err", err);
       });
   };
 
   const handleLoginClick = () => {
-   
+
     setIsSubmit(true);
     if (handleValidation()) {
       toggleLoader();
@@ -96,7 +96,7 @@ const Login = () => {
               timer: 5000,
             });
             navigate("/");
-            postDeviceToken();
+            _deviceToken();
           }
           toggleLoader();
         })
@@ -106,7 +106,8 @@ const Login = () => {
         });
     }
   };
-  useEffect(()=> {
+
+  useEffect(() => {
     requestForToken();
   }, [])
 
