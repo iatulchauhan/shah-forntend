@@ -28,11 +28,10 @@ import OTPverification from "./Pages/OTPverification";
 import ForgetPassword from "./Pages/ForgetPassword";
 import Resetpassword from "./Pages/Resetpassword";
 import VisitorHistory from "./Pages/VisitorHistory";
-import ReceptionistVisitorHistory from "./Pages/Receptionist/ReceptionistVisitorHistory";
-import ReceptionistVisitor from "./Pages/Receptionist/ReceptionistVisitor";
-import ReceptionistMeetingList from "./Pages/Receptionist/ReceptionistMeetingList";
+import { requestForToken } from "./firebase";
 
 function App() {
+  requestForToken()
   return (
     <BrowserRouter basename={"/"}>
       <ThemeProvider theme={lightTheme}>

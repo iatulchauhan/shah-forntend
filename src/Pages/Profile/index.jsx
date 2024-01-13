@@ -201,9 +201,9 @@ const Profile = () => {
       });
   };
 
-  const _getUserById = () => {
+  const _getUserById = async () => {
     if (user?._id) {
-      axios
+      await axios
         .get(`users/by_id/${user?._id}`)
         .then((res) => {
           if (res?.data?.data) {

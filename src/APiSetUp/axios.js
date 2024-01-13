@@ -2,7 +2,8 @@ import axios from "axios";
 import { getLSItem, removeLSItem } from "./LocalStorage";
 import swal from "sweetalert";
 
-export const BASE_URL = "http://192.168.29.190:8000/";
+// export const BASE_URL = "http://172.20.10.13:8000/";
+export const BASE_URL = "http://localhost:8000/";
 export const Image_BASE_URL = "https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/";
 
 const instance = axios.create({
@@ -12,9 +13,9 @@ const instance = axios.create({
 const onRequestSuccess = (config) => {
   const auth_token = getLSItem("auth_token");
   if (auth_token) config.headers["Authorization"] = auth_token;
-
   return config;
 };
+
 const onRequestFailure = (error) => Promise.reject(error);
 
 const onResponseSuccess = (response) => {
