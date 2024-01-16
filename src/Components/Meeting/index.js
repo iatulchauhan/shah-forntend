@@ -107,7 +107,7 @@ const AddMeeting = ({
             blurOnSelect
             placeholder={"Select Client"}
             disabled={isEdit ? (updatedMeetingDetails?.isEdit ? false : true) : false} />
-            
+
           <TextLabel
             fontSize={"12px"}
             color={"red"}
@@ -197,6 +197,7 @@ const AddMeeting = ({
           flexWrap={"wrap"}
           gap={2}
         >
+          {console.log('updatedMeetingDetails?.isEdit', updatedMeetingDetails?.isEdit)}
           {slotTimes?.map((e) => {
             return (
               <Chip
@@ -218,27 +219,15 @@ const AddMeeting = ({
                       : "var(--text, #000)",
                 }}
                 onClick={() => handleSlotClick(e.startTime)}
-                // disabled={updatedMeetingDetails?.isEdit ? false : e.isSelected ? true : true}
-                disabled={
-                  isEdit
-                    ? !updatedMeetingDetails?.isEdit
-                      ? true
-                      : e.isSelected
-                        ? true
-                        : false
-                    : false
-                }
+                disabled={updatedMeetingDetails && !updatedMeetingDetails?.isEdit ? true : e.isSelected ? true : false}
               />
             );
           })}
         </Grid>
 
-        {!updatedMeetingDetails?.isEdit && (
+        {updatedMeetingDetails?.isEdit && (
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            {!(
-              updatedMeetingDetails?.status === meetingStatus?.completed ||
-              updatedMeetingDetails?.status === meetingStatus?.canceled
-            ) ? (
+            {!(updatedMeetingDetails?.status === meetingStatus?.completed || updatedMeetingDetails?.status === meetingStatus?.canceled) ? (
               <AutoCompleteSearch
                 fullWidth
                 backgroundColor="white"
@@ -260,9 +249,7 @@ const AddMeeting = ({
                   fontSize={"12px"}
                   color={"white"}
                   fontWeight={"400"}
-                  title={`Meeting has been ${meetinStatusConfig?.find(
-                    (e) => e?.statusId === updatedMeetingDetails?.status
-                  )?.statusName
+                  title={`Meeting has been ${meetinStatusConfig?.find((e) => e?.statusId === updatedMeetingDetails?.status)?.statusName
                     }`}
                   textAlign={"center"}
                   style={{
@@ -277,28 +264,13 @@ const AddMeeting = ({
             )}
           </Grid>
         )}
-        {updatedMeetingDetails &&
-          !(
-            updatedMeetingDetails?.status === meetingStatus?.completed ||
-            updatedMeetingDetails?.status === meetingStatus?.canceled
-          ) && (
-            <Grid item xs={12} sm={12} md={12} lg={12}>
-              <Box
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "35px",
-                }}
-              >
-                <CommonButton
-                  width={"280px"}
-                  text={`${isEdit ? "Update" : "Schedule"} Meeting`}
-                  type="submit"
-                  onClick={onSubmit}
-                />
-              </Box>
-            </Grid>
-          )}
+        {!(updatedMeetingDetails?.status === meetingStatus?.completed || updatedMeetingDetails?.status === meetingStatus?.canceled) && (
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <Box style={{ display: "flex", justifyContent: "center", marginTop: "35px", }}>
+              <CommonButton width={"280px"} text={`${isEdit ? "Update" : "Schedule"} Meeting`} type="submit" onClick={onSubmit} />
+            </Box>
+          </Grid>
+        )}
       </Grid>
     </Box>
   );

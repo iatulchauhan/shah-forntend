@@ -134,7 +134,7 @@ const MeetingList = () => {
   const [visitorDetails, setVisitorDetails] = useState([]);
   const [meetingId, setMeetingId] = useState("");
   const [meetingDate, setMeetingDate] = React.useState(dayjs());
-  const [updatedMeetingDetails, setUpdatedMeetingDetails] = useState({});
+  const [updatedMeetingDetails, setUpdatedMeetingDetails] = useState(null);
   const [updateMeetingStatus, setUpdateMeetingStatus] = useState([]);
   const [permissions, setPermissions] = useState({});
   const [search, setSearch] = useState("");
@@ -156,20 +156,18 @@ const MeetingList = () => {
   };
 
   const _getSlotTimes = () => {
+    console.log('counsellorDetails,visitorDetails', counsellorDetails, visitorDetails)
+    console.log('counsellorDetails,visitorDetails222222222222222222', visitorDetails?.find((e) => e?.name == selectedClient)?._id, counsellorDetails?.find((e) => e?.name == selectedInviteTo)?._id)
     toggleLoader();
+
     let body = {
-      client: updatedMeetingDetails
-        ? updatedMeetingDetails?.client
-        : visitorDetails?.filter((e) => e?.name == selectedClient)[0]?._id,
-      meetingWith: updatedMeetingDetails
-        ? updatedMeetingDetails?.meetingWith
-        : counsellorDetails?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
-      meetingDate: updatedMeetingDetails
-        ? dayjs(updatedMeetingDetails?.meetingDate).format("YYYY-MM-DD")
-        : dayjs(meetingDate).format("YYYY-MM-DD"),
+      client: (updatedMeetingDetails) ? updatedMeetingDetails?.client : visitorDetails?.find((e) => e?.name == selectedClient)?._id,
+      meetingWith: (updatedMeetingDetails) ? updatedMeetingDetails?.meetingWith : counsellorDetails?.find((e) => e?.name == selectedInviteTo)?._id,
+      meetingDate: (updatedMeetingDetails) ? dayjs(updatedMeetingDetails?.meetingDate).format("YYYY-MM-DD") : dayjs(meetingDate).format("YYYY-MM-DD"),
     };
-    axios
-      .post("/slotTimes", body)
+
+    console.log('body', body)
+    axios.post("/slotTimes", body)
       .then((res) => {
         if (res?.data?.data) {
           setSlotTimes(res?.data?.data);
@@ -271,7 +269,7 @@ const MeetingList = () => {
     setSlotTimes([]);
     setMeetingId("");
     setMeetingDate(dayjs());
-    setUpdatedMeetingDetails({});
+    setUpdatedMeetingDetails(null);
     setUpdateMeetingStatus([]);
   };
   const _getMeetingList = () => {
@@ -377,24 +375,12 @@ const MeetingList = () => {
       });
   };
 
+  console.log("visitorDetails", visitorDetails, counsellorDetails, selectedClient, selectedInviteTo, meetingDate)
   useEffect(() => {
-    if (
-      visitorDetails?.length > 0 &&
-      counsellorDetails?.length > 0 &&
-      selectedClient?.length > 0 &&
-      selectedInviteTo?.length > 0 &&
-      meetingDate
-    ) {
+    if (visitorDetails?.length > 0 && counsellorDetails?.length > 0 && selectedClient?.length > 0 && selectedInviteTo?.length > 0 && meetingDate) {
       _getSlotTimes();
     }
-  }, [
-    model,
-    meetingDate,
-    visitorDetails,
-    selectedClient,
-    selectedInviteTo,
-    counsellorDetails,
-  ]);
+  }, [model, meetingDate, visitorDetails, selectedClient, selectedInviteTo, counsellorDetails,]);
 
   useEffect(() => {
     if (model) {

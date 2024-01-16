@@ -6,6 +6,15 @@ import CommonButton from '../../Components/Common/Button/CommonButton';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
 
 const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error, handleChange, isEdit, onSubmit, setSelectedState, selectedState, countries, selectedCountry, setSelectedCountry }) => {
+   
+    React.useEffect(() => {
+        const defaultCountry = "India";
+        const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
+        if (defaultCountryObj) {
+          setSelectedCountry(defaultCountry);
+        }
+      }, [countries, setSelectedCountry]);
+
     return (
         <Box>
             <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -33,6 +42,7 @@ const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error,
                     />
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.address ? error?.address : ""} />
                 </Grid>
+                {console.log("selectedCountry", selectedCountry)}
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <AutoCompleteSearch
                         backgroundColor="white"
@@ -40,10 +50,7 @@ const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error,
                         text="Country"
                         handleChange={(e, newValue) => {
                             setSelectedCountry(newValue)
-                            if (isEdit && selectedCountry !== newValue) {
-                                setSelectedCity("")
-                                setSelectedState("")
-                            }
+                            if (isEdit && selectedCountry !== newValue) { setSelectedCity(""); setSelectedState("") }
                         }}
                         options={countries?.response?.map((e) => e?.name) || []}
                         name="label"

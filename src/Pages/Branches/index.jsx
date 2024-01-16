@@ -303,10 +303,19 @@ const Branches = () => {
   }, []);
 
   React.useEffect(() => {
-    if (selectedCountry) {
+    if (countries?.response && selectedCountry) {
       _getStates();
     }
-  }, [selectedCountry]);
+  }, [countries, selectedCountry]);
+
+  React.useEffect(() => {
+    const defaultCountry = "India";
+    const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
+    if (defaultCountryObj) {
+      setSelectedCountry(defaultCountry);
+    }
+  }, [countries, setSelectedCountry]);
+
 
   React.useEffect(() => {
     if (selectedCountry && selectedState) {
@@ -316,7 +325,7 @@ const Branches = () => {
 
   React.useEffect(() => {
     _getBranches();
-}, [page, rowsPerPage, search]);
+  }, [page, rowsPerPage, search]);
 
   React.useEffect(() => {
     const menu = menuList?.find((e) => e?.path === pathname);
