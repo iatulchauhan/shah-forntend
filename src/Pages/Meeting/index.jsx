@@ -102,8 +102,8 @@ const meetinStatusConfig = [
   {
     statusName: "Cancel",
     statusId: 4,
-  }
-]
+  },
+];
 
 const statusColors = {
   0: "#FDCF71",
@@ -113,11 +113,10 @@ const statusColors = {
   4: "#FF7474",
 };
 
-
 const MeetingList = () => {
   const { classes } = useStyles();
-  const location = useLocation()
-  const { pathname } = location
+  const location = useLocation();
+  const { pathname } = location;
   const { OnUpdateError, toggleLoader, user, menuList } = useAppContext();
   //States
   const [model, setModel] = useState(false);
@@ -135,9 +134,9 @@ const MeetingList = () => {
   const [visitorDetails, setVisitorDetails] = useState([]);
   const [meetingId, setMeetingId] = useState("");
   const [meetingDate, setMeetingDate] = React.useState(dayjs());
-  const [updatedMeetingDetails, setUpdatedMeetingDetails] = useState(null);
+  const [updatedMeetingDetails, setUpdatedMeetingDetails] = useState({});
   const [updateMeetingStatus, setUpdateMeetingStatus] = useState([]);
-  const [permissions, setPermissions] = useState({})
+  const [permissions, setPermissions] = useState({});
   const [search, setSearch] = useState("");
   const handleChangePage = (newPage) => {
     setPage(newPage);
@@ -159,15 +158,20 @@ const MeetingList = () => {
   const _getSlotTimes = () => {
     toggleLoader();
     let body = {
-      client: updatedMeetingDetails ? updatedMeetingDetails?.client : visitorDetails?.filter((e) => e?.name == selectedClient)[0]?._id,
-      meetingWith: updatedMeetingDetails ? updatedMeetingDetails?.meetingWith : counsellorDetails?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
-      meetingDate: updatedMeetingDetails ? dayjs(updatedMeetingDetails?.meetingDate).format('YYYY-MM-DD') : dayjs(meetingDate).format('YYYY-MM-DD'),
+      client: updatedMeetingDetails
+        ? updatedMeetingDetails?.client
+        : visitorDetails?.filter((e) => e?.name == selectedClient)[0]?._id,
+      meetingWith: updatedMeetingDetails
+        ? updatedMeetingDetails?.meetingWith
+        : counsellorDetails?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
+      meetingDate: updatedMeetingDetails
+        ? dayjs(updatedMeetingDetails?.meetingDate).format("YYYY-MM-DD")
+        : dayjs(meetingDate).format("YYYY-MM-DD"),
     };
     axios
       .post("/slotTimes", body)
       .then((res) => {
         if (res?.data?.data) {
-          console.log(res?.data?.data?.response, "slot response");
           setSlotTimes(res?.data?.data);
         }
         toggleLoader();
@@ -177,7 +181,6 @@ const MeetingList = () => {
         OnUpdateError(err.data.message);
       });
   };
-
 
   const _getVisitor = () => {
     toggleLoader();
@@ -260,18 +263,17 @@ const MeetingList = () => {
     setData({});
     setError({});
     setIsEdit(false);
-    setVisitorDetails([])
-    setCounsellorDetails([])
+    setVisitorDetails([]);
+    setCounsellorDetails([]);
     setSelectedInviteTo([]);
     setSelectedClient([]);
     setSelectedSlots([]);
     setSlotTimes([]);
     setMeetingId("");
-    setMeetingDate(dayjs())
-    setUpdatedMeetingDetails([])
-    setUpdateMeetingStatus([])
+    setMeetingDate(dayjs());
+    setUpdatedMeetingDetails({});
+    setUpdateMeetingStatus([]);
   };
-
   const _getMeetingList = () => {
     toggleLoader();
     let body = {
@@ -279,7 +281,8 @@ const MeetingList = () => {
       page: page + 1,
       search: search || "",
     };
-    axios.post(`meetingList`, body)
+    axios
+      .post(`meetingList`, body)
       .then((res) => {
         if (res?.data?.data) {
           setMeetingDetails(res?.data?.data);
@@ -293,7 +296,8 @@ const MeetingList = () => {
   };
   const _getCounselor = () => {
     toggleLoader();
-    axios.post(user?.userType === 2 ? `counsellor` : `accountant`)
+    axios
+      .post(user?.userType === 2 ? `counsellor` : `accountant`)
       .then((res) => {
         if (res?.data?.data) {
           setCounsellorDetails(res?.data?.data);
@@ -307,7 +311,8 @@ const MeetingList = () => {
   };
   const _deleteScheduleMeeting = (meetingId) => {
     toggleLoader();
-    axios.delete(`meeting/delete/${meetingId}`)
+    axios
+      .delete(`meeting/delete/${meetingId}`)
       .then((res) => {
         if (res?.data?.data) {
           swal(res?.data?.message, { icon: "success", timer: 5000 });
@@ -326,16 +331,22 @@ const MeetingList = () => {
 
       let body = {
         title: data?.title,
-        client: visitorDetails?.filter((e) => e?.name == selectedClient)[0]?._id,
-        meetingWith: counsellorDetails?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
-        meetingDate: dayjs(meetingDate).format('YYYY-MM-DD'),
+        client: visitorDetails?.filter((e) => e?.name == selectedClient)[0]
+          ?._id,
+        meetingWith: counsellorDetails?.filter(
+          (e) => e?.name == selectedInviteTo
+        )[0]?._id,
+        meetingDate: dayjs(meetingDate).format("YYYY-MM-DD"),
         slot_time: slotTimes,
-        status: meetinStatusConfig?.find((e) => e?.statusName === updateMeetingStatus)?.statusId
+        status: meetinStatusConfig?.find(
+          (e) => e?.statusName === updateMeetingStatus
+        )?.statusId,
       };
       if (data?._id) {
         body.id = data?._id;
       }
-      axios?.post(data?._id ? "meeting/update" : `meeting/create`, body)
+      axios
+        ?.post(data?._id ? "meeting/update" : `meeting/create`, body)
         .then((res) => {
           if (res?.data?.data) {
             swal(res?.data?.message, { icon: "success", timer: 5000 });
@@ -352,10 +363,11 @@ const MeetingList = () => {
   };
   const _getMeetingDetailsById = async () => {
     toggleLoader();
-    await axios.get(`meeting/by_id/${meetingId}`)
+    await axios
+      .get(`meeting/by_id/${meetingId}`)
       .then((res) => {
         if (res?.data?.data) {
-          setUpdatedMeetingDetails(res?.data?.data)
+          setUpdatedMeetingDetails(res?.data?.data);
         }
         toggleLoader();
       })
@@ -363,13 +375,26 @@ const MeetingList = () => {
         toggleLoader();
         OnUpdateError(err.data.message);
       });
-  }
+  };
 
   useEffect(() => {
-    if (visitorDetails?.length > 0 && counsellorDetails?.length > 0 && selectedClient?.length > 0 && selectedInviteTo?.length > 0 && meetingDate) {
+    if (
+      visitorDetails?.length > 0 &&
+      counsellorDetails?.length > 0 &&
+      selectedClient?.length > 0 &&
+      selectedInviteTo?.length > 0 &&
+      meetingDate
+    ) {
       _getSlotTimes();
     }
-  }, [model, meetingDate, visitorDetails, selectedClient, selectedInviteTo, counsellorDetails]);
+  }, [
+    model,
+    meetingDate,
+    visitorDetails,
+    selectedClient,
+    selectedInviteTo,
+    counsellorDetails,
+  ]);
 
   useEffect(() => {
     if (model) {
@@ -378,11 +403,10 @@ const MeetingList = () => {
     }
   }, [model]);
 
-
   useEffect(() => {
     (async () => {
       if (model && meetingId) {
-        _getMeetingDetailsById()
+        _getMeetingDetailsById();
       }
     })();
   }, [model, meetingId]);
@@ -390,16 +414,22 @@ const MeetingList = () => {
   useEffect(() => {
     if (updatedMeetingDetails) {
       setSelectedClient(updatedMeetingDetails?.clientDetails?.name || "");
-      setSelectedInviteTo(updatedMeetingDetails?.meetingWithDetails?.name || "");
+      setSelectedInviteTo(
+        updatedMeetingDetails?.meetingWithDetails?.name || ""
+      );
       setData({
         ...data,
         title: updatedMeetingDetails?.title,
         _id: updatedMeetingDetails?._id,
       });
       setMeetingDate(updatedMeetingDetails?.meetingDate || dayjs());
-      setUpdateMeetingStatus(meetinStatusConfig?.find((e) => e?.statusId === updatedMeetingDetails?.status)?.statusName)
+      setUpdateMeetingStatus(
+        meetinStatusConfig?.find(
+          (e) => e?.statusId === updatedMeetingDetails?.status
+        )?.statusName
+      );
     }
-  }, [updatedMeetingDetails])
+  }, [updatedMeetingDetails]);
 
   React.useEffect(() => {
     _getMeetingList();
@@ -411,9 +441,15 @@ const MeetingList = () => {
       const menuPermissions = menu.permissions;
       setPermissions({
         view: menuPermissions.includes(permissionStatus.view) ? true : false,
-        create: menuPermissions.includes(permissionStatus.create) ? true : false,
-        update: menuPermissions.includes(permissionStatus.update) ? true : false,
-        delete: menuPermissions.includes(permissionStatus.delete) ? true : false,
+        create: menuPermissions.includes(permissionStatus.create)
+          ? true
+          : false,
+        update: menuPermissions.includes(permissionStatus.update)
+          ? true
+          : false,
+        delete: menuPermissions.includes(permissionStatus.delete)
+          ? true
+          : false,
       });
     }
   }, [menuList, location]);
@@ -451,7 +487,11 @@ const MeetingList = () => {
                   {meetingDetails?.response?.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell>{index + 1}</StyledTableCell>
-                      <StyledTableCell className={classes.paddedRow} component="th" scope="row"                      >
+                      <StyledTableCell
+                        className={classes.paddedRow}
+                        component="th"
+                        scope="row"
+                      >
                         {row?.clientDetails?.name}
                       </StyledTableCell>
                       <StyledTableCell>
@@ -461,13 +501,17 @@ const MeetingList = () => {
                       <StyledTableCell align="center">
                         {row?.startTime}
                       </StyledTableCell>
-                      <StyledTableCell className={classes.paddedRow} >
-                        <Box display={'flex'} justifyContent={'center'}>
+                      <StyledTableCell className={classes.paddedRow}>
+                        <Box display={"flex"} justifyContent={"center"}>
                           <TextLabel
                             fontSize={"12px"}
                             color={"white"}
                             fontWeight={"400"}
-                            title={meetinStatusConfig?.find((e) => e?.statusId === row.status)?.statusName}
+                            title={
+                              meetinStatusConfig?.find(
+                                (e) => e?.statusId === row.status
+                              )?.statusName
+                            }
                             textAlign={"center"}
                             style={{
                               backgroundColor: statusColors[row?.status],
@@ -488,21 +532,29 @@ const MeetingList = () => {
                             src={"/assets/icons/view.svg"}
                             absolutePath={true}
                           /> */}
-                          {permissions?.update && <Assets
-                            className={classes.writeBox}
-                            src={"/assets/icons/write.svg"}
-                            absolutePath={true}
-                            onClick={() => { setIsEdit(true); setModel(true); setMeetingId(row?._id); }}
-                          />}
+                          {permissions?.update && (
+                            <Assets
+                              className={classes.writeBox}
+                              src={"/assets/icons/write.svg"}
+                              absolutePath={true}
+                              onClick={() => {
+                                setIsEdit(true);
+                                setModel(true);
+                                setMeetingId(row?._id);
+                              }}
+                            />
+                          )}
 
-                          {permissions?.delete && <Assets
-                            className={classes.deleteBox}
-                            src={"/assets/icons/delete.svg"}
-                            absolutePath={true}
-                            onClick={() => {
-                              _deleteScheduleMeeting(row?._id);
-                            }}
-                          />}
+                          {permissions?.delete && (
+                            <Assets
+                              className={classes.deleteBox}
+                              src={"/assets/icons/delete.svg"}
+                              absolutePath={true}
+                              onClick={() => {
+                                _deleteScheduleMeeting(row?._id);
+                              }}
+                            />
+                          )}
                         </Box>
                       </StyledTableCell>
                     </StyledTableRow>
@@ -554,6 +606,7 @@ const MeetingList = () => {
             setUpdateMeetingStatus={setUpdateMeetingStatus}
             updateMeetingStatus={updateMeetingStatus}
             statusColors={statusColors}
+            meetingId={meetingId}
           />
         }
       />

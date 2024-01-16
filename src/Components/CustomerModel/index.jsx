@@ -340,7 +340,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
                     width={"280px"}
-                        text={`${isEdit ? "Update" : "Create"} Customer`}
+                        text={`${isEdit ? "Update" : "Create"} Client`}
                         type="submit"
                         onClick={onSubmit}
                     />

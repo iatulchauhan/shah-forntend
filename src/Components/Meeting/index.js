@@ -69,11 +69,10 @@ const AddMeeting = ({
   setUpdateMeetingStatus,
   updateMeetingStatus,
   statusColors,
-  _deleteScheduleMeeting
+  _deleteScheduleMeeting,
 }) => {
   const { classes } = useStyles();
   const theme = useTheme();
-  console.log(updateMeetingStatus, "updateMeetingStatus")
   return (
     <Box>
       <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -86,7 +85,7 @@ const AddMeeting = ({
             name="title"
             value={data?.title}
             onChange={(e) => handleChange(e, false)}
-            disabled={updatedMeetingDetails?.isEdit ? false : true}
+            disabled={isEdit ? (updatedMeetingDetails?.isEdit ? false : true) : false}
           />
           <TextLabel
             fontSize={"12px"}
@@ -107,8 +106,8 @@ const AddMeeting = ({
             freeSolo
             blurOnSelect
             placeholder={"Select Client"}
-            disabled={updatedMeetingDetails?.isEdit ? false : true}
-          />
+            disabled={isEdit ? (updatedMeetingDetails?.isEdit ? false : true) : false} />
+            
           <TextLabel
             fontSize={"12px"}
             color={"red"}
@@ -129,7 +128,9 @@ const AddMeeting = ({
             freeSolo
             blurOnSelect
             placeholder={"Select Invite"}
-            disabled={updatedMeetingDetails?.isEdit ? false : true}
+            disabled={
+              isEdit ? (updatedMeetingDetails?.isEdit ? false : true) : false
+            }
           />
           <TextLabel
             fontSize={"12px"}
@@ -138,7 +139,14 @@ const AddMeeting = ({
             title={!selectedInviteTo ? error?.selectedInviteTo : ""}
           />
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={6} className={classes.customLabel}        >
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={6}
+          className={classes.customLabel}
+        >
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TextLabel
               fontSize={"15px"}
@@ -153,11 +161,13 @@ const AddMeeting = ({
               inputFormat="MM/DD/YYYY"
               value={dayjs(meetingDate) || dayjs()}
               onChange={(newValue) => {
-                console.log(newValue, "newValue")
+                console.log(newValue, "newValue");
                 setMeetingDate(newValue);
               }}
               renderInput={(params) => <TextField {...params} />}
-              disabled={updatedMeetingDetails?.isEdit ? false : true}
+              disabled={
+                isEdit ? (updatedMeetingDetails?.isEdit ? false : true) : false
+              }
             />
             {/* </DemoItem> */}
           </LocalizationProvider>
@@ -193,28 +203,48 @@ const AddMeeting = ({
                 label={`${convertToAmPm(e?.startTime)}`}
                 style={{
                   borderRadius: "10px",
-                  border: `1px solid ${e.isBooked === true ? "var(--selected, #A1E3FF)" : "var(--border, #A1E3FF)"}`,
-                  background: e.isBooked === true ? "var(--border, #A1E3FF)" : "var(--White, #FFF)",
+                  border: `1px solid ${e.isBooked === true
+                    ? "var(--selected, #A1E3FF)"
+                    : "var(--border, #A1E3FF)"
+                    }`,
+                  background:
+                    e.isBooked === true
+                      ? "var(--border, #A1E3FF)"
+                      : "var(--White, #FFF)",
                   height: "36px",
-                  color: e.isBooked === true ? "var(--White, #000)" : "var(--text, #000)",
+                  color:
+                    e.isBooked === true
+                      ? "var(--White, #000)"
+                      : "var(--text, #000)",
                 }}
                 onClick={() => handleSlotClick(e.startTime)}
                 // disabled={updatedMeetingDetails?.isEdit ? false : e.isSelected ? true : true}
-                disabled={!updatedMeetingDetails?.isEdit ? true : e.isSelected ? true : false}
+                disabled={
+                  isEdit
+                    ? !updatedMeetingDetails?.isEdit
+                      ? true
+                      : e.isSelected
+                        ? true
+                        : false
+                    : false
+                }
               />
             );
           })}
         </Grid>
-        {console.log(updatedMeetingDetails?.status, meetingStatus?.completed, "updatedMeetingDetails")}
-        {!updatedMeetingDetails?.isEdit &&
-          <Grid item xs={12} sm={12} md={12} lg={12} >
-            {!(updatedMeetingDetails?.status === meetingStatus?.completed || updatedMeetingDetails?.status === meetingStatus?.canceled) ?
+
+        {!updatedMeetingDetails?.isEdit && (
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            {!(
+              updatedMeetingDetails?.status === meetingStatus?.completed ||
+              updatedMeetingDetails?.status === meetingStatus?.canceled
+            ) ? (
               <AutoCompleteSearch
                 fullWidth
                 backgroundColor="white"
                 text="Update Status"
                 handleChange={(e, status) => {
-                  setUpdateMeetingStatus(status)
+                  setUpdateMeetingStatus(status);
                 }}
                 options={meetinStatusConfig?.map((e) => e?.statusName) || []}
                 name="updateMeetingStatus"
@@ -224,35 +254,51 @@ const AddMeeting = ({
                 placeholder={"Select Status"}
                 disabled={updatedMeetingDetails?.status === 3}
               />
-              :
-              <Box display={'flex'} justifyContent={'center'} mt={2}>
+            ) : (
+              <Box display={"flex"} justifyContent={"center"} mt={2}>
                 <TextLabel
-                  fontSize={"12px"} color={"white"} fontWeight={"400"}
-                  title={`Meeting has been ${meetinStatusConfig?.find((e) => e?.statusId === updatedMeetingDetails?.status)?.statusName}`}
+                  fontSize={"12px"}
+                  color={"white"}
+                  fontWeight={"400"}
+                  title={`Meeting has been ${meetinStatusConfig?.find(
+                    (e) => e?.statusId === updatedMeetingDetails?.status
+                  )?.statusName
+                    }`}
                   textAlign={"center"}
-                  style={{ backgroundColor: statusColors[updatedMeetingDetails?.status], borderRadius: "20px", width: "220px", padding: "5px 5px", }}
+                  style={{
+                    backgroundColor:
+                      statusColors[updatedMeetingDetails?.status],
+                    borderRadius: "20px",
+                    width: "220px",
+                    padding: "5px 5px",
+                  }}
                 />
               </Box>
-
-            }
+            )}
           </Grid>
-        }
-        {updatedMeetingDetails && !(updatedMeetingDetails?.status === meetingStatus?.completed || updatedMeetingDetails?.status === meetingStatus?.canceled) && <Grid item xs={12} sm={12} md={12} lg={12}>
-          <Box
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "35px",
-            }}
-          >
-            <CommonButton
-              width={"280px"}
-              text={`${isEdit ? "Update" : "Schedule"} Meeting`}
-              type="submit"
-              onClick={onSubmit}
-            />
-          </Box>
-        </Grid>}
+        )}
+        {updatedMeetingDetails &&
+          !(
+            updatedMeetingDetails?.status === meetingStatus?.completed ||
+            updatedMeetingDetails?.status === meetingStatus?.canceled
+          ) && (
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              <Box
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "35px",
+                }}
+              >
+                <CommonButton
+                  width={"280px"}
+                  text={`${isEdit ? "Update" : "Schedule"} Meeting`}
+                  type="submit"
+                  onClick={onSubmit}
+                />
+              </Box>
+            </Grid>
+          )}
       </Grid>
     </Box>
   );

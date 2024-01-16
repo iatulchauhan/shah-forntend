@@ -30,6 +30,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import axios, { Image_BASE_URL } from "../../APiSetUp/axios";
 import { useAppContext } from "../../Context/context";
+import DashboardSummaryBox from "../../Components/Common/DashboardSummaryBox";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -205,43 +206,11 @@ const ongoing = [
   },
 ];
 
-const summaryData = [
-  {
-    name: "Total Receptionist",
-    count: "250",
-    avtar: "/assets/icons/DashboardIcon-1.png",
-    background: "#FFE2E5",
-  },
-  {
-    name: "Total Counsellor",
-    count: "300",
-    avtar: "/assets/icons/DashboardIcon-2.png",
-    background: "#FFF4DE",
-  },
-  {
-    name: "Total Accountant",
-    count: "360",
-    avtar: "/assets/icons/DashboardIcon-3.png",
-    background: "#DCFCE7",
-  },
-  {
-    name: "Total Users",
-    count: "2160",
-    avtar: "/assets/icons/DashboardIcon-4.png",
-    background: "#F3E8FF",
-  },
-  {
-    name: "Total New Visitor",
-    count: "2160",
-    avtar: "/assets/icons/DashboardIcon-5.png",
-    background: "#E0F0FF",
-  },
-];
-
 const Dashboard = () => {
   const { classes } = useStyles();
   const { OnUpdateError, toggleLoader, user } = useAppContext();
   const [value, setValue] = useState("Upcoming");
+  const [dashboardSummary, setDashboardSummary] = useState([]);
   const [offerDetails, setOfferDetails] = useState([]);
 
   const handleChange = (event, newValue) => {
@@ -251,12 +220,27 @@ const Dashboard = () => {
   const _getOffer = () => {
     toggleLoader();
     axios
-      .get("offer")
+    .get("offer")
+    .then((res) => {
+      if (res?.data?.data) {
+        setOfferDetails(res?.data?.data);
+      }
+      toggleLoader();
+    })
+    .catch((err) => {
+      toggleLoader();
+      OnUpdateError(err.data.message);
+    });
+  };
+  
+  const _getDashboardSummary = () => {
+    let body = {};
+    axios
+      .post(`/dashboard_deatils`, body)
       .then((res) => {
         if (res?.data?.data) {
-          setOfferDetails(res?.data?.data);
+          setDashboardSummary(res?.data?.data);
         }
-        toggleLoader();
       })
       .catch((err) => {
         toggleLoader();
@@ -266,62 +250,127 @@ const Dashboard = () => {
 
   useEffect(() => {
     _getOffer();
+    _getDashboardSummary();
   }, []);
 
   return (
     <>
-      <PaperContainer>
-        <Box
-          padding={3}
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-        >
-          <TextLabel
-            variant={"h6"}
-            fontWeight={"600"}
-            title={"Today’s Summary"}
-          />
-          <CommonButton
-            text="Export"
-            className={classes.customButtom}
-            // startIcon={<Assets src={exportIcon} absolutePath={true} />}
-          />
-        </Box>
-        <Grid container padding={3} spacing={3}>
-          {summaryData.map((item) => {
-            return (
-              <Grid item xs={12} sm={6} md={3} lg={2.4}>
-                <Box
-                  display={"flex"}
-                  flexDirection={"column"}
-                  gap={2}
-                  backgroundColor={item.background}
-                  borderRadius={4}
-                  padding={2}
-                >
-                  <Assets
-                    src={item.avtar}
-                    absolutePath={true}
-                    height={"56px"}
-                    width={"56px"}
-                  />
-                  <TextLabel
-                    variant={"h5"}
-                    fontWeight={600}
-                    title={item.count}
-                  />
-                  <TextLabel
-                    variant={"subtitle2"}
-                    fontWeight={500}
-                    title={item.name}
-                  />
-                </Box>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </PaperContainer>
+      {dashboardSummary?.todaySummary && (
+        <PaperContainer>
+          <Box
+            padding={3}
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <TextLabel
+              variant={"h6"}
+              fontWeight={"600"}
+              title={"Today’s Summary"}
+            />
+            <CommonButton
+              text="Export"
+              className={classes.customButtom}
+              // startIcon={<Assets src={exportIcon} absolutePath={true} />}
+            />
+          </Box>
+          <Grid container padding={3} spacing={3}>
+            <DashboardSummaryBox
+              count={dashboardSummary?.todaySummary?.todayVisitor || 0}
+              title={"Total Visitor"}
+              iconColor={"#FA5A7D"}
+              backgroundColor={"#FFE2E5"}
+              avtar={"/assets/icons/DashboardIcon1.png"}
+            />
+            <DashboardSummaryBox
+              count={dashboardSummary?.todaySummary?.todayMetting || 0}
+              title={"Total Meetings"}
+              iconColor={"#FF947A"}
+              backgroundColor={"#FFF4DE"}
+              avtar={"/assets/icons/DashboardIcon2.png"}
+              />
+            <DashboardSummaryBox
+              count={dashboardSummary?.todaySummary?.totalInvestmentAmount || 0}
+              title={"Total Investment Amount"}
+              iconColor={"#3CD856"}
+              backgroundColor={"#DCFCE7"}
+              avtar={"/assets/icons/DashboardIcon3.png"}
+              />
+            <DashboardSummaryBox
+              count={dashboardSummary?.todaySummary?.totalPayout || 0}
+              title={"Total Payout"}
+              iconColor={"#BF83FF"}
+              backgroundColor={"#F3E8FF"}
+              avtar={"/assets/icons/DashboardIcon4.png"}
+            />
+            <DashboardSummaryBox
+              count={dashboardSummary?.todaySummary?.todayClient || 0}
+              title={"Total New Client"}
+              iconColor={"#4FA3F1"}
+              backgroundColor={"#E0F0FF"}
+              avtar={"/assets/icons/DashboardIcon4.png"}
+            />
+          </Grid>
+        </PaperContainer>
+      )}
+
+      {dashboardSummary?.allOverSummary && (
+        <PaperContainer>
+          <Box
+            padding={3}
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <TextLabel
+              variant={"h6"}
+              fontWeight={"600"}
+              title={"All Over Summary"}
+            />
+            <CommonButton
+              text="Export"
+              className={classes.customButtom}
+            />
+          </Box>
+          <Grid container padding={3} spacing={3}>
+            <DashboardSummaryBox
+              count={dashboardSummary?.allOverSummary?.totalReceptionist || 0}
+              title={"Total Receptionist"}
+              iconColor={"#FA5A7D"}
+              backgroundColor={"#FFE2E5"}
+              avtar={"/assets/icons/DashboardIcon1.png"}
+            />
+            <DashboardSummaryBox
+              count={dashboardSummary?.allOverSummary?.totalCounsellor || 0}
+              title={"Total Counsellor"}
+              iconColor={"#FF947A"}
+              backgroundColor={"#FFF4DE"}
+              avtar={"/assets/icons/DashboardIcon2.png"}
+            />
+            <DashboardSummaryBox
+              count={dashboardSummary?.allOverSummary?.totalAccountant || 0}
+              title={"Total Accountant"}
+              iconColor={"#3CD856"}
+              backgroundColor={"#DCFCE7"}
+              avtar={"/assets/icons/DashboardIcon3.png"}
+            />
+            <DashboardSummaryBox
+              count={dashboardSummary?.allOverSummary?.totalUser || 0}
+              title={"Total Users"}
+              iconColor={"#BF83FF"}
+              backgroundColor={"#F3E8FF"}
+              avtar={"/assets/icons/DashboardIcon4.png"}
+            />
+            <DashboardSummaryBox
+              count={dashboardSummary?.allOverSummary?.totalInvestmentAmount || 0}
+              title={"Total Investment Amount"}
+              iconColor={"#4FA3F1"}
+              backgroundColor={"#E0F0FF"}
+              avtar={"/assets/icons/DashboardIcon4.png"}
+            />
+          </Grid>
+        </PaperContainer>
+      )}
 
       {user?.userType === 1 && (
         <Grid container spacing={4} paddingY={2}>

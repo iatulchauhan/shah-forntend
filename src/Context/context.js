@@ -39,7 +39,6 @@ const AppProvider = ({ children }) => {
     setLSItem("auth_token", auth);
     setAuth_token(auth);
   };
-  console.log('loaclstorageItem😲', deviceToken)
   
   const onUpdateUser = (userData) => {
     // Perform login logic here

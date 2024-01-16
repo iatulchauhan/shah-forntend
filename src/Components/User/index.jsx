@@ -261,7 +261,7 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setMult
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
                         width={'280px'}
-                        text={`${isEdit ? "Update" : "Create"} User`}
+                        text={`${isEdit ? "Update" : "Create"} Role`}
                         type="submit"
                         onClick={onSubmit}
                     />
