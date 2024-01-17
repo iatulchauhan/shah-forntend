@@ -6,6 +6,7 @@ export const roles = [
     { label: "Accountant", id: 4, },
     { label: "Marketing", id: 5, },
     { label: "Visitor", id: 6, },
+    { label: "Guest", id: 7, },
 ]
 
 
@@ -18,6 +19,7 @@ export const userType = [
     { label: "Accountant", id: 4, },
     { label: "Marketing", id: 5, },
     { label: "Visitor", id: 6, },
+    { label: "Guest", id: 7, },
 ]
 
 export const Roles = {
@@ -27,6 +29,7 @@ export const Roles = {
     Accountant: 4,
     Marketing: 5,
     Visitor: 6,
+    Guest: 7,
 };
 
 export const meetingStatus = {
