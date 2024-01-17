@@ -26,6 +26,7 @@ import DataNotFound from "../../Components/Common/DataNotFound";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { lightTheme } from "../../theme";
 import { permissionStatus } from "../../Utils/enum";
+import { Regex } from "../../Utils/regex";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -131,7 +132,6 @@ const Branches = () => {
       formIsValid = false;
       errors["country"] = "Please enter country.";
     }
-
     if (!selectedState) {
       formIsValid = false;
       errors["state"] = "Please select state.";
@@ -143,6 +143,9 @@ const Branches = () => {
     if (!data?.postalCode) {
       formIsValid = false;
       errors["postalCode"] = "Please enter Postal Code.";
+    } else if (!data?.postalCode?.match(Regex.pinCodeRegex)) {
+      formIsValid = false;
+      errors["invalidPostalCode"] = "please enter valid postal code";
     }
     setError(errors);
     return formIsValid;
@@ -309,15 +312,6 @@ const Branches = () => {
   }, [countries, selectedCountry]);
 
   React.useEffect(() => {
-    const defaultCountry = "India";
-    const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
-    if (defaultCountryObj) {
-      setSelectedCountry(defaultCountry);
-    }
-  }, [countries, setSelectedCountry]);
-
-
-  React.useEffect(() => {
     if (selectedCountry && selectedState) {
       _getCities();
     }
@@ -384,7 +378,7 @@ const Branches = () => {
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell className={classes.paddedRow}>
-                              {index + 1}
+                            {index + 1 + page * rowsPerPage}
                             </StyledTableCell>
                             <StyledTableCell component="th" scope="row">
                               {row.branchName}

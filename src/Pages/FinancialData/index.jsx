@@ -322,7 +322,7 @@ const FinancialData = () => {
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell style={{ paddingLeft: "15px" }}>
-                              {index + 1}
+                            {index + 1 + page * rowsPerPage}
                             </StyledTableCell>
                             <StyledTableCell>
                               {row?.userDetails?.name}{" "}

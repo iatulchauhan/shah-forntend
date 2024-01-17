@@ -472,7 +472,7 @@ const MeetingList = () => {
                 <TableBody>
                   {meetingDetails?.response?.map((row, index) => (
                     <StyledTableRow key={index}>
-                      <StyledTableCell>{index + 1}</StyledTableCell>
+                      <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
                       <StyledTableCell
                         className={classes.paddedRow}
                         component="th"

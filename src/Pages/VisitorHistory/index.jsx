@@ -154,7 +154,7 @@ const VisitorHistory = () => {
                                     {visitorHistoryDetails?.response
                                         ?.map((row, index) => (
                                             <StyledTableRow key={index} >
-                                                <StyledTableCell>{index + 1}</StyledTableCell>
+                                                <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.name}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.address}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.email}</StyledTableCell>

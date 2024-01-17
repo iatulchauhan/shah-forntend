@@ -4,6 +4,7 @@ import TextLabel from '../../Components/Common/Fields/TextLabel';
 import CommonTextField from '../../Components/Common/Fields/TextField';
 import CommonButton from '../../Components/Common/Button/CommonButton';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
+import { Regex } from '../../Utils/regex';
 
 const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error, handleChange, isEdit, onSubmit, setSelectedState, selectedState, countries, selectedCountry, setSelectedCountry }) => {
    
@@ -107,6 +108,7 @@ const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error,
                         onChange={(e) => handleChange(e, false)}
                     />
                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.postalCode ? error?.postalCode : ""} />
+                    <TextLabel fontSize={"12px"} color={"red"} title={data?.postalCode?.match(Regex.pinCodeRegex) ? "" : error.invalidPostalCode} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>

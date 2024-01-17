@@ -142,10 +142,16 @@ const User = () => {
     if (!data?.postalCode) {
       formIsValid = false;
       errors["postalCode"] = "Please enter Postal Code.";
+    } else if (!data?.postalCode?.match(Regex.pinCodeRegex)) {
+      formIsValid = false;
+      errors["invalidPostalCode"] = "please enter valid postal code";
     }
     if (!data?.mobileNo) {
       formIsValid = false;
       errors["mobileNo"] = "Please enter Contact No.";
+    }else if (!data?.mobileNo?.match(Regex.mobileNumberRegex)) {
+      formIsValid = false;
+      errors["invalidMobile"] = "Please enter valid Contact No.";
     }
     if (!data?.email) {
       formIsValid = false;
@@ -373,7 +379,6 @@ const User = () => {
     setError({});
     setIsEdit(false);
     setSelectedBranch("");
-    setSelectedCountry("");
     setSelectedState("");
     setSelectedCity("");
     setSelectedRole("");

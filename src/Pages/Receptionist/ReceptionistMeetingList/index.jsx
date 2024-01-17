@@ -344,7 +344,7 @@ const ReceptionistMeetingList = () => {
                                 <TableBody>
                                     {clients?.response?.map((row, index) => (
                                         <StyledTableRow key={index} >
-                                            <StyledTableCell style={{ paddingLeft: '13px' }}>{index + 1}</StyledTableCell>
+                                            <StyledTableCell style={{ paddingLeft: '13px' }}>{index + 1 + page * rowsPerPage}</StyledTableCell>
                                             <StyledTableCell className={classes.paddedRow}>{row?.title}</StyledTableCell>
                                             <StyledTableCell>{row?.meetingWithDetails?.name}</StyledTableCell>
                                             <StyledTableCell>{row?.meetingDate}</StyledTableCell>

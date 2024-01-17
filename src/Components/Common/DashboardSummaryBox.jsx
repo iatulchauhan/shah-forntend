@@ -5,7 +5,7 @@ import TextLabel from "./Fields/TextLabel";
 
 const DashboardSummaryBox = ({ backgroundColor, avtar, count, title, iconColor }) => {
   return (
-    <Grid item xs={12} sm={6} md={3} lg={2.4}>
+    <Grid item xs={12} sm={6} md={4} lg={3} xl={2.4}>
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -31,7 +31,7 @@ const DashboardSummaryBox = ({ backgroundColor, avtar, count, title, iconColor }
           />
         </Box>
         <TextLabel variant={"h5"} fontWeight={600} title={count} />
-        <TextLabel variant={"subtitle2"} fontWeight={500} title={title} />
+        <TextLabel variant={"subtitle2"} fontWeight={500} title={title} textOverflow={"ellipsis"} whiteSpace={"nowrap"} overflow={"hidden"}/>
       </Box>
     </Grid>
   );

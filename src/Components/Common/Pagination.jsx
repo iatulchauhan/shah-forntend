@@ -15,6 +15,34 @@ const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPag
     };
 
     const maxPage = Math.ceil(count / rowsPerPage) - 1;
+
+    const totalPages = Math.ceil(count / rowsPerPage);
+
+    const calculatePageRange = () => {
+        const visiblePages = 5;
+
+        if (totalPages <= visiblePages) {
+            return Array.from({ length: totalPages }, (_, index) => index + 1);
+        }
+        const startPage = Math.max(0, Math.min(page - Math.floor(visiblePages / 2), totalPages - visiblePages));
+        const endPage = Math.min(startPage + visiblePages, totalPages);
+
+        const pages = [];
+        if (startPage > 0) {
+            pages.push(1, '...');
+        }
+        for (let i = startPage + 1; i < endPage; i++) {
+            pages.push(i);
+        }
+        if (endPage < totalPages) {
+            pages.push('...', totalPages);
+        }
+
+        return pages;
+    };
+
+    const pageRange = calculatePageRange();
+
     return (
         <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap={"wrap"} sx={{ marginTop: "10px" }}>
             <Box display={"flex"} alignItems={"center"} p={1}>
@@ -27,7 +55,7 @@ const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPag
                         }}
                         style={{ borderColor: "#EEE", padding: 5, borderRadius: 4 }}
                     >
-                        {[5, 10, 25].map((pageSize) => (
+                        {[10, 25, 50, 100].map((pageSize) => (
                             <option key={pageSize} value={pageSize}>
                                 {pageSize}
                             </option>
@@ -44,7 +72,24 @@ const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPag
                 >
                     <FirstPageIcon />
                 </IconButton>
-                <Box sx={{ backgroundColor: theme.palette.primary.main, padding: { xs: '0px 8px', sm: '6px 11px' }, borderRadius: "5px", color: 'white', fontSize: '13px' }}>{page + 1}</Box>
+                {pageRange.map((pageNumber, index) => (
+                    <Box
+                        key={index}
+                        onClick={() => (pageNumber !== '...' ? handlePageChange(pageNumber - 1) : null)}
+                        sx={{
+                            backgroundColor:
+                                pageNumber === page + 1 ? theme.palette.primary.main : pageNumber === '...' ? 'transparent' : '#EEE',
+                            padding: { xs: '0px 8px', sm: '6px 11px' },
+                            borderRadius: '5px',
+                            color: pageNumber === page + 1 ? 'white' : pageNumber === '...' ? 'inherit' : 'black',
+                            fontSize: '13px',
+                            cursor: pageNumber !== '...' ? 'pointer' : 'default',
+                            margin: '0 5px',
+                        }}
+                    >
+                        {pageNumber}
+                    </Box>
+                ))}
                 <IconButton
                     onClick={() => handlePageChange(page + 1)}
                     disabled={page >= maxPage}

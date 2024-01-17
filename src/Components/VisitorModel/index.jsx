@@ -85,6 +85,7 @@ const VisitorModel = ({ data, branches, setSelectedBranch, selectedBranch, setSe
                     onChange={(e) => handleChange(e, false)}
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.mobileNo ? error?.mobileNo : ""} />
+                <TextLabel fontSize={"12px"} color={"red"} title={data?.mobileNo?.match(Regex.mobileNumberRegex) ? "" : error.invalidMobile} />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4}>
                 <CommonTextField
@@ -109,6 +110,7 @@ const VisitorModel = ({ data, branches, setSelectedBranch, selectedBranch, setSe
                     onChange={(e) => handleChange(e, false)}
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.postalCode ? error?.postalCode : ""} />
+                <TextLabel fontSize={"12px"} color={"red"} title={data?.postalCode?.match(Regex.pinCodeRegex) ? "" : error.invalidPostalCode} />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4}>
                 <AutoCompleteSearch

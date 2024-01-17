@@ -3,7 +3,6 @@ import { Box, Button, Card, Divider, Fab, Grid, Paper, Table, TableBody, TableCo
 import TextLabel from '../Common/Fields/TextLabel';
 import CommonTextField from '../Common/Fields/TextField';
 import CommonButton from '../Common/Button/CommonButton';
-import { Regex } from '../../Utils/regex';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
 import DataNotFound from '../Common/DataNotFound';
 import { styled } from "@mui/material/styles";
@@ -12,6 +11,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from 'dayjs';
+import { Regex } from '../../Utils/regex';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -90,6 +90,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                     onChange={(e) => handleChange(e, false)}
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.mobileNo ? error?.mobileNo : ""} />
+                <TextLabel fontSize={"12px"} color={"red"} title={data?.mobileNo?.match(Regex.mobileNumberRegex) ? "" : error.invalidMobile} />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4}>
                 <CommonTextField
@@ -114,6 +115,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                     onChange={(e) => handleChange(e, false)}
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.postalCode ? error?.postalCode : ""} />
+                <TextLabel fontSize={"12px"} color={"red"} title={data?.postalCode?.match(Regex.pinCodeRegex) ? "" : error.invalidPostalCode} />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4}>
                 <AutoCompleteSearch

@@ -16,6 +16,9 @@ export default function TextLabel({
     textAlign,
     className,
     textTransform,
+    textOverflow,
+    whiteSpace,
+    overflow,
 }) {
     const variantToFontSize = {
         h1: "40px",
@@ -70,6 +73,9 @@ export default function TextLabel({
                     marginBottom: marginBottom,
                     textAlign: textAlign || "left",
                     textTransform: textTransform,
+                    textOverflow: textOverflow,
+                    whiteSpace: whiteSpace,
+                    overflow: overflow,
                     ...style,
                 }}
                 color={color}

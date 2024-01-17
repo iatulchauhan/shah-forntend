@@ -288,3 +288,9 @@ div.loading {
     .alert-dark .alert-link {
         color: #101214
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
