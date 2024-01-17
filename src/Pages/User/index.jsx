@@ -496,15 +496,6 @@ const User = () => {
   }, [countries, selectedCountry]);
 
   React.useEffect(() => {
-    const defaultCountry = "India";
-    const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
-    if (defaultCountryObj) {
-      setSelectedCountry(defaultCountry);
-    }
-  }, [countries, setSelectedCountry]);
-
-
-  React.useEffect(() => {
     if (selectedCountry && selectedState) {
       _getCities();
     }
