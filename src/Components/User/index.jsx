@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Grid } from "@mui/material";
 import TextLabel from '../Common/Fields/TextLabel';
 import CommonTextField from '../Common/Fields/TextField';
@@ -11,6 +11,14 @@ import AutoCompleteMultiSelect from '../Common/AutoCompleteMultiSelect';
 
 const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setMultiSelectedBranch, multiSelectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
     onSubmit, setSelectedCountry, selectedCountry, countries }) => {
+
+    useEffect(() => {
+        const defaultCountry = "India";
+        const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
+        if (defaultCountryObj) {
+            setSelectedCountry(defaultCountry);
+        }
+    }, [countries, setSelectedCountry]);
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
             <Grid item xs={12} sm={12} md={12} lg={4}>

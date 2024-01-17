@@ -312,13 +312,15 @@ const User = () => {
       });
   };
 
-  const _getCountries = async () => {
-    await axios
+  const _getCountries = () => {
+    toggleLoader();
+    axios
       .get("/countries")
       .then((res) => {
         if (res?.data?.data) {
           setCountries(res?.data?.data);
         }
+        toggleLoader();
       })
       .catch((err) => {
         toggleLoader();
@@ -326,15 +328,14 @@ const User = () => {
       });
   };
 
-  const _getStates = async () => {
+  const _getStates = () => {
     toggleLoader();
-    await axios
+    axios
       .post("/states", {
         country_id: _getDefaultId(countries?.response, selectedCountry),
       })
       .then((res) => {
         if (res?.data?.data) {
-          console.log(res?.data?.data, "res?.data?.data");
           setStates(res?.data?.data);
         }
         toggleLoader();
@@ -344,10 +345,10 @@ const User = () => {
         OnUpdateError(err.data.message);
       });
   };
-  const _getCities = async () => {
+
+  const _getCities = () => {
     toggleLoader();
-    console.log(states?.response, selectedState, "selectedState");
-    await axios
+    axios
       .post("/cities", {
         state_id: _getDefaultId(states?.response, selectedState),
         country_id: _getDefaultId(countries?.response, selectedCountry),
@@ -481,23 +482,35 @@ const User = () => {
 
   useEffect(() => {
     _getBranches();
+  }, []);
+
+  
+  React.useEffect(() => {
     _getCountries();
   }, []);
 
   React.useEffect(() => {
-    if (selectedCountry && countries?.response) {
+    if (countries?.response && selectedCountry) {
       _getStates();
     }
-  }, [selectedCountry, countries?.response]);
+  }, [countries, selectedCountry]);
 
   React.useEffect(() => {
-    if (selectedCountry && selectedState && states?.response) {
+    const defaultCountry = "India";
+    const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
+    if (defaultCountryObj) {
+      setSelectedCountry(defaultCountry);
+    }
+  }, [countries, setSelectedCountry]);
+
+
+  React.useEffect(() => {
+    if (selectedCountry && selectedState) {
       _getCities();
     }
-  }, [selectedState, selectedCountry, states?.response]);
+  }, [selectedState]);
 
-
-  React.useEffect(() => {
+  useEffect(() => {
     const menu = menuList?.find((e) => e?.path === pathname);
     if (menu) {
       const menuPermissions = menu.permissions;
@@ -714,7 +727,7 @@ const User = () => {
                                 <StyledTableCell
                                   style={{ paddingLeft: "13px" }}
                                 >
-                                  {index + 1}
+                                  {index + 1 + page * rowsPerPage}
                                 </StyledTableCell>
                                 <StyledTableCell
                                   className={classes.paddedRow}

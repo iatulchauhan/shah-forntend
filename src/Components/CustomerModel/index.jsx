@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Button, Card, Divider, Fab, Grid, Paper, Table, TableBody, TableContainer, TableHead, TableRow, Typography, useTheme, } from "@mui/material";
 import TextLabel from '../Common/Fields/TextLabel';
 import CommonTextField from '../Common/Fields/TextField';
@@ -44,7 +44,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch,
     setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
     onSubmit, setSelectedCountry, selectedCountry, countries, handleChangetable, addRow, visitorHistory, setUserPurchasePlanDelete, setUserPurchasePlanAdd }) => {
-    console.log(data, "dataaaa")
+    useEffect(() => {
+        const defaultCountry = "India";
+        const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
+        if (defaultCountryObj) {
+            setSelectedCountry(defaultCountry);
+        }
+    }, [countries, setSelectedCountry]);
     const theme = useTheme()
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
@@ -339,7 +345,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
             <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                     <CommonButton
-                    width={"280px"}
+                        width={"280px"}
                         text={`${isEdit ? "Update" : "Create"} Client`}
                         type="submit"
                         onClick={onSubmit}

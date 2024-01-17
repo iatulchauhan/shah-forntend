@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Button, Grid, Paper, Table, TableBody, TableContainer, TableHead, TableRow, } from "@mui/material";
 import TextLabel from '../Common/Fields/TextLabel';
 import CommonTextField from '../Common/Fields/TextField';
@@ -38,6 +38,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 const VisitorModel = ({ data, branches, setSelectedBranch, selectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit, onSubmit, setSelectedCountry, selectedCountry, countries }) => {
+
+    React.useEffect(() => {
+        const defaultCountry = "India";
+        const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
+        if (defaultCountryObj) {
+          setSelectedCountry(defaultCountry);
+        }
+      }, [countries, setSelectedCountry]);
 
     return (
         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
