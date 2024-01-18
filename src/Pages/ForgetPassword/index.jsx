@@ -9,6 +9,7 @@ import { useAppContext } from '../../Context/context'
 import axios from "../../APiSetUp/axios";
 import { useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
+import Assets from '../../Components/Common/ImageContainer'
 
 const ForgetPassword = () => {
     const navigate = useNavigate();
@@ -69,7 +70,7 @@ const ForgetPassword = () => {
     return (
         <>
             <AuthLayout
-                logo={"Logo"}
+                logo={<Assets height={"70px"} src={"/assets/icons/logo.png"} absolutePath={true} />}
                 login={"Forget Password"}
                 account={
                     <>

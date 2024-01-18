@@ -390,13 +390,13 @@ const Clients = () => {
     _getCountries();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedCountry) {
       _getStates();
     }
   }, [selectedCountry]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedCountry && selectedState) {
       _getCities();
     }
@@ -411,7 +411,7 @@ const Clients = () => {
               title="Client List"
               //  buttonText={'Add Client'}
               onClick={() => setModel(true)}
-              onSearch={(e) => setSearch(e?.target?.value)}
+              handleSearch={(value) => { setSearch(value); }}
             />
           </Grid>
           <Grid item xs={12}>

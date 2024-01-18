@@ -281,8 +281,6 @@ export default function SideBar(props) {
         >
           <DrawerHeader
             sx={{
-              position: "fixed",
-              top: 0,
               background: "#fff",
               zIndex: 999999,
               // width: "275px",
@@ -295,21 +293,23 @@ export default function SideBar(props) {
               onClick={handleDrawerOpen}
               sx={{
                 width: "100%",
-                justifyContent: open ? "space-between" : "center",
+                // justifyContent: open ? "space-between" : "center",
               }}
             >
               {open ? (
                 <>
-                  <button onClick={handleDrawerOpen}>Logo</button>
+                  <Assets height={"50px"} src={"/assets/icons/logo.png"} absolutePath={true} />
+                  {/* <button onClick={handleDrawerOpen}>Logo</button> */}
                 </>
               ) : (
-                <button onClick={handleDrawerOpen}>Logo</button>
+                <Assets height={"50px"} src={"/assets/icons/logo.png"} absolutePath={true} />
+                // <button onClick={handleDrawerOpen}>Logo</button>
 
               )}
             </IconButton>
           </DrawerHeader>
           <List sx={{
-            marginTop: { xs: 8, md: open ? 9.5 : 8 }, padding: {
+            padding: {
               xs: 1,
               sm: 1,
               md: theme => theme.spacing(3),

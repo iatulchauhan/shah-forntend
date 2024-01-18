@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
 import {
@@ -71,33 +71,14 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const rows = [
-    {
-        key: '1',
-        name: "John Doe",
-        contactNo: '+91 9865998545',
-        emailId: 'johndoe@gmail.com',
-        activePlan: 'Lorem ipsum',
-        expiringPlan: '10 Days',
-    },
-    {
-        key: '2',
-        name: "John Doe",
-        contactNo: '+91 9865998545',
-        emailId: 'johndoe@gmail.com',
-        activePlan: 'Lorem ipsum',
-        expiringPlan: '10 Days',
-    },
 
-
-];
 const VisitorHistory = () => {
     const { classes } = useStyles();
     const { OnUpdateError, toggleLoader } = useAppContext();
     //States
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [visitorHistoryDetails, setVisitorHistoryDetails] = useState([]);
-    const [page, setPage] = React.useState(0);
+    const [page, setPage] = useState(0);
     const [search, setSearch] = useState("");
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -126,7 +107,7 @@ const VisitorHistory = () => {
         }
         );
     }
-    React.useEffect(() => {
+    useEffect(() => {
         _getVisitorHistory()
     }, [page, rowsPerPage, search]);
     return (
@@ -134,7 +115,7 @@ const VisitorHistory = () => {
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Visitor History"  onSearch={(e) => setSearch(e?.target?.value)}/>
+                        <TableHeading title="Visitor History" handleSearch={(value) => { setSearch(value); }}/>
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>

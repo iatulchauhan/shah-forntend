@@ -38,6 +38,9 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgetPassword />} />
+            <Route path="/otp-verification" element={<OTPverification />} />
+            <Route path="/reset-password" element={<Resetpassword />} />
             <Route element={<ProtectedRoutes />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/user" element={<User />} />
@@ -57,9 +60,6 @@ function App() {
               <Route path="/investment" element={<Investment />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/client" element={<Clients />} />
-              <Route path="/forgot-password" element={<ForgetPassword />} />
-              <Route path="/otp-verification" element={<OTPverification />} />
-              <Route path="/reset-password" element={<Resetpassword />} />
               <Route path="/visitor-history" element={<VisitorHistory />} />
               {/* <Route path="/receptionist-visitor-history" element={<ReceptionistVisitorHistory />} />
               <Route path="/receptionist-visitor" element={<ReceptionistVisitor />} />

@@ -39,7 +39,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 const VisitorModel = ({ data, branches, setSelectedBranch, selectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit, onSubmit, setSelectedCountry, selectedCountry, countries }) => {
 
-    React.useEffect(() => {
+    useEffect(() => {
         const defaultCountry = "India";
         const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
         if (defaultCountryObj) {

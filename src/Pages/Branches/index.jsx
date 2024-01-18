@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
 import {
@@ -301,27 +301,27 @@ const Branches = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     _getCountries();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (countries?.response && selectedCountry) {
       _getStates();
     }
   }, [countries, selectedCountry]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedCountry && selectedState) {
       _getCities();
     }
   }, [selectedState]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     _getBranches();
   }, [page, rowsPerPage, search]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const menu = menuList?.find((e) => e?.path === pathname);
     if (menu) {
       const menuPermissions = menu.permissions;
@@ -348,7 +348,7 @@ const Branches = () => {
               title="Branch List"
               buttonText={permissions?.create ? `Add Branch` : ""}
               onClick={() => setModel(true)}
-              onSearch={(e) => setSearch(e?.target?.value)}
+              handleSearch={(value) => { setSearch(value); }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -378,7 +378,7 @@ const Branches = () => {
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell className={classes.paddedRow}>
-                            {index + 1 + page * rowsPerPage}
+                              {index + 1 + page * rowsPerPage}
                             </StyledTableCell>
                             <StyledTableCell component="th" scope="row">
                               {row.branchName}

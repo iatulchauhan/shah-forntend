@@ -7,7 +7,7 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -74,7 +74,7 @@ const CommonTextField = ({
 }) => {
   const { classes } = useStyles();
   const theme = useTheme()
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };

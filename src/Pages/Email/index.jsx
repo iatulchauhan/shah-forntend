@@ -325,7 +325,7 @@ const Email = () => {
                 className={classes.emailsList}
               >
                 <Box mb={3}>
-                  <CommonSearch onSearch={(e) => setSearch(e?.target?.value)} />
+                  <CommonSearch handleSearch={(value) => { setSearch(value); }} />
                 </Box>
                 <Box
                   display={"flex"}
@@ -475,7 +475,7 @@ const Email = () => {
               className={classes.emailsList}
             >
               <Box mb={3}>
-              <CommonSearch onSearch={(e) => setSearch(e?.target?.value)} />
+              <CommonSearch handleSearch={(value) => { setSearch(value); }} />
               </Box>
               <Box
                 display={"flex"}

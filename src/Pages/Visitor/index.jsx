@@ -328,7 +328,7 @@ const Visitor = () => {
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Visitor List"  onSearch={(e) => setSearch(e?.target?.value)} />
+                        <TableHeading title="Visitor List" handleSearch={(value) => { setSearch(value); }}/>
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>

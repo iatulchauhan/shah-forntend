@@ -76,10 +76,10 @@ const ReceptionistVisitorHistory = () => {
     const { classes } = useStyles();
     const { OnUpdateError, toggleLoader } = useAppContext();
     //States
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [visitorHistoryDetails, setVisitorHistoryDetails] = useState([]);
     console.log(visitorHistoryDetails, 'visitorHistoryDetails')
-    const [page, setPage] = React.useState(0);
+    const [page, setPage] = useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -102,7 +102,7 @@ const ReceptionistVisitorHistory = () => {
         }
         );
     }
-    React.useEffect(() => {
+    useEffect(() => {
         _getVisitorHistory()
     }, [page, rowsPerPage])
     return (

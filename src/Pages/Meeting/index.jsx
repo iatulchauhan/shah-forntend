@@ -123,9 +123,9 @@ const MeetingList = () => {
   const [data, setData] = useState({ meetingDate: null });
   const [error, setError] = useState({});
   const [isEdit, setIsEdit] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [slotTimes, setSlotTimes] = useState([]);
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = useState(0);
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [selectedClient, setSelectedClient] = useState([]);
   const [selectedInviteTo, setSelectedInviteTo] = useState([]);
@@ -133,7 +133,7 @@ const MeetingList = () => {
   const [counsellorDetails, setCounsellorDetails] = useState([]);
   const [visitorDetails, setVisitorDetails] = useState([]);
   const [meetingId, setMeetingId] = useState("");
-  const [meetingDate, setMeetingDate] = React.useState(dayjs());
+  const [meetingDate, setMeetingDate] = useState(dayjs());
   const [updatedMeetingDetails, setUpdatedMeetingDetails] = useState(null);
   const [updateMeetingStatus, setUpdateMeetingStatus] = useState([]);
   const [permissions, setPermissions] = useState({});
@@ -400,7 +400,7 @@ const MeetingList = () => {
     }
   }, [updatedMeetingDetails]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     _getMeetingList();
   }, [page, rowsPerPage, search]);
 
@@ -411,7 +411,7 @@ const MeetingList = () => {
     }
   }, [model, meetingDate, visitorDetails, selectedClient, selectedInviteTo, counsellorDetails]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const menu = menuList?.find((e) => e?.path === pathname);
     if (menu) {
       const menuPermissions = menu.permissions;
@@ -432,7 +432,7 @@ const MeetingList = () => {
               title="Meeting List"
               buttonText={permissions?.create ? "Schedule Meeting" : ""}
               onClick={() => setModel(true)}
-              onSearch={(e) => setSearch(e?.target?.value)}
+              handleSearch={(value) => { setSearch(value); }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -536,7 +536,7 @@ const MeetingList = () => {
         </Grid>
         <Box p={1}>
           <CommonPagination
-            count={100}
+            count={meetingDetails?.count}
             rowsPerPage={rowsPerPage}
             page={page}
             onRowsPerPageChange={handleChangeRowsPerPage}

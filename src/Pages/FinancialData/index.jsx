@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
 import {
@@ -246,23 +246,23 @@ const FinancialData = () => {
     setSelectedClient("");
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     _getFinancialData();
 }, [page, rowsPerPage, search]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (financialId) {
       _getFinancialById();
     }
   }, [financialId]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (model) {
       _getUsers();
     }
   }, [model]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const menu = menuList?.find((e) => e?.path === pathname);
     if (menu) {
       const menuPermissions = menu.permissions;
@@ -290,7 +290,7 @@ const FinancialData = () => {
               title="Financial Data History"
               buttonText={permissions?.create ? `Add Financial Data` : ""}
               onClick={() => setModel(true)}
-              onSearch={(e) => setSearch(e?.target?.value)}
+              handleSearch={(value) => { setSearch(value); }}
             />
           </Grid>
           <Grid item xs={12}>

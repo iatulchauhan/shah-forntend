@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { InputBase, alpha, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { lightTheme } from '../../theme';
@@ -46,7 +46,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-const CommonSearch = ({ placeholder, width, onSearch}) => {
+const CommonSearch = ({ placeholder, width, onSearch, ...props }) => {
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [timer, setTimer] = useState(0);
+    const WAIT_INTERVAL = 500;
     return (
         <Search>
             <SearchIconWrapper>
@@ -56,7 +60,17 @@ const CommonSearch = ({ placeholder, width, onSearch}) => {
                 width={width}
                 placeholder={placeholder ? placeholder : "Search here..."}
                 inputProps={{ 'aria-label': 'search' }}
-                onChange={onSearch ? (e) => onSearch(e) : {}}
+                // onChange={onSearch ? (e) => onSearch(e) : {}}
+                onChange={(ev) => {
+                    setSearchTerm(ev.target.value);
+                    let val = (ev.target.value || "").trim();
+                    clearTimeout(timer);
+                    setTimer(
+                        setTimeout(() => {
+                            props.handleSearch && props.handleSearch(val);
+                        }, WAIT_INTERVAL)
+                    );
+                }}
             />
         </Search>
     )

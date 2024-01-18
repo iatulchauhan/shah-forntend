@@ -95,9 +95,9 @@ const rows = [
 const NewFile = () => {
     const { classes } = useStyles();
     //States
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const [page, setPage] = React.useState(0);
+    const [page, setPage] = useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };

@@ -12,6 +12,7 @@ import { makeStyles } from "tss-react/mui";
 import OTPInput from 'react-otp-input'
 import { useLocation } from 'react-router-dom';
 import TextLabel from '../../Components/Common/Fields/TextLabel'
+import Assets from '../../Components/Common/ImageContainer'
 
 
 const useStyles = makeStyles()((theme) => {
@@ -84,7 +85,7 @@ const OTPverification = () => {
     return (
         <>
             <AuthLayout
-                logo={"Logo"}
+                logo={<Assets height={"70px"} src={"/assets/icons/logo.png"} absolutePath={true} />}
                 login={"Enter OTP"}
                 account={
                     <>

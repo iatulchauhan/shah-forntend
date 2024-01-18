@@ -125,9 +125,9 @@ const AssignFile = () => {
     const [data, setData] = useState({})
     const [error, setError] = useState({})
     const [isSubmit, setIsSubmit] = useState(false)
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const [page, setPage] = React.useState(0);
+    const [page, setPage] = useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };

@@ -9,6 +9,7 @@ import { useAppContext } from '../../Context/context'
 import axios from "../../APiSetUp/axios";
 import { useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
+import Assets from '../../Components/Common/ImageContainer'
 
 
 const Register = () => {
@@ -91,7 +92,7 @@ const Register = () => {
     }
 
 return (
-    <AuthLayout logo={"Logo"} login={"Register"} account={'Please register to your account'} newAccount={'Already have an account?'} register={'Login here'}>
+    <AuthLayout logo={<Assets height={"70px"} src={"/assets/icons/logo.png"} absolutePath={true} />} login={"Register"} account={'Please register to your account'} newAccount={'Already have an account?'} register={'Login here'}>
         <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center' }}>
             <Grid item xs={10} sm={10} md={10} lg={10} style={{ marginTop: '20px' }}>
                 <CommonTextField

@@ -11,6 +11,7 @@ import axios from "../../APiSetUp/axios";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import { requestForToken } from "../../firebase";
+import Assets from "../../Components/Common/ImageContainer";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -114,7 +115,7 @@ const Login = () => {
   return (
     <>
       <AuthLayout
-        logo={"Logo"}
+        logo={<Assets height={"70px"} src={"/assets/icons/logo.png"} absolutePath={true} />}
         login={"Login"}
         account={"Please login to your account"}
         newAccount={"Already have an account?"}

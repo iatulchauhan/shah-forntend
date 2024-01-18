@@ -36,6 +36,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     color: theme.palette.primary.main,
     fontFamily: "Poppins",
     whiteSpace: "nowrap",
+    padding: "16px 8px"
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
@@ -149,7 +150,7 @@ const User = () => {
     if (!data?.mobileNo) {
       formIsValid = false;
       errors["mobileNo"] = "Please enter Contact No.";
-    }else if (!data?.mobileNo?.match(Regex.mobileNumberRegex)) {
+    } else if (!data?.mobileNo?.match(Regex.mobileNumberRegex)) {
       formIsValid = false;
       errors["invalidMobile"] = "Please enter valid Contact No.";
     }
@@ -489,18 +490,18 @@ const User = () => {
     _getBranches();
   }, []);
 
-  
-  React.useEffect(() => {
+
+  useEffect(() => {
     _getCountries();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (countries?.response && selectedCountry) {
       _getStates();
     }
   }, [countries, selectedCountry]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedCountry && selectedState) {
       _getCities();
     }
@@ -688,7 +689,7 @@ const User = () => {
                   onClick={() => {
                     setModel(true);
                   }}
-                  onSearch={(e) => setSearch(e?.target?.value)}
+                  handleSearch={(value) => { setSearch(value); }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -705,10 +706,8 @@ const User = () => {
                           <StyledTableCell>Contact No.</StyledTableCell>
                           <StyledTableCell>Email Id</StyledTableCell>
                           <StyledTableCell>Branch</StyledTableCell>
-                          <StyledTableCell align="center">Role</StyledTableCell>
-                          <StyledTableCell align="right">
-                            Action
-                          </StyledTableCell>
+                          <StyledTableCell>Role</StyledTableCell>
+                          <StyledTableCell>Action</StyledTableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -720,39 +719,15 @@ const User = () => {
                             };
                             return (
                               <StyledTableRow key={index}>
-                                <StyledTableCell
-                                  style={{ paddingLeft: "13px" }}
-                                >
-                                  {index + 1 + page * rowsPerPage}
-                                </StyledTableCell>
-                                <StyledTableCell
-                                  className={classes.paddedRow}
-                                  component="th"
-                                  scope="row"
-                                >
-                                  {row.name}
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                  {row?.address}
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                  {row?.mobileNo}
-                                </StyledTableCell>
+                                <StyledTableCell style={{ paddingLeft: "13px" }}>{index + 1 + page * rowsPerPage}</StyledTableCell>
+                                <StyledTableCell className={classes.paddedRow} component="th" scope="row">{row.name}</StyledTableCell>
+                                <StyledTableCell>{row?.address}</StyledTableCell>
+                                <StyledTableCell>{row?.mobileNo}</StyledTableCell>
                                 <StyledTableCell>{row?.email}</StyledTableCell>
+                                <StyledTableCell>{row?.branchDetails?.map((e) => e?.branchName)?.join(",")}</StyledTableCell>
+                                <StyledTableCell>{getRoleName(row.userType)}</StyledTableCell>
                                 <StyledTableCell>
-                                  {row?.branchDetails
-                                    ?.map((e) => e?.branchName)
-                                    ?.join(",")}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  {getRoleName(row.userType)}
-                                </StyledTableCell>
-                                <StyledTableCell align="right">
-                                  <Box
-                                    display={"flex"}
-                                    justifyContent={"end"}
-                                    gap={1}
-                                  >
+                                  <Box display={"flex"} justifyContent={"end"} gap={1}>
                                     {permissions?.update && <Assets
                                       className={classes.writeBox}
                                       src={"/assets/icons/write.svg"}

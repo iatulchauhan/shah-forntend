@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
 import {
@@ -93,8 +93,8 @@ const rows = [
 const Investment = () => {
     const { classes } = useStyles();
     //States
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [page, setPage] = useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };

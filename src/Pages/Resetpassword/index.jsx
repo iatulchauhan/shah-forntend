@@ -8,6 +8,7 @@ import { useAppContext } from '../../Context/context'
 import axios from "../../APiSetUp/axios";
 import { useLocation, useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
+import Assets from '../../Components/Common/ImageContainer'
 
 
 const Resetpassword = () => {
@@ -76,7 +77,7 @@ const Resetpassword = () => {
     }
 
     return (
-        <AuthLayout logo={"Logo"} login={"Reset Password"} account={'Submit Below details for reset password'}>
+        <AuthLayout logo={<Assets height={"70px"} src={"/assets/icons/logo.png"} absolutePath={true} />} login={"Reset Password"} account={'Submit Below details for reset password'}>
             <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                 <Grid item xs={10} sm={10} md={10} lg={10}>
                     <CommonTextField

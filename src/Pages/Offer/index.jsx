@@ -73,7 +73,7 @@ const OfferPage = () => {
   const [error, setError] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [deleteId, setDeleteId] = useState("");
-  const [offerDetails, setOfferDetails] = React.useState([]);
+  const [offerDetails, setOfferDetails] = useState([]);
   const [description, setDescription] = useState("<p><br></p>");
 
   //Validation
@@ -196,7 +196,7 @@ const OfferPage = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     _getOffer();
   }, []);
 

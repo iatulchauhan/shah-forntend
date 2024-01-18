@@ -123,9 +123,9 @@ const ReceptionistMeetingList = () => {
     const [data, setData] = useState({})
     const [error, setError] = useState({})
     const [isEdit, setIsEdit] = useState(false)
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [slotTimes, setSlotTimes] = useState([]);
-    const [page, setPage] = React.useState(0);
+    const [page, setPage] = useState(0);
     const [selectedSlots, setSelectedSlots] = useState([]);
     const [clients, setClients] = useState([]);
     const [meetingVisitorList, setMeetingVisitorList] = useState([]);
@@ -315,7 +315,7 @@ const ReceptionistMeetingList = () => {
         }
     }, [model])
 
-    React.useEffect(() => {
+    useEffect(() => {
         // _getMeeting()
     }, [page, rowsPerPage])
 

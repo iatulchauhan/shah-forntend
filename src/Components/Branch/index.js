@@ -8,7 +8,7 @@ import { Regex } from '../../Utils/regex';
 
 const AddBranch = ({ data, selectedCity, setSelectedCity, states, cities, error, handleChange, isEdit, onSubmit, setSelectedState, selectedState, countries, selectedCountry, setSelectedCountry }) => {
    
-    React.useEffect(() => {
+    useEffect(() => {
         const defaultCountry = "India";
         const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
         if (defaultCountryObj) {
