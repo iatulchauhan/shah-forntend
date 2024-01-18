@@ -154,19 +154,15 @@ const MeetingList = () => {
     const formattedHours = hours % 12 || 12;
     return `${formattedHours}:${minutes < 10 ? "0" : ""}${minutes} ${period}`;
   };
-
+  console.log(updatedMeetingDetails, "updatedMeetingDetails")
   const _getSlotTimes = () => {
-    console.log('counsellorDetails,visitorDetails', counsellorDetails, visitorDetails)
-    console.log('counsellorDetails,visitorDetails222222222222222222', visitorDetails?.find((e) => e?.name == selectedClient)?._id, counsellorDetails?.find((e) => e?.name == selectedInviteTo)?._id)
     toggleLoader();
-
     let body = {
       client: (updatedMeetingDetails) ? updatedMeetingDetails?.client : visitorDetails?.find((e) => e?.name == selectedClient)?._id,
       meetingWith: (updatedMeetingDetails) ? updatedMeetingDetails?.meetingWith : counsellorDetails?.find((e) => e?.name == selectedInviteTo)?._id,
       meetingDate: (updatedMeetingDetails) ? dayjs(updatedMeetingDetails?.meetingDate).format("YYYY-MM-DD") : dayjs(meetingDate).format("YYYY-MM-DD"),
     };
 
-    console.log('body', body)
     axios.post("/slotTimes", body)
       .then((res) => {
         if (res?.data?.data) {
@@ -195,7 +191,7 @@ const MeetingList = () => {
         OnUpdateError(err.data.message);
       });
   };
-
+  console.log(slotTimes, "slotTimes")
   const handleSlotClick = (clickedSlot) => {
     // Initialize selectedSlots as an empty array if it's undefined
     const currentSelectedSlots = selectedSlots || [];
@@ -218,7 +214,7 @@ const MeetingList = () => {
       if (updatedSlots.includes(slot.startTime)) {
         return { ...slot, isBooked: true };
       } else {
-        return { ...slot, isBooked: false };
+        return { ...slot, isBooked: slot?.isBooked };
       }
     });
 
@@ -329,16 +325,11 @@ const MeetingList = () => {
 
       let body = {
         title: data?.title,
-        client: visitorDetails?.filter((e) => e?.name == selectedClient)[0]
-          ?._id,
-        meetingWith: counsellorDetails?.filter(
-          (e) => e?.name == selectedInviteTo
-        )[0]?._id,
+        client: visitorDetails?.filter((e) => e?.name == selectedClient)[0]?._id,
+        meetingWith: counsellorDetails?.filter((e) => e?.name == selectedInviteTo)[0]?._id,
         meetingDate: dayjs(meetingDate).format("YYYY-MM-DD"),
         slot_time: slotTimes,
-        status: meetinStatusConfig?.find(
-          (e) => e?.statusName === updateMeetingStatus
-        )?.statusId,
+        status: meetinStatusConfig?.find((e) => e?.statusName === updateMeetingStatus)?.statusId,
       };
       if (data?._id) {
         body.id = data?._id;
@@ -365,6 +356,7 @@ const MeetingList = () => {
       .get(`meeting/by_id/${meetingId}`)
       .then((res) => {
         if (res?.data?.data) {
+          console.log(res?.data?.data, "res?.data?.data")
           setUpdatedMeetingDetails(res?.data?.data);
         }
         toggleLoader();
@@ -375,12 +367,7 @@ const MeetingList = () => {
       });
   };
 
-  console.log("visitorDetails", visitorDetails, counsellorDetails, selectedClient, selectedInviteTo, meetingDate)
-  useEffect(() => {
-    if (visitorDetails?.length > 0 && counsellorDetails?.length > 0 && selectedClient?.length > 0 && selectedInviteTo?.length > 0 && meetingDate) {
-      _getSlotTimes();
-    }
-  }, [model, meetingDate, visitorDetails, selectedClient, selectedInviteTo, counsellorDetails,]);
+
 
   useEffect(() => {
     if (model) {
@@ -409,11 +396,7 @@ const MeetingList = () => {
         _id: updatedMeetingDetails?._id,
       });
       setMeetingDate(updatedMeetingDetails?.meetingDate || dayjs());
-      setUpdateMeetingStatus(
-        meetinStatusConfig?.find(
-          (e) => e?.statusId === updatedMeetingDetails?.status
-        )?.statusName
-      );
+      setUpdateMeetingStatus(meetinStatusConfig?.find((e) => e?.statusId === updatedMeetingDetails?.status)?.statusName);
     }
   }, [updatedMeetingDetails]);
 
@@ -421,21 +404,22 @@ const MeetingList = () => {
     _getMeetingList();
   }, [page, rowsPerPage, search]);
 
+  useEffect(() => {
+    if (visitorDetails?.length > 0 && counsellorDetails?.length > 0 && selectedClient?.length > 0 && selectedInviteTo?.length > 0 && meetingDate) {
+      console.log(visitorDetails, "visitorDetails", counsellorDetails, "counsellorDetails", selectedClient, "selectedClient", selectedInviteTo, "selectedInviteTo", meetingDate)
+      _getSlotTimes();
+    }
+  }, [model, meetingDate, visitorDetails, selectedClient, selectedInviteTo, counsellorDetails]);
+
   React.useEffect(() => {
     const menu = menuList?.find((e) => e?.path === pathname);
     if (menu) {
       const menuPermissions = menu.permissions;
       setPermissions({
         view: menuPermissions.includes(permissionStatus.view) ? true : false,
-        create: menuPermissions.includes(permissionStatus.create)
-          ? true
-          : false,
-        update: menuPermissions.includes(permissionStatus.update)
-          ? true
-          : false,
-        delete: menuPermissions.includes(permissionStatus.delete)
-          ? true
-          : false,
+        create: menuPermissions.includes(permissionStatus.create) ? true : false,
+        update: menuPermissions.includes(permissionStatus.update) ? true : false,
+        delete: menuPermissions.includes(permissionStatus.delete) ? true : false,
       });
     }
   }, [menuList, location]);

@@ -100,16 +100,16 @@ const AddMeeting = ({
             backgroundColor="white"
             text="Client"
             handleChange={(e, newValue) => setSelectedClient(newValue)}
-            options={visitorDetails?.map((e) => `${e?.name}  (${userType?.filter((type) => type?.id === e?.userType)[0]?.label})`) || []}
-
+            // options={visitorDetails?.map((e) => `${e?.name}  (${userType?.filter((type) => type?.id === e?.userType)[0]?.label})`) || []}
+            options={visitorDetails?.map((e) => e?.name) || []}
             name="selectedClient"
             defaultValue={selectedClient || ""}
             freeSolo
             blurOnSelect
             placeholder={"Select Client"}
-            disabled={isEdit ? (updatedMeetingDetails?.isEdit ? false : true) : false} />
-{console.log("visitorDetails😲", visitorDetails)}
-{console.log("visitorDetails😲😲😲😲", userType?.filter((e) => e?.id === e?.userType))}
+            disabled={isEdit ? (updatedMeetingDetails?.isEdit ? false : true) : false}
+
+          />
           <TextLabel
             fontSize={"12px"}
             color={"red"}
@@ -199,26 +199,16 @@ const AddMeeting = ({
           flexWrap={"wrap"}
           gap={2}
         >
-          {console.log('updatedMeetingDetails?.isEdit', updatedMeetingDetails?.isEdit)}
           {slotTimes?.map((e) => {
             return (
               <Chip
                 label={`${convertToAmPm(e?.startTime)}`}
                 style={{
                   borderRadius: "10px",
-                  border: `1px solid ${e.isBooked === true
-                    ? "var(--selected, #A1E3FF)"
-                    : "var(--border, #A1E3FF)"
-                    }`,
-                  background:
-                    e.isBooked === true
-                      ? "var(--border, #A1E3FF)"
-                      : "var(--White, #FFF)",
+                  border: `1px solid ${e.isBooked === true ? "var(--selected, #A1E3FF)" : "var(--border, #A1E3FF)"}`,
+                  background: e.isBooked === true ? "var(--border, #A1E3FF)" : "var(--White, #FFF)",
                   height: "36px",
-                  color:
-                    e.isBooked === true
-                      ? "var(--White, #000)"
-                      : "var(--text, #000)",
+                  color: e.isBooked === true ? "var(--White, #000)" : "var(--text, #000)",
                 }}
                 onClick={() => handleSlotClick(e.startTime)}
                 disabled={updatedMeetingDetails && !updatedMeetingDetails?.isEdit ? true : e.isSelected ? true : false}
