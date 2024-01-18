@@ -141,7 +141,7 @@ const MeetingList = () => {
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
-  console.log(meetingDetails, "meetingDetails")
+  console.log(isEdit, model, "isEdit")
 
   const handleChangeRowsPerPage = (value) => {
     setRowsPerPage(value);
@@ -505,9 +505,10 @@ const MeetingList = () => {
                               src={"/assets/icons/write.svg"}
                               absolutePath={true}
                               onClick={() => {
-                                setIsEdit(true);
-                                setModel(true);
+                                console.log("lodaaa")
                                 setMeetingId(row?._id);
+                                setModel(true);
+                                setIsEdit(true);
                               }}
                             />
                           )}
