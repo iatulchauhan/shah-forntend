@@ -141,6 +141,7 @@ const MeetingList = () => {
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
+  console.log(meetingDetails, "meetingDetails")
 
   const handleChangeRowsPerPage = (value) => {
     setRowsPerPage(value);
@@ -154,7 +155,7 @@ const MeetingList = () => {
     const formattedHours = hours % 12 || 12;
     return `${formattedHours}:${minutes < 10 ? "0" : ""}${minutes} ${period}`;
   };
-  console.log(updatedMeetingDetails, "updatedMeetingDetails")
+
   const _getSlotTimes = () => {
     toggleLoader();
     let body = {
@@ -178,20 +179,18 @@ const MeetingList = () => {
 
   const _getVisitor = () => {
     toggleLoader();
-    axios
-      .post(`visitor`)
-      .then((res) => {
-        if (res?.data?.data) {
-          setVisitorDetails(res?.data?.data);
-        }
-        toggleLoader();
-      })
+    axios.post(`visitor`).then((res) => {
+      if (res?.data?.data) {
+        setVisitorDetails(res?.data?.data);
+      }
+      toggleLoader();
+    })
       .catch((err) => {
         toggleLoader();
         OnUpdateError(err.data.message);
       });
   };
-  console.log(slotTimes, "slotTimes")
+
   const handleSlotClick = (clickedSlot) => {
     // Initialize selectedSlots as an empty array if it's undefined
     const currentSelectedSlots = selectedSlots || [];
@@ -200,9 +199,7 @@ const MeetingList = () => {
 
     // Toggle the selected state
     if (isSlotSelected) {
-      updatedSlots = currentSelectedSlots.filter(
-        (slot) => slot !== clickedSlot
-      );
+      updatedSlots = currentSelectedSlots.filter((slot) => slot !== clickedSlot);
       setSelectedSlots(updatedSlots);
     } else {
       updatedSlots = [...currentSelectedSlots, clickedSlot];

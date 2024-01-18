@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
-import {
-  Table,
-  TableRow,
-  TableHead,
-  TableContainer,
-  Box,
-  Grid,
-} from "@mui/material";
+import { Table, TableRow, TableHead, TableContainer, Box, Grid, } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import Assets from "../../Components/Common/ImageContainer";
@@ -23,11 +16,13 @@ import axios from "../../APiSetUp/axios";
 import swal from "sweetalert";
 import DataNotFound from "../../Components/Common/DataNotFound";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { Roles, permissionStatus, roles } from "../../Utils/enum";
+import { Roles, permissionStatus, roles, userType } from "../../Utils/enum";
 import VisitorModel from "../../Components/VisitorModel";
 import CommonButton from "../../Components/Common/Button/CommonButton";
 import CustomerModel from "../../Components/CustomerModel";
 import { useLocation } from "react-router-dom";
+import CommonModal from "../../Components/Common/CommonModel";
+import MarketingModel from "../../Components/Common/MarketingModel";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -92,6 +87,7 @@ const User = () => {
   //States
   const [model, setModel] = useState(false);
   const [visitorModel, setVisitorModel] = useState(false);
+  const [marketingModel, setMarketingModel] = useState(false);
   const [customerModel, setCustomerModel] = useState(false);
   const [data, setData] = useState({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
   const [error, setError] = useState({});
@@ -193,7 +189,7 @@ const User = () => {
     }
 
     if (!data?._id) {
-      if (user?.userType !== 2) {
+      if (model) {
         if (!data?.password) {
           formIsValid = false;
           errors["password"] = "Please enter password.";
@@ -227,6 +223,7 @@ const User = () => {
         }
       });
     }
+    console.log(errors, "errors")
     setError(errors);
     return formIsValid;
   };
@@ -287,8 +284,7 @@ const User = () => {
       page: page + 1,
       search: search || "",
     };
-    axios
-      .post("/users", body)
+    axios.post("/users", body)
       .then((res) => {
         if (res?.data?.data) {
           setUserDetails(res?.data?.data);
@@ -376,6 +372,7 @@ const User = () => {
     setModel(false);
     setVisitorModel(false);
     setCustomerModel(false);
+    setMarketingModel(false)
     setData({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
     setError({});
     setIsEdit(false);
@@ -385,8 +382,8 @@ const User = () => {
     setSelectedRole("");
     setMultiSelectedBranch([]);
   };
-
   const handleEdit = (row) => {
+    console.log(row?.userType === Roles.Guest, "row?.userType === Roles.Visitor")
     const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0];
     setData(row);
     setSelectedBranch(row?.branchDetails?.[0]?.branchName || "");
@@ -400,6 +397,8 @@ const User = () => {
       setVisitorModel(true);
     } else if (row?.userType === Roles.User) {
       setCustomerModel(true);
+    } else if (row?.userType === Roles.Guest) {
+      setMarketingModel(true);
     } else {
       setModel(true);
     }
@@ -435,14 +434,8 @@ const User = () => {
         postalCode: data?.postalCode,
         mobileNo: data?.mobileNo,
         email: data?.email,
-        branch: model
-          ? multiSelectedBranch.map((item) => item._id)
-          : [branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id],
-        userType: visitorModel
-          ? 6
-          : customerModel
-            ? 1
-            : roles?.filter((e) => e?.label == selectedRole)[0]?.id,
+        branch: model ? multiSelectedBranch.map((item) => item._id) : [branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id],
+        userType: visitorModel ? Roles.Visitor : customerModel ? Roles.User : marketingModel ? Roles.Guest : roles?.filter((e) => e?.label == selectedRole)[0]?.id,
       };
       if (visitorModel || customerModel) {
         body.reason = data?.reason || null;
@@ -505,7 +498,7 @@ const User = () => {
     if (selectedCountry && selectedState) {
       _getCities();
     }
-  }, [selectedState]);
+  }, [states, selectedState]);
 
   useEffect(() => {
     const menu = menuList?.find((e) => e?.path === pathname);
@@ -533,7 +526,16 @@ const User = () => {
                 flexWrap: "wrap",
               }}
             >
-              <CommonButton
+              {user?.userType === Roles?.Marketing && <CommonButton
+                width={"130px"}
+                text={permissions?.create ? "Add Guest User" : ""}
+                onClick={() => {
+                  handleClear();
+                  setMarketingModel(true)
+                  setModel(false);
+                }}
+              />}
+              {(user?.userType === Roles?.Receptionist || user?.userType === 0) && <CommonButton
                 width={"120px"}
                 text={permissions?.create ? "Add Visitor" : ""}
                 onClick={() => {
@@ -542,8 +544,8 @@ const User = () => {
                   setCustomerModel(false);
                   setModel(false);
                 }}
-              />
-              {user?.userType !== 2 && (
+              />}
+              {user?.userType === 0 && (
                 <>
                   <CommonButton
                     width={"120px"}
@@ -572,6 +574,38 @@ const User = () => {
         </Grid>
       </PaperContainer>
       <PaperContainer elevation={0} square={false}>
+        {marketingModel && (
+          <CommonModal
+            open={marketingModel}
+            onClose={handleClear}
+            title={`${isEdit ? "Update" : "Add"} Guest User`}
+            content={
+              <MarketingModel
+                data={data}
+                setData={setData}
+                error={error}
+                handleChange={handleChange}
+                branches={branches}
+                selectedBranch={selectedBranch}
+                setSelectedBranch={setSelectedBranch}
+                roles={roles}
+                cities={cities}
+                states={states}
+                onSubmit={_addUpdateUser}
+                isEdit={isEdit}
+                setSelectedState={setSelectedState}
+                selectedState={selectedState}
+                setSelectedCity={setSelectedCity}
+                selectedCity={selectedCity}
+                setSelectedRole={setSelectedRole}
+                selectedRole={selectedRole}
+                selectedCountry={selectedCountry}
+                setSelectedCountry={setSelectedCountry}
+                countries={countries}
+              />
+            }
+          />
+        )}
         {visitorModel && (
           <Grid item xs={12}>
             <TableHeading
@@ -732,9 +766,7 @@ const User = () => {
                                       className={classes.writeBox}
                                       src={"/assets/icons/write.svg"}
                                       absolutePath={true}
-                                      onClick={() => {
-                                        handleEdit(row);
-                                      }}
+                                      onClick={() => { handleEdit(row); }}
                                     />}
                                     <Assets
                                       className={classes.viewBox}
