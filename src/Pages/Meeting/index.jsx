@@ -290,7 +290,7 @@ const MeetingList = () => {
   const _getCounselor = () => {
     toggleLoader();
     axios
-      .post(user?.userType === 2 ? `counsellor` : `accountant`)
+      .post((user?.userType === 2 || user?.userType === 5) ? `counsellor` : `accountant`)
       .then((res) => {
         if (res?.data?.data) {
           setCounsellorDetails(res?.data?.data);
