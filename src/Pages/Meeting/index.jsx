@@ -34,6 +34,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 16,
     color: theme.palette.primary.main,
     fontFamily: "Poppins",
+    padding: "16px 8px",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
@@ -447,7 +448,7 @@ const MeetingList = () => {
                     <StyledTableCell align="center">Start Time</StyledTableCell>
                     <StyledTableCell align="center">Status</StyledTableCell>
                     <StyledTableCell>Creator</StyledTableCell>
-                    <StyledTableCell align="right">Action</StyledTableCell>
+                    <StyledTableCell>Action</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -493,7 +494,7 @@ const MeetingList = () => {
                         {row?.creatorDetails?.name}
                       </StyledTableCell>
                       <StyledTableCell>
-                        <Box display={"flex"} justifyContent={"end"} gap={1}>
+                        <Box display={"flex"} gap={1}>
                           {/* <Assets
                             className={classes.viewBox}
                             src={"/assets/icons/view.svg"}

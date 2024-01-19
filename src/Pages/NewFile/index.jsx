@@ -24,6 +24,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 16,
         color: theme.palette.primary.main,
         fontFamily: "Poppins",
+        padding: "16px 8px",
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
@@ -123,7 +124,7 @@ const NewFile = () => {
                                         <StyledTableCell>Investment Amount</StyledTableCell>
                                         <StyledTableCell>Plan</StyledTableCell>
                                         <StyledTableCell></StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell>Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -144,7 +145,7 @@ const NewFile = () => {
                                                 />
                                             </StyledTableCell>
                                             <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"center"} gap={1}>
+                                                <Box display={"flex"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}

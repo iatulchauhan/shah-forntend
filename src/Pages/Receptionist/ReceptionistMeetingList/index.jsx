@@ -31,6 +31,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 16,
         color: theme.palette.primary.main,
         fontFamily: "Poppins",
+        padding: "16px 8px",
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
@@ -338,7 +339,7 @@ const ReceptionistMeetingList = () => {
                                         <StyledTableCell>Start Time</StyledTableCell>
                                         <StyledTableCell>Status</StyledTableCell>
                                         <StyledTableCell>Creator</StyledTableCell>
-                                        <StyledTableCell align="right">Action</StyledTableCell>
+                                        <StyledTableCell>Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -359,7 +360,7 @@ const ReceptionistMeetingList = () => {
                                             </StyledTableCell>
                                             <StyledTableCell>{row?.creatorDetails?.name}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
+                                                <Box display={"flex"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}

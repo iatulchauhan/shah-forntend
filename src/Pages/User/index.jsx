@@ -23,6 +23,7 @@ import CustomerModel from "../../Components/CustomerModel";
 import { useLocation } from "react-router-dom";
 import CommonModal from "../../Components/Common/CommonModel";
 import MarketingModel from "../../Components/Common/MarketingModel";
+import Swal from "sweetalert2";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -403,23 +404,37 @@ const User = () => {
       setModel(true);
     }
   };
-  console.log(data, "datadatadata");
+
+  
   const _handleDelete = () => {
-    if (deleteId) {
-      toggleLoader();
-      axios
-        .delete(`/users/delete/${deleteId}`)
-        .then((res) => {
-          swal(res?.data?.message, { icon: "success", timer: 5000 });
+    Swal.fire({
+      title: "<strong>Warning</strong>",
+      icon: "error",
+      html: "Are you sure you want to Delete User",
+      showCancelButton: true,
+      confirmButtonColor: "#0492c2",
+      iconColor: "#ff0000",
+      confirmButtonText: "Yes",
+      cancelButtonColor: "#1A1B2F",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        if (deleteId) {
           toggleLoader();
-          setDeleteId("");
-          _getUsers();
-        })
-        .catch((err) => {
-          toggleLoader();
-          OnUpdateError(err.data.message);
-        });
-    }
+          axios
+            .delete(`/users/delete/${deleteId}`)
+            .then((res) => {
+              swal(res?.data?.message, { icon: "success", timer: 5000 });
+              toggleLoader();
+              setDeleteId("");
+              _getUsers();
+            })
+            .catch((err) => {
+              toggleLoader();
+              OnUpdateError(err.data.message);
+            });
+        }
+      }
+    });
   };
 
   const _addUpdateUser = () => {

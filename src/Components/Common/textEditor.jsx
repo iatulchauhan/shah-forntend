@@ -75,7 +75,7 @@ console.log("defaultValue",defaultValue);
       setContent("");
     }
   }, [defaultValue]);
-
+console.log("content",content);
   return (
     <>
       {category && (
@@ -111,7 +111,6 @@ console.log("defaultValue",defaultValue);
             name: "header-one", icon: <InvertColorsIcon />, type: "callback", onClick: (_editorState, name, _anchor) => { },
           },
         ]}
-        value={value}
         defaultValue={content}
         onChange={async (event) => {
           let value = await stateToHTML(event.getCurrentContent());

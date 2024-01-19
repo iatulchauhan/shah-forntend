@@ -23,6 +23,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 16,
         color: theme.palette.primary.main,
         fontFamily: "Poppins",
+        padding: "16px 8px",
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
@@ -129,7 +130,7 @@ const Payment = () => {
                                         <StyledTableCell>Credit Amount</StyledTableCell>
                                         <StyledTableCell>Date</StyledTableCell>
                                         <StyledTableCell>Total Amount</StyledTableCell>
-                                        <StyledTableCell align="right">Action</StyledTableCell>
+                                        <StyledTableCell>Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -144,7 +145,7 @@ const Payment = () => {
                                             <StyledTableCell>{row.date}</StyledTableCell>
                                             <StyledTableCell>{row.totalAmount}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"end"} gap={1}>
+                                                <Box display={"flex"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}

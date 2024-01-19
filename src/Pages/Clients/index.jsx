@@ -33,6 +33,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     color: theme.palette.primary.main,
     fontFamily: "Poppins",
     whiteSpace: "nowrap",
+    padding: "16px 8px",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,

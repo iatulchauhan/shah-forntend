@@ -155,9 +155,7 @@ const CamposeEmail = ({
                   fontSize={"12px"}
                   color={"red"}
                   fontWeight={"400"}
-                  title={
-                    multiSelectedUser.length === 0 ? error?.selectUser : ""
-                  }
+                  title={(multiSelectedUser.length <= 0 && !data?.anotherUser) ? error?.selectUser : ""}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={6}>
@@ -169,21 +167,6 @@ const CamposeEmail = ({
                   name="anotherUser"
                   value={data?.anotherUser || ""}
                   onChange={(e) => handleChange(e, false)}
-                />
-                <TextLabel
-                  fontSize={"12px"}
-                  color={"red"}
-                  fontWeight={"400"}
-                  title={!data?.anotherUser ? error?.anotherUser : ""}
-                />
-                <TextLabel
-                  fontSize={"12px"}
-                  color={"red"}
-                  title={
-                    data?.anotherUser?.match(Regex.anotherUserEmailRegex)
-                      ? ""
-                      : error.invalidEmail
-                  }
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -205,18 +188,15 @@ const CamposeEmail = ({
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <TextEditor
-                  // value={description}
+                  defaultValue={data?.description}
                   category={"Description"}
-                  onChange={(value) => {
-                    console.log(value, "value");
-                    setDescription(value);
-                  }}
+                  onChange={(value) => { setDescription(value) }}
                 />
                 <TextLabel
                   fontSize={"12px"}
                   color={"red"}
                   fontWeight={"400"}
-                  title={!data?.description ? error?.description : ""}
+                  title={!description || description === "<p><br></p>" ? error?.description : ""}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -401,6 +381,7 @@ const CamposeEmail = ({
                       <Fab
                         size="small"
                         onClick={() => _deleteEmail(getEmailData?._id)}
+                      // onClick={()=> handleDeleteFile(getEmailData?._id)}
                       >
                         <DeleteForeverIcon />
                       </Fab>

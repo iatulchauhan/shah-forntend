@@ -31,6 +31,7 @@ import SendIcon from "@mui/icons-material/Send";
 import StarIcon from "@mui/icons-material/Star";
 import CamposeEmail from "../../Components/Common/CamposeEmail";
 import { Regex } from "../../Utils/regex";
+import Swal from "sweetalert2";
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -94,45 +95,28 @@ const Email = () => {
   const [getEmailData, setGetEmailData] = useState("");
   const [description, setDescription] = useState("");
   const [search, setSearch] = useState("");
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    setData((prevState) => ({ ...prevState, [name]: value }));
+    // setError({ ...error, [name]: "" });
+
   };
 
   const handleValidation = () => {
     let formIsValid = true;
     let errors = {};
-    if (multiSelectedUser.length === 0) {
+    if (multiSelectedUser.length <= 0 && !data?.anotherUser) {
       formIsValid = false;
-      errors["selectUser"] = "Please select User.";
-    }
-    if (!data?.anotherUser) {
-      formIsValid = false;
-      errors["anotherUser"] = "Please enter address.";
-    }else if (!data?.email?.match(Regex.emailRegex)) {
-      formIsValid = false;
-      errors["invalidEmail"] = "email addresses separated by commas ";
+      errors["selectUser"] = "Please select any existing user or another user.";
     }
     if (!data?.title) {
       formIsValid = false;
       errors["title"] = "Please enter title.";
     }
-    if (!description || description.trim() === "") {
+    if (!description || description === "<p><br></p>") {
       formIsValid = false;
       errors["description"] = "Please enter description.";
     }
-    // if (!imageData) {
-    //   formIsValid = false;
-    //   errors["selectImage"] = "Please select Image.";
-    // }
-    // if (!pdfData) {
-    //   formIsValid = false;
-    //   errors["selectPdf"] = "Please enter selectPdf.";
-    // }
     setError(errors);
     return formIsValid;
   };
@@ -206,6 +190,7 @@ const Email = () => {
   };
 
   const _sendEmail = () => {
+    setData({ ...data, description: description })
     if (handleValidation()) {
       toggleLoader();
       const selectedUserEmail = multiSelectedUser?.map((item) => item.email);
@@ -225,7 +210,9 @@ const Email = () => {
         .then((res) => {
           if (res?.data?.data) {
             toggleLoader();
-            setData({});
+            setData({
+              description: "<p><br></p>"
+            });
             setDescription("");
             setMultiSelectedUser([]);
             setImageData(null);
@@ -239,7 +226,7 @@ const Email = () => {
         });
     }
   };
-
+  console.log("datadescription", data, description);
   const _getEmailById = (id) => {
     setGetEmailData("");
     setEmailForm(false);
@@ -259,19 +246,32 @@ const Email = () => {
   };
 
   const _deleteEmail = (id) => {
-    if (id) {
-      axios
-        .delete(`email/delete/${id}`)
-        .then((res) => {
-          swal(res?.data?.message, { icon: "success", timer: 5000 });
-          _getEmailsList();
-          setGetEmailData();
-        })
-        .catch((err) => {
-          toggleLoader();
-          OnUpdateError(err.data.message);
-        });
-    }
+    Swal.fire({
+      title: "<strong>Warning</strong>",
+      icon: "error",
+      html: "Are you sure you want to Delete Email?",
+      showCancelButton: true,
+      confirmButtonColor: "#0492c2",
+      iconColor: "#ff0000",
+      confirmButtonText: "Yes",
+      cancelButtonColor: "#1A1B2F",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        if (id) {
+          axios
+            .delete(`email/delete/${id}`)
+            .then((res) => {
+              swal(res?.data?.message, { icon: "success", timer: 5000 });
+              _getEmailsList();
+              setGetEmailData();
+            })
+            .catch((err) => {
+              toggleLoader();
+              OnUpdateError(err.data.message);
+            });
+        }
+      }
+    });
   };
 
   const _getEmailsList = () => {
@@ -475,7 +475,7 @@ const Email = () => {
               className={classes.emailsList}
             >
               <Box mb={3}>
-              <CommonSearch handleSearch={(value) => { setSearch(value); }} />
+                <CommonSearch handleSearch={(value) => { setSearch(value); }} />
               </Box>
               <Box
                 display={"flex"}

@@ -286,27 +286,27 @@ export default function SideBar(props) {
               // width: "275px",
               display: "flex",
               justifyContent: "center",
-              marginTop: '10px'
+              marginTop: '10px',
             }}
           >
-            <IconButton
+            {/* <IconButton
               onClick={handleDrawerOpen}
               sx={{
                 width: "100%",
                 // justifyContent: open ? "space-between" : "center",
               }}
-            >
+            > */}
               {open ? (
                 <>
-                  <Assets height={"50px"} src={"/assets/icons/logo.png"} absolutePath={true} />
+                  <Assets onClick={handleDrawerOpen} style={{cursor: "pointer"}} height={"50px"} src={"/assets/icons/logo.png"} absolutePath={true}  />
                   {/* <button onClick={handleDrawerOpen}>Logo</button> */}
                 </>
               ) : (
-                <Assets height={"50px"} src={"/assets/icons/logo.png"} absolutePath={true} />
+                <Assets onClick={handleDrawerOpen} style={{cursor: "pointer"}} height={"50px"} src={"/assets/icons/logo.png"} absolutePath={true}  />
                 // <button onClick={handleDrawerOpen}>Logo</button>
 
               )}
-            </IconButton>
+            {/* </IconButton> */}
           </DrawerHeader>
           <List sx={{
             padding: {

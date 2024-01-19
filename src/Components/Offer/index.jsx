@@ -40,15 +40,15 @@ const AddOffer = ({ data, setData, error, handleChange, isEdit, onSubmit, handle
                             onChange={(value) => setData({ ...data, description: value })}
                         // valid={true}
                         /> */}
-                          <TextEditor
-                            defaultValue={description}
+                        <TextEditor
+                            defaultValue={data?.description}
                             category={"Description"}
                             onChange={(value) => {
                                 console.log(value, "value");
                                 setDescription(value);
                             }}
-                            />
-                        <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!description ? error?.description : ""} />
+                        />
+                        <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!description || description === "<p><br></p>" ? error?.description : ""} />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}>
                         <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>

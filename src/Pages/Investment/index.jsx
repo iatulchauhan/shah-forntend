@@ -23,6 +23,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 16,
         color: theme.palette.primary.main,
         fontFamily: "Poppins",
+        padding: "16px 8px",
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
@@ -121,7 +122,7 @@ const Investment = () => {
                                         <StyledTableCell>Email Id</StyledTableCell>
                                         <StyledTableCell>Investment Amount</StyledTableCell>
                                         <StyledTableCell>Active Plan</StyledTableCell>
-                                        <StyledTableCell align="center">Action</StyledTableCell>
+                                        <StyledTableCell>Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -136,7 +137,7 @@ const Investment = () => {
                                             <StyledTableCell>{row.expiringPlan}</StyledTableCell>
                                             <StyledTableCell>{row.activePlan}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Box display={"flex"} justifyContent={"center"} gap={1}>
+                                                <Box display={"flex"} gap={1}>
                                                     <Assets
                                                         className={classes.writeBox}
                                                         src={"/assets/icons/write.svg"}

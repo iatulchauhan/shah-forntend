@@ -33,6 +33,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 16,
     color: theme.palette.primary.main,
     fontFamily: "Poppins",
+    padding: "16px 8px",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
@@ -301,19 +302,19 @@ const FinancialData = () => {
                     <TableRow>
                       <StyledTableCell>#</StyledTableCell>
                       <StyledTableCell>Name</StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell>
                         Investment Date
                       </StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell>
                         Closing Date
                       </StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell>
                         Return Amount Of Interest
                       </StyledTableCell>
-                      <StyledTableCell align="center">
+                      <StyledTableCell>
                         Total Balance
                       </StyledTableCell>
-                      <StyledTableCell align="right">Action</StyledTableCell>
+                      <StyledTableCell>Action</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -327,22 +328,21 @@ const FinancialData = () => {
                             <StyledTableCell>
                               {row?.userDetails?.name}{" "}
                             </StyledTableCell>
-                            <StyledTableCell align="center">
+                            <StyledTableCell>
                               {dayjs(row.createdAt).format("DD/MM/YYYY")}
                             </StyledTableCell>
-                            <StyledTableCell align="center">
+                            <StyledTableCell>
                               {closeDate(row.createdAt, row?.investmentDays)}
                             </StyledTableCell>
-                            <StyledTableCell align="center">{`${
+                            <StyledTableCell>{`${
                               (row.investment * row.returnOfInvestment) / 100
                             }(${row.returnOfInvestment}%)`}</StyledTableCell>
-                            <StyledTableCell align="center">
+                            <StyledTableCell>
                               {row.investment}
                             </StyledTableCell>
                             <StyledTableCell>
                               <Box
                                 display={"flex"}
-                                justifyContent={"end"}
                                 gap={1}
                               >
                                 {permissions?.update && (

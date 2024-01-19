@@ -92,7 +92,7 @@ const OfferPage = () => {
     //     formIsValid = false;
     //     errors["description"] = "Please enter description.";
     //   }
-    if (!data?.description) {
+    if (!description || description === "<p><br></p>") {
       formIsValid = false;
       errors["description"] = "Please enter description.";
     }

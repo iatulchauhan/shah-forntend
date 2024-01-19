@@ -6,6 +6,6 @@ export default function Assets({ absolutePath, onClick, className, style, height
     };
 
     return (
-        <img {...props} onClick={onClick} src={convertAssetsPath(props.src)} alt="img" height={height} width={width} style={{style}} className={className} />
+        <img {...props} onClick={onClick} src={convertAssetsPath(props.src)} alt="img" height={height} width={width} style={{ ...style }} className={className} />
     );
 }
