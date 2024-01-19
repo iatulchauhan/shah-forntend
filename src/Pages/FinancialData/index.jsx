@@ -249,7 +249,7 @@ const FinancialData = () => {
 
   useEffect(() => {
     _getFinancialData();
-}, [page, rowsPerPage, search]);
+  }, [page, rowsPerPage, search]);
 
   useEffect(() => {
     if (financialId) {
@@ -323,7 +323,7 @@ const FinancialData = () => {
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell style={{ paddingLeft: "15px" }}>
-                            {index + 1 + page * rowsPerPage}
+                              {index + 1 + page * rowsPerPage}
                             </StyledTableCell>
                             <StyledTableCell>
                               {row?.userDetails?.name}{" "}
@@ -334,9 +334,8 @@ const FinancialData = () => {
                             <StyledTableCell>
                               {closeDate(row.createdAt, row?.investmentDays)}
                             </StyledTableCell>
-                            <StyledTableCell>{`${
-                              (row.investment * row.returnOfInvestment) / 100
-                            }(${row.returnOfInvestment}%)`}</StyledTableCell>
+                            <StyledTableCell>{`${(row.investment * row.returnOfInvestment) / 100
+                              }(${row.returnOfInvestment}%)`}</StyledTableCell>
                             <StyledTableCell>
                               {row.investment}
                             </StyledTableCell>
@@ -386,7 +385,7 @@ const FinancialData = () => {
             </TableContainer>
           </Grid>
         </Grid>
-        <Box p={1}>
+        {financialDetails?.count > 0 && <Box p={1}>
           <CommonPagination
             count={financialDetails?.count}
             rowsPerPage={rowsPerPage}
@@ -394,7 +393,7 @@ const FinancialData = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
             onPageChange={handleChangePage}
           />
-        </Box>
+        </Box>}
       </PaperContainer>
 
       {model && (

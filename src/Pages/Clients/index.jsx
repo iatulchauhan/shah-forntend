@@ -384,7 +384,7 @@ const Clients = () => {
 
   useEffect(() => {
     _getUser();
-}, [page, rowsPerPage, search]);
+  }, [page, rowsPerPage, search]);
 
   useEffect(() => {
     _getBranches();
@@ -478,7 +478,7 @@ const Clients = () => {
             </TableContainer>
           </Grid>
         </Grid>
-        <Box p={1}>
+        {userDetails?.count > 0 && <Box p={1}>
           <CommonPagination
             count={userDetails?.count}
             rowsPerPage={rowsPerPage}
@@ -486,7 +486,7 @@ const Clients = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
             onPageChange={handleChangePage}
           />
-        </Box>
+        </Box>}
       </PaperContainer>
       <CommonModal
         open={model}

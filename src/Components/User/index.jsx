@@ -11,7 +11,7 @@ import AutoCompleteMultiSelect from '../Common/AutoCompleteMultiSelect';
 
 const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setMultiSelectedBranch, multiSelectedBranch, setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
     onSubmit, setSelectedCountry, selectedCountry, countries }) => {
-
+    console.log(selectedRole, "selectedRole")
     useEffect(() => {
         const defaultCountry = "India";
         const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
@@ -158,7 +158,7 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setMult
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedRole?.label ? error?.userType : ""} />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4}>
+            {selectedRole !== "Marketing" && <Grid item xs={12} sm={12} md={6} lg={4}>
                 <AutoCompleteMultiSelect
                     fullWidth
                     text="Branch"
@@ -171,7 +171,7 @@ const AddUser = ({ data, branches, roles, selectedRole, setSelectedRole, setMult
                     mappingLabel='branchName'
                 />
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!multiSelectedBranch?.length === 0 ? error?.branchName : ""} />
-            </Grid>
+            </Grid>}
             {!data?._id &&
                 <>
                     <Grid item xs={12} sm={12} md={6} lg={4}>

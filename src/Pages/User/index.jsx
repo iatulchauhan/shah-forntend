@@ -158,16 +158,17 @@ const User = () => {
       formIsValid = false;
       errors["invalidEmail"] = "* Invalid email Address";
     }
-
-    if (model) {
-      if (multiSelectedBranch?.length === 0) {
-        formIsValid = false;
-        errors["branchName"] = "Please select branchName.";
-      }
-    } else {
-      if (!selectedBranch) {
-        formIsValid = false;
-        errors["branchName"] = "Please select branchName.";
+    if (selectedRole !== "Marketing") {
+      if (model) {
+        if (multiSelectedBranch?.length === 0) {
+          formIsValid = false;
+          errors["branchName"] = "Please select branchName.";
+        }
+      } else {
+        if (!selectedBranch) {
+          formIsValid = false;
+          errors["branchName"] = "Please select branchName.";
+        }
       }
     }
 
@@ -405,7 +406,7 @@ const User = () => {
     }
   };
 
-  
+
   const _handleDelete = () => {
     Swal.fire({
       title: "<strong>Warning</strong>",
@@ -452,6 +453,7 @@ const User = () => {
         branch: model ? multiSelectedBranch.map((item) => item._id) : [branches?.filter((e) => e?.branchName == selectedBranch)[0]?._id],
         userType: visitorModel ? Roles.Visitor : customerModel ? Roles.User : marketingModel ? Roles.Guest : roles?.filter((e) => e?.label == selectedRole)[0]?.id,
       };
+      // if(selectedRole !=="")
       if (visitorModel || customerModel) {
         body.reason = data?.reason || null;
         body.reference = data?.reference || null;
@@ -696,7 +698,7 @@ const User = () => {
         {model && (
           <Grid item xs={12}>
             <TableHeading
-              title={`${isEdit ? "Update" : "Add"} User`}
+              title={`${isEdit ? "Update" : "Add"} Role`}
               handleBack={() => {
                 setModel(false);
                 handleClear();
@@ -818,7 +820,7 @@ const User = () => {
                 </TableContainer>
               </Grid>
             </Grid>
-            <Box p={1}>
+            {userDetails?.count > 0 && <Box p={1}>
               <CommonPagination
                 count={userDetails?.count}
                 rowsPerPage={rowsPerPage}
@@ -826,7 +828,7 @@ const User = () => {
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 onPageChange={handleChangePage}
               />
-            </Box>
+            </Box>}
           </>
         )}
       </PaperContainer>

@@ -116,7 +116,7 @@ const VisitorHistory = () => {
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Visitor History" handleSearch={(value) => { setSearch(value); }}/>
+                        <TableHeading title="Visitor History" handleSearch={(value) => { setSearch(value); }} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -125,7 +125,9 @@ const VisitorHistory = () => {
                                     <TableRow>
                                         <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
                                         <StyledTableCell>Name</StyledTableCell>
-                                        <StyledTableCell>Address</StyledTableCell>
+                                        <StyledTableCell>Visit Date</StyledTableCell>
+                                        <StyledTableCell><Box width={'200px'}>
+                                        </Box>Address</StyledTableCell>
                                         <StyledTableCell>Email Id</StyledTableCell>
                                         <StyledTableCell>Reason</StyledTableCell>
                                         <StyledTableCell>Reference</StyledTableCell>
@@ -138,7 +140,8 @@ const VisitorHistory = () => {
                                             <StyledTableRow key={index} >
                                                 <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.name}</StyledTableCell>
-                                                <StyledTableCell>{row?.userDetail?.address}</StyledTableCell>
+                                                <StyledTableCell>{new Date(row?.createdAt).toDateString()}</StyledTableCell>
+                                                <StyledTableCell><Box width={'200px'}>{row?.userDetail?.address}</Box></StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.email}</StyledTableCell>
                                                 <StyledTableCell>{row?.reason}</StyledTableCell>
                                                 <StyledTableCell>{row?.reference}</StyledTableCell>
@@ -150,7 +153,7 @@ const VisitorHistory = () => {
                         </TableContainer>
                     </Grid>
                 </Grid>
-                <Box p={1}>
+                {visitorHistoryDetails?.count > 0 && <Box p={1}>
                     <CommonPagination
                         count={visitorHistoryDetails?.count}
                         rowsPerPage={rowsPerPage}
@@ -158,7 +161,7 @@ const VisitorHistory = () => {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                         onPageChange={handleChangePage}
                     />
-                </Box>
+                </Box>}
             </PaperContainer>
         </>
     )

@@ -6,7 +6,7 @@ export const roles = [
     { label: "Accountant", id: 4, },
     { label: "Marketing", id: 5, },
     { label: "Visitor", id: 6, },
-    { label: "Guest", id: 7, },
+    // { label: "Guest", id: 7, },
 ]
 
 

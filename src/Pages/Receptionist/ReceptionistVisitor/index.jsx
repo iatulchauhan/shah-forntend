@@ -416,7 +416,7 @@ const ReceptionistVisitorData = () => {
                                 </TableContainer>
                             </Grid>
                         </Grid>
-                        <Box p={1}>
+                        {visitorDetails?.count > 0 && <Box p={1}>
                             <CommonPagination
                                 count={visitorDetails?.count}
                                 rowsPerPage={rowsPerPage}
@@ -424,7 +424,7 @@ const ReceptionistVisitorData = () => {
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                                 onPageChange={handleChangePage}
                             />
-                        </Box>
+                        </Box>}
 
                     </>
 

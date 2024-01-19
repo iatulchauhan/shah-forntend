@@ -563,7 +563,7 @@ const MeetingList = () => {
             </TableContainer>
           </Grid>
         </Grid>
-        <Box p={1}>
+        {meetingDetails?.count && <Box p={1}>
           <CommonPagination
             count={meetingDetails?.count}
             rowsPerPage={rowsPerPage}
@@ -571,7 +571,7 @@ const MeetingList = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
             onPageChange={handleChangePage}
           />
-        </Box>
+        </Box>}
       </PaperContainer>
       <CommonModal
         open={model}

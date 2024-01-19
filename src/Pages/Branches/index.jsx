@@ -174,6 +174,7 @@ const Branches = () => {
       limit: rowsPerPage,
       page: page + 1,
       search: search || "",
+      isAll: true
     };
     axios
       .post(`/branch`, body)
@@ -455,7 +456,7 @@ const Branches = () => {
             </TableContainer>
           </Grid>
         </Grid>
-        <Box p={1}>
+        {brancesDetails?.count > 0 && <Box p={1}>
           <CommonPagination
             count={brancesDetails?.count}
             rowsPerPage={rowsPerPage}
@@ -463,7 +464,7 @@ const Branches = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
             onPageChange={handleChangePage}
           />
-        </Box>
+        </Box>}
       </PaperContainer>
 
       {model && (

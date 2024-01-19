@@ -328,7 +328,7 @@ const Visitor = () => {
             <PaperContainer elevation={0} square={false}>
                 <Grid container >
                     <Grid item xs={12}>
-                        <TableHeading title="Visitor List" handleSearch={(value) => { setSearch(value); }}/>
+                        <TableHeading title="Visitor List" handleSearch={(value) => { setSearch(value); }} />
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
@@ -365,7 +365,7 @@ const Visitor = () => {
                         </TableContainer>
                     </Grid>
                 </Grid>
-                <Box p={1}>
+                {visitorDetails?.count > 0 && <Box p={1}>
                     <CommonPagination
                         count={visitorDetails?.count}
                         rowsPerPage={rowsPerPage}
@@ -373,7 +373,7 @@ const Visitor = () => {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                         onPageChange={handleChangePage}
                     />
-                </Box>
+                </Box>}
             </PaperContainer>
 
             {model && <CommonModal
