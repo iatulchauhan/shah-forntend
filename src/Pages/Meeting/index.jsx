@@ -27,6 +27,7 @@ import { Roles, meetingStatus, permissionStatus } from "../../Utils/enum";
 import dayjs, { Dayjs } from "dayjs";
 import TextLabel from "../../Components/Common/Fields/TextLabel";
 import { useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -301,22 +302,51 @@ const MeetingList = () => {
         OnUpdateError(err.data.message);
       });
   };
+
   const _deleteScheduleMeeting = (meetingId) => {
-    toggleLoader();
-    axios
-      .delete(`meeting/delete/${meetingId}`)
-      .then((res) => {
-        if (res?.data?.data) {
-          swal(res?.data?.message, { icon: "success", timer: 5000 });
-          _getMeetingList();
-        }
-        toggleLoader();
-      })
-      .catch((err) => {
-        toggleLoader();
-        OnUpdateError(err.data.message);
-      });
+    Swal.fire({
+      title: "<strong>Warning</strong>",
+      icon: "error",
+      html: "Are you sure you want to Delete Meeting",
+      showCancelButton: true,
+      confirmButtonColor: "#0492c2",
+      iconColor: "#ff0000",
+      confirmButtonText: "Yes",
+      cancelButtonColor: "#1A1B2F",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`meeting/delete/${meetingId}`)
+          .then((res) => {
+            if (res?.data?.data) {
+              swal(res?.data?.message, { icon: "success", timer: 5000 });
+              _getMeetingList();
+            }
+            toggleLoader();
+          })
+          .catch((err) => {
+            toggleLoader();
+            OnUpdateError(err.data.message);
+          });
+      }
+    });
   };
+  // const _deleteScheduleMeeting = (meetingId) => {
+  //   toggleLoader();
+  //   axios
+  //     .delete(`meeting/delete/${meetingId}`)
+  //     .then((res) => {
+  //       if (res?.data?.data) {
+  //         swal(res?.data?.message, { icon: "success", timer: 5000 });
+  //         _getMeetingList();
+  //       }
+  //       toggleLoader();
+  //     })
+  //     .catch((err) => {
+  //       toggleLoader();
+  //       OnUpdateError(err.data.message);
+  //     });
+  // };
   const _addUpdateMeetingSchedule = () => {
     if (handleValidation()) {
       toggleLoader();

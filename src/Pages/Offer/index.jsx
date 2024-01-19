@@ -14,6 +14,7 @@ import AddOffer from "../../Components/Offer";
 import Assets from "../../Components/Common/ImageContainer";
 import { lightTheme } from "../../theme";
 import PaperContainer from "../../Components/Common/PaperContainer";
+import Swal from "sweetalert2";
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -146,21 +147,34 @@ const OfferPage = () => {
   };
 
   const _handleDelete = () => {
-    if (deleteId) {
-      toggleLoader();
-      axios
-        .delete(`/offer/delete/${deleteId}`)
-        .then((res) => {
-          swal(res?.data?.message, { icon: "success", timer: 5000 });
+    Swal.fire({
+      title: "<strong>Warning</strong>",
+      icon: "error",
+      html: "Are you sure you want to Delete Offer",
+      showCancelButton: true,
+      confirmButtonColor: "#0492c2",
+      iconColor: "#ff0000",
+      confirmButtonText: "Yes",
+      cancelButtonColor: "#1A1B2F",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        if (deleteId) {
           toggleLoader();
-          setDeleteId("");
-          _getOffer();
-        })
-        .catch((err) => {
-          toggleLoader();
-          OnUpdateError(err.data.message);
-        });
-    }
+          axios
+            .delete(`/offer/delete/${deleteId}`)
+            .then((res) => {
+              swal(res?.data?.message, { icon: "success", timer: 5000 });
+              toggleLoader();
+              setDeleteId("");
+              _getOffer();
+            })
+            .catch((err) => {
+              toggleLoader();
+              OnUpdateError(err.data.message);
+            });
+        }
+      }
+    });
   };
 
   const _addUpdateOffer = () => {
