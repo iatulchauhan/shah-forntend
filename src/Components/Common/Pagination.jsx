@@ -44,7 +44,7 @@ const CommonPagination = ({ count, page, rowsPerPage, onPageChange, onRowsPerPag
     const pageRange = calculatePageRange();
 
     return (
-        <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap={"wrap"} sx={{ marginTop: "10px" }}>
+        <Box display="flex" alignItems="center" justifyContent={{ xs: "center", sm: "center", md: "space-between", lg: "space-between" }} flexWrap={"wrap"} sx={{ marginTop: "10px" }}>
             <Box display={"flex"} alignItems={"center"} p={1}>
                 <Box fontSize={"13px"}>Show&nbsp;</Box>
                 <Box>

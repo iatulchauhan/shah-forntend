@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, CircularProgress, Typography } from "@mui/material";
 import { useTheme } from "@mui/material";
 
@@ -31,7 +31,7 @@ const CommonButton = ({
             type={type}
             variant={variant || "contained"}
             color={`${color === "error" ? "error" : "primary"}`}
-            sx={{ width: width, height: height, fontSize: fontSize, whiteSpace: "nowrap", padding: padding, background: background, borderRadius: borderRadius, color: color, border: border}}
+            style={{ width: width, height: height, fontSize: fontSize || "14px", whiteSpace: "nowrap", padding: padding, background: background, borderRadius: borderRadius, color: color, border: border }}
             disableElevation
             startIcon={startIcon}
             endIcon={endIcon}
@@ -39,6 +39,7 @@ const CommonButton = ({
             disabled={disabled}
             href={href}
             className={className}
+
         // loading={loading}
         >
             {text}

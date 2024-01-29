@@ -7,7 +7,7 @@ const PaperContainer = ({ children, elevation, square, ...otherProps }) => {
     return (
         <Paper elevation={elevation} square={square}
             sx={{
-                borderRadius: '20px',
+                borderRadius: '8px',
                 border: '1px solid #F8F9FA',
                 background: lightTheme.palette.bgWhite.main,
                 marginTop: '10px',

@@ -43,7 +43,7 @@ const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   "&:hover": {},
 }));
 
-const Header = ({ onClick }) => {
+const Header = ({ onClick ,open}) => {
   const { OnUpdateError, toggleLoader, user, onUpdateUser, menuList } =
     useAppContext();
   const [data, setData] = useState({});
@@ -94,7 +94,7 @@ const Header = ({ onClick }) => {
       }}
     >
       <Box display={"flex"} alignItems={"center"} gap={{ md: 2, xs: 1 }}>
-        <MenuIcon
+        {!open && <MenuIcon
           sx={{
             color: "black",
             alignSelf: "center",
@@ -103,10 +103,10 @@ const Header = ({ onClick }) => {
             cursor: "pointer",
           }}
           onClick={onClick}
-        />
+        />}
         <TextLabel
           title={activePage}
-          variant={"h4"}
+          variant={"h6"}
           fontWeight={"600"}
           textTransform={"capitalize"}
         />

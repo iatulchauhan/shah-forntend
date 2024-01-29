@@ -532,40 +532,31 @@ const User = () => {
   return (
     <>
       <PaperContainer elevation={0} square={false}>
-        <Grid container>
-          <Grid item xs={12}>
-            <Box
-              style={{
-                display: "flex",
-                justifyContent: "end",
-                padding: "15px",
-                gap: 5,
-                flexWrap: "wrap",
-              }}
-            >
-              {user?.userType === Roles?.Marketing && <CommonButton
-                width={"130px"}
-                text={permissions?.create ? "Add Guest User" : ""}
-                onClick={() => {
-                  handleClear();
-                  setMarketingModel(true)
-                  setModel(false);
-                }}
-              />}
-              {(user?.userType === Roles?.Receptionist || user?.userType === 0) && <CommonButton
-                width={"120px"}
-                text={permissions?.create ? "Add Visitor" : ""}
-                onClick={() => {
-                  handleClear();
-                  setVisitorModel(true);
-                  setCustomerModel(false);
-                  setModel(false);
-                }}
-              />}
+        <Grid container spacing={1} xs={12} md={12} sm={12} lg={12}>
+          <Grid item xs={12} md={12} sm={12} lg={12}>
+            <Box sx={{ display: "flex", justifyContent: { xs: "center", sm: "center", md: "end", lg: "end" }, padding: "10px", gap: 1, flexWrap: "wrap", }}>
+              {user?.userType === Roles?.Marketing &&
+                <CommonButton
+                  text={permissions?.create ? "Add Guest User" : ""}
+                  onClick={() => {
+                    handleClear();
+                    setMarketingModel(true)
+                    setModel(false);
+                  }}
+                />}
+              {(user?.userType === Roles?.Receptionist || user?.userType === 0) &&
+                <CommonButton
+                  text={permissions?.create ? "Add Visitor" : ""}
+                  onClick={() => {
+                    handleClear();
+                    setVisitorModel(true);
+                    setCustomerModel(false);
+                    setModel(false);
+                  }}
+                />}
               {user?.userType === 0 && (
                 <>
                   <CommonButton
-                    width={"120px"}
                     text={permissions?.create ? "Add Client" : ""}
                     onClick={() => {
                       handleClear();
@@ -575,7 +566,7 @@ const User = () => {
                     }}
                   />
                   <CommonButton
-                    width={"120px"}
+                    // width={"120px"}
                     text={permissions?.create ? "Add Role" : ""}
                     onClick={() => {
                       handleClear();
@@ -740,6 +731,7 @@ const User = () => {
                   onClick={() => {
                     setModel(true);
                   }}
+                  variant={"subtitle1"}
                   handleSearch={(value) => { setSearch(value); }}
                 />
               </Grid>
@@ -819,16 +811,20 @@ const User = () => {
                   )}
                 </TableContainer>
               </Grid>
+              {userDetails?.count > 0 &&
+                <Grid item xs={12}>
+                  <CommonPagination
+                    count={userDetails?.count}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    onPageChange={handleChangePage}
+                  />
+                </Grid>
+              }
+
             </Grid>
-            {userDetails?.count > 0 && <Box p={1}>
-              <CommonPagination
-                count={userDetails?.count}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                onPageChange={handleChangePage}
-              />
-            </Box>}
+
           </>
         )}
       </PaperContainer>

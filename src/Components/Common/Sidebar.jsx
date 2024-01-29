@@ -32,7 +32,8 @@ import CalenderIcon from "../Icons/calenderIcon";
 import ProfileTicIcon from "../Icons/profileTicIcon";
 import InfoIcon from "../Icons/infoIcon";
 import ReminderIcon from "../Icons/reminderIcon";
-
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 const drawerWidth = 275;
 
 const openedMixin = (theme) => ({
@@ -121,7 +122,7 @@ export default function SideBar(props) {
   const sidebarRef = useRef(null);
   const { user, logout, toggleSideBar, menuList } = useAppContext();
   const theme = useTheme()
-  const [open, setOpen] = useState(width > 991 ? true : false);
+  const [open, setOpen] = useState(width > 991 ? false : true);
 
   const menuIconList = [
     {
@@ -218,11 +219,7 @@ export default function SideBar(props) {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        sidebarRef.current &&
-        width < 991 &&
-        !sidebarRef.current.contains(event.target)
-      ) {
+      if (sidebarRef.current && width < 991 && !sidebarRef.current.contains(event.target)) {
         setOpen(false);
       }
     };
@@ -270,14 +267,16 @@ export default function SideBar(props) {
               marginLeft: 0.8,
             }}
             onClick={handleDrawerOpen}
+            handleDrawerOpen={handleDrawerOpen}
           />
         </AppBar>
         <Drawer
-          className="drawer_main"
+          // className="drawer_main"
           variant="permanent"
           open={open}
           onClose={handleDrawerOpen}
           ref={sidebarRef}
+          
         >
           <DrawerHeader
             sx={{
@@ -289,102 +288,60 @@ export default function SideBar(props) {
               marginTop: '10px',
             }}
           >
-            {/* <IconButton
-              onClick={handleDrawerOpen}
-              sx={{
-                width: "100%",
-                // justifyContent: open ? "space-between" : "center",
-              }}
-            > */}
-              {open ? (
-                <>
-                  <Assets onClick={handleDrawerOpen} style={{cursor: "pointer"}} height={"50px"} src={"/assets/icons/logo.png"} absolutePath={true}  />
-                  {/* <button onClick={handleDrawerOpen}>Logo</button> */}
-                </>
-              ) : (
-                <Assets onClick={handleDrawerOpen} style={{cursor: "pointer"}} height={"50px"} src={"/assets/icons/logo.png"} absolutePath={true}  />
-                // <button onClick={handleDrawerOpen}>Logo</button>
 
-              )}
-            {/* </IconButton> */}
+            {open &&
+              <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={10}>
+                <Assets style={{ cursor: "pointer" }} height={width < 991 ? "40px" : "50px"} src={"/assets/icons/logo.png"} absolutePath={true} />
+                <HighlightOffIcon sx={{ color: theme.palette.primary.main, fontSize: "30px" }} onClick={handleDrawerOpen} />
+              </Box>
+            }
           </DrawerHeader>
           <List sx={{
-            padding: {
-              xs: 1,
-              sm: 1,
-              md: theme => theme.spacing(3),
-              lg: theme => theme.spacing(3),
-            },
+            padding: { xs: 1, sm: 1, md: theme => theme.spacing(3), lg: theme => theme.spacing(3), marginTop: 5 },
             overflow: "scroll",
-            "::-webkit-scrollbar": {
-              width: "0.5px"
-            },
-            "::-webkit-scrollbar-thumb": {
-              backgroundColor: "transparent"
-            }
+            "::-webkit-scrollbar": { width: "0.5px" },
+            "::-webkit-scrollbar-thumb": { backgroundColor: "transparent" }
           }}>
             {menuList.map((item, index) => {
               console.log(item, "item")
               return (
                 <Link
                   to={item.path}
-                  className={
-                    item?.activeLinks?.includes(location.pathname.split("/")?.[1])
-                      ? "active"
-                      : "nav-link width-100"
-                  }
+                  className={item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "active" : "nav-link width-100"}
                   onClick={width > 991 ? () => { } : () => handleDrawerOpen()}
                 >
                   <ListItem
                     key={index}
                     disablePadding
-                    sx={{
-                      display: "block",
-                      marginBottom: 0.5,
-                      borderRadius: '18px',
-                    }}
+                    sx={{ display: "block", marginBottom: 0.5, borderRadius: '10px', }}
                   >
                     <ListItemButton
                       sx={{
-                        minHeight: 50,
+                        minHeight: 20,
+
                         justifyContent: open ? "initial" : "center",
-                        px: 2.5,
+                        px: 2,
                         marginBottom: 2,
-                        backgroundColor: item?.activeLinks?.includes(
-                          location.pathname.split("/")?.[1]
-                        )
-                          ? "#5D5FEF"
-                          : "#FFFFFF",
-                        borderRadius: '16px',
+                        backgroundColor: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "#5D5FEF" : "#FFFFFF",
+                        borderRadius: '10px',
                         "&:hover": {
                           backgroundColor: "#5D5FEF",
-                          ".MuiListItemText-root .MuiTypography-root": {
-                            color: "#FFFFFF",
-                          },
+                          ".MuiListItemText-root .MuiTypography-root": { color: "#FFFFFF", },
                         },
                       }}
                     >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          color: "#424448",
-                          mr: open ? 1 : "auto",
-                          justifyContent: "center",
-                        }}
-                      >
+                      <ListItemIcon sx={{ minWidth: 0, color: "#424448", mr: open ? 1 : "auto", justifyContent: "center", }}>
                         {getIcon(item?.page)}
-
                       </ListItemIcon>
                       <ListItemText
                         style={{ whiteSpace: "nowrap" }}
                         primary={item?.page}
                         sx={{
-                          color: item?.activeLinks?.includes(
-                            location.pathname.split("/")?.[1]
-                          )
-                            ? "#FFFFFF"
-                            : "#737791",
+                          color: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "#FFFFFF" : "#737791",
                           opacity: open ? 1 : 0,
+                          "& .MuiTypography-root": {
+                            fontSize: '14px',
+                          }
                         }}
                       />
                     </ListItemButton>

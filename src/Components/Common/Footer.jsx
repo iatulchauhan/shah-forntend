@@ -13,7 +13,7 @@ const useStyles = makeStyles()((theme) => {
             background: theme.palette.bgWhite.main,
             boxShadow: '0px -1px 0px 0px rgba(0, 0, 0, 0.05)',
             [theme.breakpoints.down("md")]: {
-                    padding: '10px 20px',
+                padding: '10px 20px',
                 width: `100% !important`,
                 marginLeft: "-16px !important"
             },
@@ -36,7 +36,12 @@ const useStyles = makeStyles()((theme) => {
             fontWeight: "600",
             color: theme.palette.bgDarkPrimary.main,
             [theme.breakpoints.down("sm")]: {
-                fontSize: "12px",
+                fontSize: "10px",
+            }
+        },
+        privacyPolicy: {
+            [theme.breakpoints.down("sm")]: {
+                display: "none",
             }
         }
     };
@@ -48,8 +53,8 @@ const Footer = ({ open }) => {
         <>
             <Box className={classes.footerMain} style={{ width: !open ? "calc(100% - 48px)" : "calc(100% - 255px)", marginLeft: !open ? "48px" : "255px" }}>
                 <Box className={classes.miniFooterItems} sx={{ display: "flex", flexDirection: { xl: "row", lg: "row", md: "row", sm: "column", xs: "column" }, textAlign: "center" }}>
-                    <Typography className={classes.footerLinkText}> 2023 © Copyright - Shah Investment Made with <span style={{ color: "red" }}> ❤ </span> for Investment.</Typography>
-                    <Box  sx={{ display: "flex", flexDirection: "row", gap: "5px", paddingRight: "10px" }}>
+                    <Typography className={classes.footerLinkText}>  © {new Date()?.getFullYear()} Copyright - Shah Investment Made with <span style={{ color: "red" }}> ❤ </span> for Investment.</Typography>
+                    <Box sx={{ display: "flex", flexDirection: "row", gap: "5px", paddingRight: "10px" }} className={classes.privacyPolicy}>
                         <Typography className={classes.footerLinkText}> Privacy policy </Typography>
                         <Divider orientation="vertical" variant="middle" flexItem style={{ borderColor: "black", margin: "5px" }} />
                         <Typography className={classes.footerLinkText}> Terms and Condition</Typography>
