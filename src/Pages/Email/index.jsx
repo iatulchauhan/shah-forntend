@@ -194,25 +194,19 @@ const Email = () => {
     if (handleValidation()) {
       toggleLoader();
       const selectedUserEmail = multiSelectedUser?.map((item) => item.email);
-      const anotherUserEmail = data?.anotherUser
-        ?.split(",")
-        .map((email) => email.trim());
-
+      const anotherUserEmail = data?.anotherUser?.split(",").map((email) => email.trim());
       let body = {
         emails: [...selectedUserEmail, ...anotherUserEmail],
         title: data?.title,
         content: description,
-        pdf: imageData || "",
-        image: pdfData || "",
+        image: imageData ? imageData : "",
+        pdf: pdfData ? pdfData : "",
       };
-      axios
-        .post(`send_email`, body)
+      axios.post(`send_email`, body)
         .then((res) => {
           if (res?.data?.data) {
             toggleLoader();
-            setData({
-              description: "<p><br></p>"
-            });
+            setData({ description: "<p><br></p>" });
             setDescription("");
             setMultiSelectedUser([]);
             setImageData(null);

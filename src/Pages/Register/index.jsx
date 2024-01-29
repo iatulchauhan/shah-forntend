@@ -92,7 +92,7 @@ const Register = () => {
     }
 
 return (
-    <AuthLayout logo={<Assets height={"70px"} src={"/assets/icons/logo.png"} absolutePath={true} />} login={"Register"} account={'Please register to your account'} newAccount={'Already have an account?'} register={'Login here'}>
+    <AuthLayout logo={<Assets height={"70px"} src={"/assets/icons/logo.png"} absolutePath={true} />} login={"Register"} account={'Please register to your account'} >
         <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center' }}>
             <Grid item xs={10} sm={10} md={10} lg={10} style={{ marginTop: '20px' }}>
                 <CommonTextField

@@ -217,12 +217,6 @@ const CamposeEmail = ({
                   OnDelate={() => handleDeleteFile("image")}
                   acceptFile="image/png, image/gif, image/jpeg"
                 />
-                {/* <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={!imageData ? error?.selectImage : ""}
-                  /> */}
                 <TextLabel
                   fontSize={"12px"}
                   color={"red"}
@@ -242,19 +236,12 @@ const CamposeEmail = ({
                 <FileUpload
                   text={"Upload PDF"}
                   handleFileChange={(e) => {
-                    console.log(e.target.files[0], "e.target.files");
                     handleUpload(e.target.files[0], "pdf");
                   }}
                   selectedFile={pdfData}
                   OnDelate={() => handleDeleteFile("pdf")}
-                  acceptFile="application/pdf"
+                  acceptFile="application/pdf , application/msword"
                 />
-                {/* <TextLabel
-                    fontSize={"12px"}
-                    color={"red"}
-                    fontWeight={"400"}
-                    title={!pdfData ? error?.selectPdf : ""}
-                  /> */}
                 <TextLabel
                   fontSize={"12px"}
                   color={"red"}
@@ -381,7 +368,6 @@ const CamposeEmail = ({
                       <Fab
                         size="small"
                         onClick={() => _deleteEmail(getEmailData?._id)}
-                      // onClick={()=> handleDeleteFile(getEmailData?._id)}
                       >
                         <DeleteForeverIcon />
                       </Fab>

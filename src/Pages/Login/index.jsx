@@ -118,8 +118,6 @@ const Login = () => {
         logo={<Assets height={"70px"} src={"/assets/icons/logo.png"} absolutePath={true} />}
         login={"Login"}
         account={"Please login to your account"}
-        newAccount={"Already have an account?"}
-        register={"Login here"}
       >
         <Grid
           container
