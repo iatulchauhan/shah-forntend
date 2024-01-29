@@ -170,19 +170,19 @@ div.loading {
     left: 0;
     bottom: 0;
     right: 0;
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
 }
 
 .uil-ring-css>div {
     position: absolute;
     display: block;
-    width: 160px;
-    height: 160px;
+    width: 100px;
+    height: 100px;
     top: 20px;
     left: 20px;
-    border-radius: 80px;
-    box-shadow: 0 6px 0 0 rgb(65, 66, 167);
+    border-radius: 100px;
+    box-shadow: 5px 8px 5px 0 rgb(66, 68, 195);
     -ms-animation: uil-ring-anim 1s linear infinite;
     -moz-animation: uil-ring-anim 1s linear infinite;
     -webkit-animation: uil-ring-anim 1s linear infinite;
