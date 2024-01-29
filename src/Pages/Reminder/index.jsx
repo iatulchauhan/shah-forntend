@@ -21,10 +21,10 @@ import CommonButton from '../../Components/Common/Button/CommonButton';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         fontWeight: 600,
-        fontSize: 16,
+        fontSize: 14,
         color: theme.palette.primary.main,
         fontFamily: "Poppins",
-        padding: "16px 8px",
+        padding: 5,
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,

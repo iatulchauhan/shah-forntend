@@ -30,10 +30,10 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     fontWeight: 600,
-    fontSize: 16,
+    fontSize: 14,
     color: theme.palette.primary.main,
     fontFamily: "Poppins",
-    padding: "16px 8px",
+    padding: 5,
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
@@ -93,7 +93,7 @@ const useStyles = makeStyles()((theme) => {
 
 const FinancialData = () => {
   const { classes } = useStyles();
-  const { OnUpdateError, toggleLoader, menuList } = useAppContext();
+  const { OnUpdateError, toggleLoader, menuList, user } = useAppContext();
   const location = useLocation();
   const { pathname } = location;
   //States
@@ -117,6 +117,8 @@ const FinancialData = () => {
     setRowsPerPage(value);
     setPage(0);
   };
+
+  console.log(user, "user")
 
   //Validation
   const handleValidation = () => {
@@ -184,11 +186,8 @@ const FinancialData = () => {
     if (handleValidation()) {
       toggleLoader();
       let body = {
-        client: clients?.response?.filter((e) => e?.name == selectedClient)[0]
-          ?._id,
-        clientBranch: clients?.response?.filter(
-          (e) => e?.name == selectedClient
-        )[0]?.branch,
+        client: clients?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
+        clientBranch: clients?.response?.filter((e) => e?.name == selectedClient)[0]?.branch,
         investment: data?.investment,
         investmentDays: data?.investmentDays,
         returnOfInvestment: data?.returnOfInvestment,
@@ -288,8 +287,8 @@ const FinancialData = () => {
         <Grid container>
           <Grid item xs={12}>
             <TableHeading
-              title="Financial Data History"
-              buttonText={permissions?.create ? `Add Financial Data` : ""}
+              title={user?.userType === 3 ? "Assign File" : "Financial Data History"}
+              buttonText={permissions?.create ? `Add ${user?.userType === 3 ? "Assign File" : "Financial Data"}` : ""}
               onClick={() => setModel(true)}
               handleSearch={(value) => { setSearch(value); }}
             />
@@ -400,7 +399,7 @@ const FinancialData = () => {
         <CommonModal
           open={model}
           onClose={handleClear}
-          title={`${isEdit ? "Update" : "Add"} Financial`}
+          title={`${isEdit ? "Update" : "Add"} ${user?.userType === 3 ? "Assign File" : "Financial Data"}`}
           content={
             <AddFinancialData
               data={data}
@@ -412,6 +411,7 @@ const FinancialData = () => {
               setSelectedClient={setSelectedClient}
               selectedClient={selectedClient}
               clients={clients}
+              user={user}
             />
           }
         />

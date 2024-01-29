@@ -108,7 +108,6 @@ const AddMeeting = ({
             blurOnSelect
             placeholder={"Select Client"}
             disabled={isEdit ? (updatedMeetingDetails?.isEdit ? false : true) : false}
-
           />
           <TextLabel
             fontSize={"12px"}

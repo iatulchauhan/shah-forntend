@@ -29,11 +29,11 @@ import AddClient from "../../Components/Client";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     fontWeight: 600,
-    fontSize: 16,
+    fontSize: 14,
     color: theme.palette.primary.main,
     fontFamily: "Poppins",
     whiteSpace: "nowrap",
-    padding: "16px 8px",
+    padding: 5,
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,

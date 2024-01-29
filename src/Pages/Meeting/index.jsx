@@ -32,10 +32,10 @@ import Swal from "sweetalert2";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     fontWeight: 600,
-    fontSize: 16,
+    fontSize: 14,
     color: theme.palette.primary.main,
     fontFamily: "Poppins",
-    padding: "16px 8px",
+    padding: 5,
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
@@ -482,82 +482,86 @@ const MeetingList = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {meetingDetails?.response?.map((row, index) => (
-                    <StyledTableRow key={index}>
-                      <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                      <StyledTableCell
-                        className={classes.paddedRow}
-                        component="th"
-                        scope="row"
-                      >
-                        {row?.clientDetails?.name}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {row?.meetingWithDetails?.name}
-                      </StyledTableCell>
-                      <StyledTableCell>{row?.meetingDate}</StyledTableCell>
-                      <StyledTableCell align="center">
-                        {row?.startTime}
-                      </StyledTableCell>
-                      <StyledTableCell className={classes.paddedRow}>
-                        <Box display={"flex"} justifyContent={"center"}>
-                          <TextLabel
-                            fontSize={"12px"}
-                            color={"white"}
-                            fontWeight={"400"}
-                            title={
-                              meetinStatusConfig?.find(
-                                (e) => e?.statusId === row.status
-                              )?.statusName
-                            }
-                            textAlign={"center"}
-                            style={{
-                              backgroundColor: statusColors[row?.status],
-                              borderRadius: "20px",
-                              width: "130px",
-                              padding: "5px 5px",
-                            }}
-                          />
-                        </Box>
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {row?.creatorDetails?.name}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <Box display={"flex"} gap={1}>
-                          {/* <Assets
+                  {meetingDetails?.response?.map((row, index) => {
+                    const getSlotStartTime = row?.slot_time?.filter((e) => e?.isBooked)
+                    console.log(getSlotStartTime, "row?.startTime?.slot_time[0]?.startTime")
+                    return (
+                      <StyledTableRow key={index}>
+                        <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
+                        <StyledTableCell
+                          className={classes.paddedRow}
+                          component="th"
+                          scope="row"
+                        >
+                          {row?.clientDetails?.name}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {row?.meetingWithDetails?.name}
+                        </StyledTableCell>
+                        <StyledTableCell>{row?.meetingDate}</StyledTableCell>
+                        <StyledTableCell align="center">
+                          {convertToAmPm(getSlotStartTime[0]?.startTime)}
+                        </StyledTableCell>
+                        <StyledTableCell className={classes.paddedRow}>
+                          <Box display={"flex"} justifyContent={"center"}>
+                            <TextLabel
+                              fontSize={"12px"}
+                              color={"white"}
+                              fontWeight={"400"}
+                              title={
+                                meetinStatusConfig?.find(
+                                  (e) => e?.statusId === row.status
+                                )?.statusName
+                              }
+                              textAlign={"center"}
+                              style={{
+                                backgroundColor: statusColors[row?.status],
+                                borderRadius: "20px",
+                                width: "130px",
+                                padding: "5px 5px",
+                              }}
+                            />
+                          </Box>
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {row?.creatorDetails?.name}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          <Box display={"flex"} gap={1}>
+                            {/* <Assets
                             className={classes.viewBox}
                             src={"/assets/icons/view.svg"}
                             absolutePath={true}
                           /> */}
-                          {permissions?.update && (
-                            <Assets
-                              className={classes.writeBox}
-                              src={"/assets/icons/write.svg"}
-                              absolutePath={true}
-                              onClick={() => {
-                                console.log("lodaaa")
-                                setMeetingId(row?._id);
-                                setModel(true);
-                                setIsEdit(true);
-                              }}
-                            />
-                          )}
+                            {permissions?.update && (
+                              <Assets
+                                className={classes.writeBox}
+                                src={"/assets/icons/write.svg"}
+                                absolutePath={true}
+                                onClick={() => {
+                                  console.log("lodaaa")
+                                  setMeetingId(row?._id);
+                                  setModel(true);
+                                  setIsEdit(true);
+                                }}
+                              />
+                            )}
 
-                          {permissions?.delete && (
-                            <Assets
-                              className={classes.deleteBox}
-                              src={"/assets/icons/delete.svg"}
-                              absolutePath={true}
-                              onClick={() => {
-                                _deleteScheduleMeeting(row?._id);
-                              }}
-                            />
-                          )}
-                        </Box>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
+                            {permissions?.delete && (
+                              <Assets
+                                className={classes.deleteBox}
+                                src={"/assets/icons/delete.svg"}
+                                absolutePath={true}
+                                onClick={() => {
+                                  _deleteScheduleMeeting(row?._id);
+                                }}
+                              />
+                            )}
+                          </Box>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    )
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>

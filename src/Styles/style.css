@@ -190,7 +190,6 @@ div.loading {
     animation: uil-ring-anim 1s linear infinite;
 }
 
-
 .alert {
     --bs-alert-bg:transparent;
     --bs-alert-padding-x:1rem;

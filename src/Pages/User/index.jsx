@@ -28,11 +28,11 @@ import Swal from "sweetalert2";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     fontWeight: 600,
-    fontSize: 16,
+    fontSize: 14,
     color: theme.palette.primary.main,
     fontFamily: "Poppins",
     whiteSpace: "nowrap",
-    padding: "16px 8px"
+    padding: 8
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,

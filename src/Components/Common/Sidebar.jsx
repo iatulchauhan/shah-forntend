@@ -175,7 +175,7 @@ export default function SideBar(props) {
     },
     {
       title: "Assign File",
-      icon: <ProfileIcon color={location?.pathname === "/assign-file" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ProfileIcon color={location?.pathname === "/financial-data" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "New File",

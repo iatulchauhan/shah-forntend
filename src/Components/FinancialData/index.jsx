@@ -41,7 +41,7 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSelectedClient, selectedClient, clients, }) => {
+const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSelectedClient, selectedClient, clients, user }) => {
     const { classes } = useStyles();
     const theme = useTheme();
     return (
@@ -104,8 +104,8 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                         <CommonButton
-                            width={'60%'}
-                            text={`${isEdit ? "Update" : "Create"} Financial`}
+                            width={'160px'}
+                            text={`${isEdit ? "Update" : "Add"}  ${user?.userType === 3 ? "Assign File" : "Financial Data"}`}
                             type="submit"
                             onClick={onSubmit}
                         />

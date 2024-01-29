@@ -22,14 +22,15 @@ import CommonButton from '../../Components/Common/Button/CommonButton';
 import { Regex } from '../../Utils/regex';
 import CommonPagination from '../../Components/Common/Pagination';
 import { lightTheme } from '../../theme';
+import AutoCompleteSearch from '../../Components/Common/commonAutoComplete';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         fontWeight: 600,
-        fontSize: 16,
+        fontSize: 14,
         color: theme.palette.primary.main,
         fontFamily: "Poppins",
-        padding: "16px 8px",
+        padding: 5,
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
@@ -115,11 +116,6 @@ const rows = [
 ];
 const AssignFile = () => {
     const { classes } = useStyles();
-    const state = ['Gujarat ', 'Gujarat']
-    const city = ['Surat', 'Ahmadabad']
-    const braches = ['Surat', 'Ahmadabad']
-    const Plan = ['Surat', 'Ahmadabad']
-    const assignTo = ['Surat', 'Ahmadabad']
 
     //States
     const [model, setModel] = useState(false);
@@ -127,7 +123,7 @@ const AssignFile = () => {
     const [error, setError] = useState({})
     const [isSubmit, setIsSubmit] = useState(false)
     const [rowsPerPage, setRowsPerPage] = useState(10);
-
+    const [selectedUser, setSelectedUser] = useState("");
     const [page, setPage] = useState(0);
     const handleChangePage = (newPage) => {
         setPage(newPage);
@@ -136,30 +132,26 @@ const AssignFile = () => {
         setRowsPerPage(value);
         setPage(0);
     };
+
     //Validation
     const handleValidation = () => {
         let formIsValid = true
         let errors = {}
-        if (!data?.name) {
-            formIsValid = false
-            errors['name'] = 'Please enter name.'
-        }
-
-        if (!data?.contactno) {
-            formIsValid = false
-            errors['contactno'] = 'Please enter Contact No.'
-        }
-        if (!data?.investmetAmount) {
+        if (!selectedUser) {
             formIsValid = false;
-            errors["investmetAmount"] = "please enter Investmet Amount";
+            errors["selectedUser"] = "*Please select user.";
         }
-        if (!data?.plan) {
-            formIsValid = false
-            errors['plan'] = 'Please select plan.'
+        if (!data?.investment) {
+            formIsValid = false;
+            errors["investment"] = "*Please enter Investment.";
         }
-        if (!data?.assignTo) {
-            formIsValid = false
-            errors['assignTo'] = 'Please select Assign.'
+        if (!data?.investmentDays) {
+            formIsValid = false;
+            errors["investmentDays"] = "*Please enter Investment Days.";
+        }
+        if (!data?.returnOfInvestment) {
+            formIsValid = false;
+            errors["returnOfInvestment"] = "*Please enter Return Of Investment.";
         }
         setError(errors)
         return formIsValid
@@ -249,74 +241,62 @@ const AssignFile = () => {
                 </Box>
             </PaperContainer>
 
-            <CommonModal open={model} onClose={() => setModel(false)} title={"Add New User"}
+            <CommonModal open={model} onClose={() => setModel(false)} title={"Add New File"}
                 content={
                     <Box>
                         <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
                             <Grid item xs={12} sm={12} md={12} lg={12}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Name'}
-                                    placeholder={"Enter User Name"}
-                                    type='text'
-                                    name='name'
-                                    value={data?.name}
-                                    onChange={(e) => handleChange(e, false)}
+                                <AutoCompleteSearch
+                                    fullWidth
+                                    backgroundColor="white"
+                                    text="Select user"
+                                    handleChange={(e, newValue) => setSelectedUser(newValue)}
+                                    // options={visitorDetails?.map((e) => `${e?.name}  (${userType?.filter((type) => type?.id === e?.userType)[0]?.label})`) || []}
+                                    options={[]}
+                                    name="selectedUser"
+                                    defaultValue={selectedUser || ""}
+                                    freeSolo
+                                    blurOnSelect
+                                    placeholder={"Select User"}
                                 />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.name ? error?.name : ""} />
+                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!selectedUser ? error?.selectedUser : ""} />
                             </Grid>
 
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <CommonTextField
-                                    fontWeight={400}
-                                    text={'Contact No.'}
-                                    placeholder={"Enter Contact No."}
-                                    type='number'
-                                    name='contactno'
-                                    value={data?.contactno}
-                                    onChange={(e) => handleChange(e, false)}
-                                />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.contactno ? error?.contactno : ""} />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                            <Grid item xs={12} sm={12} md={6} lg={4}>
                                 <CommonTextField
                                     fontWeight={400}
                                     text={'Investment Amount'}
-                                    placeholder={"Enter Amount"}
+                                    placeholder={"Enter Investment"}
                                     type='number'
-                                    name='investmetAmount'
-                                    value={data?.investmetAmount}
-                                    onChange={(e) => handleChange(e, false)}
+                                    name='investment'
+                                    value={data?.investment}
+                                    onChange={(e) => handleChange(e)}
                                 />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investmetAmount ? error?.investmetAmount : ""} />
+                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investment ? error?.investment : ""} />
                             </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={Plan || []}
-                                    text="Plan"
-                                    name="plan"
-                                    value={data?.plan}
-                                    onChange={(e) => {
-                                        setData({ ...data, plan: e.target.value })
-                                    }}
+                            <Grid item xs={12} sm={12} md={6} lg={4}>
+                                <CommonTextField
+                                    fontWeight={400}
+                                    text={'Investment Days'}
+                                    placeholder={"Enter Investment Days"}
+                                    type='number'
+                                    name='investmentDays'
+                                    value={data?.investmentDays}
+                                    onChange={(e) => handleChange(e)}
                                 />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.plan ? error?.plan : ""} />
+                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.investmentDays ? error?.investmentDays : ""} />
                             </Grid>
-                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                <SelectDropDown
-                                    fullWidth
-                                    width={'100%'}
-                                    values={assignTo || []}
-                                    text="Assign To"
-                                    name="assignTo"
-                                    value={data?.assignTo}
-                                    onChange={(e) => {
-                                        setData({ ...data, assignTo: e.target.value })
-                                    }}
+                            <Grid item xs={12} sm={12} md={6} lg={4}>
+                                <CommonTextField
+                                    fontWeight={400}
+                                    text={'Return Of Investment (%)'}
+                                    placeholder={"Enter Return Of Investment"}
+                                    type='number'
+                                    name='returnOfInvestment'
+                                    value={data?.returnOfInvestment}
+                                    onChange={(e) => handleChange(e)}
                                 />
-                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.assignTo ? error?.assignTo : ""} />
+                                <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
                             </Grid>
 
                             <Grid item xs={12} sm={12} md={12} lg={12}>

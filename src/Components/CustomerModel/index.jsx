@@ -16,12 +16,12 @@ import { Regex } from '../../Utils/regex';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         fontWeight: 400,
-        fontSize: 15,
+        fontSize: 14,
         color: '#000000',
         fontFamily: "Poppins",
         whiteSpace: 'nowrap',
         background: '#d6d7ff',
-        padding: '5px',
+        padding: 5,
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
