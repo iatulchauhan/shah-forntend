@@ -186,17 +186,16 @@ const FinancialData = () => {
     if (handleValidation()) {
       toggleLoader();
       let body = {
-        client: clients?.response?.filter((e) => e?.name == selectedClient)[0]?._id,
-        clientBranch: clients?.response?.filter((e) => e?.name == selectedClient)[0]?.branch,
+        client: clients?.filter((e) => e?.name == selectedClient)[0]?._id,
+        clientBranch: clients?.filter((e) => e?.name == selectedClient)[0]?.branch,
         investment: data?.investment,
         investmentDays: data?.investmentDays,
-        returnOfInvestment: data?.returnOfInvestment,
+        returnOfInvestment: data?.returnOfInvestment
       };
       if (data?._id) {
         body.id = data?._id;
       }
-      axios
-        .post(`userPurchasePlan/${data?._id ? "update" : "create"}`, body)
+      axios.post(`userPurchasePlan/${data?._id ? "update" : "create"}`, body)
         .then((res) => {
           if (res?.data?.data) {
             swal(res?.data?.message, { icon: "success", timer: 5000 });
@@ -209,14 +208,14 @@ const FinancialData = () => {
           toggleLoader();
           OnUpdateError(err.data.message);
         });
-    }
+    } 
   };
 
   const _getUsers = () => {
     toggleLoader();
 
     axios
-      .post("/users", { userType: [1] })
+      .post("/userPurchasePlan/userList")
       .then((res) => {
         if (res?.data?.data) {
           setClients(res?.data?.data);

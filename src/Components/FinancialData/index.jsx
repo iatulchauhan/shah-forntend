@@ -54,7 +54,7 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                         text="Client"
                         placeholder={"Select Client"}
                         handleChange={(e, newValue) => setSelectedClient(newValue)}
-                        options={clients?.response?.map((e) => e?.name) || []}
+                        options={clients?.map((e) => e?.name) || []}
                         name="selectedClient"
                         defaultValue={selectedClient || ""}
                         freeSolo
