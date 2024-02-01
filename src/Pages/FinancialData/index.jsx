@@ -208,7 +208,7 @@ const FinancialData = () => {
           toggleLoader();
           OnUpdateError(err.data.message);
         });
-    } 
+    }
   };
 
   const _getUsers = () => {
@@ -312,6 +312,9 @@ const FinancialData = () => {
                       <StyledTableCell>
                         Total Balance
                       </StyledTableCell>
+                      <StyledTableCell>
+                        IsIDGenerated
+                      </StyledTableCell>
                       <StyledTableCell>Action</StyledTableCell>
                     </TableRow>
                   </TableHead>
@@ -336,6 +339,9 @@ const FinancialData = () => {
                               }(${row.returnOfInvestment}%)`}</StyledTableCell>
                             <StyledTableCell>
                               {row.investment}
+                            </StyledTableCell>
+                            <StyledTableCell>
+                              {row.isGenerateId ? "Generated" : "Pending"}
                             </StyledTableCell>
                             <StyledTableCell>
                               <Box

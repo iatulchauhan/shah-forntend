@@ -3,7 +3,8 @@ import { getLSItem, removeLSItem } from "./LocalStorage";
 import swal from "sweetalert";
 
 // export const BASE_URL = `${window?.location?.hostname == "localhost" ? "http://localhost:8000/" : "http://shah.webisheet.in/"}`;
-export const BASE_URL = `https://shah.webisheet.in/`;
+export const BASE_URL = `http://192.168.1.37:8000/`;
+// export const BASE_URL = `https://shah.webisheet.in/`;
 export const Image_BASE_URL = "https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/";
 
 const instance = axios.create({
