@@ -313,7 +313,7 @@ const FinancialData = () => {
                         Total Balance
                       </StyledTableCell>
                       <StyledTableCell>
-                        IsIDGenerated
+                        ID Generated
                       </StyledTableCell>
                       <StyledTableCell>Action</StyledTableCell>
                     </TableRow>
@@ -340,14 +340,11 @@ const FinancialData = () => {
                             <StyledTableCell>
                               {row.investment}
                             </StyledTableCell>
-                            <StyledTableCell>
+                            <StyledTableCell style={{ color: row.isGenerateId ? "#72C75F" : "#FDCF71" }}>
                               {row.isGenerateId ? "Generated" : "Pending"}
                             </StyledTableCell>
                             <StyledTableCell>
-                              <Box
-                                display={"flex"}
-                                gap={1}
-                              >
+                              <Box display={"flex"} gap={1}>
                                 {permissions?.update && (
                                   <Assets
                                     className={classes.writeBox}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Grid, } from "@mui/material";
+import { Box, Grid, Typography, } from "@mui/material";
 import TextLabel from '../../Components/Common/Fields/TextLabel';
 import CommonTextField from '../../Components/Common/Fields/TextField';
 import CommonButton from '../../Components/Common/Button/CommonButton';
@@ -8,6 +8,7 @@ import { useTheme } from '@mui/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
+import { lightTheme } from '../../theme';
 const useStyles = makeStyles()((theme) => {
     return {
         dateBox: {
@@ -73,6 +74,7 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                         name='investment'
                         value={data?.investment}
                         onChange={(e) => handleChange(e)}
+                        disabled={data?.isGenerateId}
                     />
                     <TextLabel fontSize={"12px"} color={"red"} title={!data?.investment ? error?.investment : ""} />
                 </Grid>
@@ -85,6 +87,7 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                         name='investmentDays'
                         value={data?.investmentDays}
                         onChange={(e) => handleChange(e)}
+                        disabled={data?.isGenerateId}
                     />
                     <TextLabel fontSize={"12px"} color={"red"} title={!data?.investmentDays ? error?.investmentDays : ""} />
                 </Grid>
@@ -97,20 +100,26 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                         name='returnOfInvestment'
                         value={data?.returnOfInvestment}
                         onChange={(e) => handleChange(e)}
+                        disabled={data?.isGenerateId}
                     />
                     <TextLabel fontSize={"12px"} color={"red"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
-                        <CommonButton
-                            width={'160px'}
-                            text={`${isEdit ? "Update" : "Add"}  ${user?.userType === 3 ? "Assign File" : "Financial Data"}`}
-                            type="submit"
-                            onClick={onSubmit}
-                        />
+                {data?.isGenerateId ? <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                        <Typography style={{ fontSize: '14px', fontWeight: 500 }}>User Id are generateId</Typography>
                     </Box>
-                </Grid>
+                </Grid> :
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
+                            <CommonButton
+                                width={'160px'}
+                                text={`${isEdit ? "Update" : "Add"}  ${user?.userType === 3 ? "Assign File" : "Financial Data"}`}
+                                type="submit"
+                                onClick={onSubmit}
+                            />
+                        </Box>
+                    </Grid>}
             </Grid>
         </Box>
     )
