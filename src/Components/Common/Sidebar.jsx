@@ -21,7 +21,7 @@ import { makeStyles } from "tss-react/mui";
 import { getLSItem } from "../../APiSetUp/LocalStorage";
 import axios from "../../APiSetUp/axios";
 import DashboardIcon from "../Icons/dashboardIcon";
-import { useTheme } from "@mui/material";
+import { Divider, useTheme } from "@mui/material";
 import ProfileIcon from "../Icons/profileIcon";
 import BranchIcon from "../Icons/branchIcon";
 import ClientIcon from "../Icons/clientIcon";
@@ -127,87 +127,87 @@ export default function SideBar(props) {
   const menuIconList = [
     {
       title: "Dashboard",
-      icon: <DashboardIcon color={location?.pathname === "/" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <DashboardIcon color={location?.pathname === "/" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Create User",
-      icon: <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "User List",
-      icon: <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ProfileIcon color={location?.pathname === "/user" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Create Branch",
-      icon: <BranchIcon color={location?.pathname === "/branches" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <BranchIcon color={location?.pathname === "/branches" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Client List",
-      icon: <ClientIcon color={location?.pathname === "/client" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ClientIcon color={location?.pathname === "/client" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Visitor List",
-      icon: <ProfileIcon color={location?.pathname === "/visitor" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ProfileIcon color={location?.pathname === "/visitor" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Email",
-      icon: <SmsIcon color={location?.pathname === "/email" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <SmsIcon color={location?.pathname === "/email" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Offer",
-      icon: <DiscountIcon color={location?.pathname === "/offer" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <DiscountIcon color={location?.pathname === "/offer" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Financial Data",
-      icon: <DolorIcon color={location?.pathname === "/financial-data" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <DolorIcon color={location?.pathname === "/financial-data" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Meeting List",
-      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "View Meeting",
-      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Schedule Meeting",
-      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <CalenderIcon color={location?.pathname === "/meeting" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Assign File",
-      icon: <ProfileIcon color={location?.pathname === "/financial-data" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ProfileIcon color={location?.pathname === "/financial-data" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "New File",
-      icon: <ProfileIcon color={location?.pathname === "/new-file" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ProfileIcon color={location?.pathname === "/new-file" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Modify Plan",
-      icon: <ProfileTicIcon color={location?.pathname === "/modify-plan" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ProfileTicIcon color={location?.pathname === "/modify-plan" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Expiring Plan List",
-      icon: <InfoIcon color={location?.pathname === "/expiring-plan" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <InfoIcon color={location?.pathname === "/expiring-plan" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Investment",
-      icon: <InfoIcon color={location?.pathname === "/investment" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <InfoIcon color={location?.pathname === "/investment" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Reminder",
-      icon: <ReminderIcon color={location?.pathname === "/reminder" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ReminderIcon color={location?.pathname === "/reminder" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Visitor History",
-      icon: <ProfileIcon color={location?.pathname === "/visitor-history" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ProfileIcon color={location?.pathname === "/visitor-history" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Payment",
-      icon: <DolorIcon color={location?.pathname === "/payment" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <DolorIcon color={location?.pathname === "/payment" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
     {
       title: "Verify Attendance",
-      icon: <ProfileTicIcon color={location?.pathname === "/verify-attendance" ? theme?.palette?.bgWhite?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
+      icon: <ProfileTicIcon color={location?.pathname === "/verify-attendance" ? theme?.palette?.primary?.main : theme?.palette?.bgLightExtraLightGray?.main} />,
     },
   ];
 
@@ -258,17 +258,8 @@ export default function SideBar(props) {
     <>
       {location?.pathname === "/login" || location?.pathname === "/register" || location?.pathname === "/forgot-password" || location?.pathname === "/otp-verification" || location?.pathname === "/reset-password" ? <>{props.children}</> : <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar position="fixed" open={open} style={{
-          boxShadow: '0px 1px 0px 0px rgba(0, 0, 0, 0.05)',
-        }}>
-          <Header
-            open={open}
-            sx={{
-              marginLeft: 0.8,
-            }}
-            onClick={handleDrawerOpen}
-            handleDrawerOpen={handleDrawerOpen}
-          />
+        <AppBar position="fixed" open={open} style={{ boxShadow: '0px 1px 0px 0px rgba(0, 0, 0, 0.05)', }}>
+          <Header open={open} sx={{ marginLeft: 0.8, }} onClick={handleDrawerOpen} handleDrawerOpen={handleDrawerOpen} />
         </AppBar>
         <Drawer
           // className="drawer_main"
@@ -276,19 +267,8 @@ export default function SideBar(props) {
           open={open}
           onClose={handleDrawerOpen}
           ref={sidebarRef}
-          
         >
-          <DrawerHeader
-            sx={{
-              background: "#fff",
-              zIndex: 999999,
-              // width: "275px",
-              display: "flex",
-              justifyContent: "center",
-              marginTop: '10px',
-            }}
-          >
-
+          <DrawerHeader sx={{ background: "#fff", zIndex: 999999, display: "flex", justifyContent: "center", marginTop: '10px', }}          >
             {open &&
               <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={10}>
                 <Assets style={{ cursor: "pointer" }} height={width < 991 ? "40px" : "50px"} src={"/assets/icons/logo.png"} absolutePath={true} />
@@ -297,7 +277,7 @@ export default function SideBar(props) {
             }
           </DrawerHeader>
           <List sx={{
-            padding: { xs: 1, sm: 1, md: theme => theme.spacing(3), lg: theme => theme.spacing(3), marginTop: 5 },
+            padding: { xs: 1, sm: 1, md: theme => theme.spacing(3), lg: theme => theme.spacing(3), marginTop: 15 },
             overflow: "scroll",
             "::-webkit-scrollbar": { width: "0.5px" },
             "::-webkit-scrollbar-thumb": { backgroundColor: "transparent" }
@@ -310,23 +290,18 @@ export default function SideBar(props) {
                   className={item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "active" : "nav-link width-100"}
                   onClick={width > 991 ? () => { } : () => handleDrawerOpen()}
                 >
-                  <ListItem
-                    key={index}
-                    disablePadding
-                    sx={{ display: "block", marginBottom: 0.5, borderRadius: '10px', }}
-                  >
+                  <ListItem key={index} disablePadding sx={{ display: "block", marginBottom: 0.2, }}>
                     <ListItemButton
                       sx={{
-                        minHeight: 20,
-
+                        minHeight: 18,
                         justifyContent: open ? "initial" : "center",
-                        px: 2,
-                        marginBottom: 2,
-                        backgroundColor: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "#5D5FEF" : "#FFFFFF",
-                        borderRadius: '10px',
+                        // px: 2,
+                        marginBottom: 1,
+                        borderLeft: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "5px solid #5D5FEF" : "",
+                        // borderRadius: '10px',
                         "&:hover": {
-                          backgroundColor: "#5D5FEF",
-                          ".MuiListItemText-root .MuiTypography-root": { color: "#FFFFFF", },
+                          // borderLeft: "3px solid #8f8f8f"
+                          // ".MuiListItemText-root .MuiTypography-root": { color: "#8f8f8f", },
                         },
                       }}
                     >
@@ -334,13 +309,14 @@ export default function SideBar(props) {
                         {getIcon(item?.page)}
                       </ListItemIcon>
                       <ListItemText
-                        style={{ whiteSpace: "nowrap" }}
+                        style={{ whiteSpace: "nowrap", }}
                         primary={item?.page}
                         sx={{
-                          color: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "#FFFFFF" : "#737791",
+                          color: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? theme.palette.primary.main : "#737791",
                           opacity: open ? 1 : 0,
                           "& .MuiTypography-root": {
                             fontSize: '14px',
+                            fontWeight: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? 'bold' : "normal",
                           }
                         }}
                       />
