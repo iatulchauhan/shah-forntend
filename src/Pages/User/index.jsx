@@ -246,6 +246,14 @@ const User = () => {
 
   const handleChange = (e, isInvestmentPlan, i) => {
     const { name, value } = e.target;
+
+    if (isInvestmentPlan && name === 'returnOfInvestment') {
+      if (value !== "" && (isNaN(value) || value < 0 || value > 100)) {
+        return;
+      }
+    }
+
+    
     if (isInvestmentPlan === true) {
       const modifyData = { ...data };
       if (modifyData.userPurchasePlan && modifyData.userPurchasePlan[i]) {
@@ -369,7 +377,7 @@ const User = () => {
         OnUpdateError(err.data.message);
       });
   };
-console.log(data,"datadatadata")
+  console.log(data, "datadatadata")
   const handleClear = () => {
     setData({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
     setModel(false);

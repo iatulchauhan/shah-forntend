@@ -1,12 +1,4 @@
-import {
-  InputLabel,
-  Typography,
-  Box,
-  InputAdornment,
-  IconButton,
-  TextField,
-  useTheme,
-} from "@mui/material";
+import { InputLabel, Typography, Box, InputAdornment, IconButton, TextField, useTheme, } from "@mui/material";
 import React, { useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import Visibility from "@mui/icons-material/Visibility";
@@ -45,24 +37,7 @@ const useStyles = makeStyles()((theme) => {
     },
   };
 });
-const CommonTextField = ({
-  text,
-  type,
-  placeholder,
-  height,
-  width,
-  valid,
-  multiline,
-  rows,
-  name,
-  value,
-  onChange,
-  onInput,
-  inputProps,
-  defaultValue,
-  fontWeight,
-  showPasswordToggle,
-  className,
+const CommonTextField = ({ text, type, placeholder, height, width, valid, multiline, rows, name, value, onChange, onInput, inputProps, defaultValue, fontWeight, showPasswordToggle, className,
   bgcolor,
   onKeyDown,
   onPaste,
@@ -99,7 +74,7 @@ const CommonTextField = ({
             sx={{
               marginRight: "3px",
               fontWeight: fontWeight,
-              fontSize: "15px",
+              fontSize: "14px",
               color: theme.palette.bgDarkPrimary.main,
               padding: '3px',
             }}

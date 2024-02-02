@@ -129,7 +129,7 @@ export default function AutoCompleteSearch({
                         sx={{
                             marginRight: "3px",
                             fontWeight: fontWeight,
-                            fontSize: "15px",
+                            fontSize: "14px",
                             color: theme.palette.bgDarkPrimary.main,
                             padding: '3px',
                         }}

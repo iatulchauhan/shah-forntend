@@ -111,7 +111,6 @@ export const lightTheme = createTheme({
     bgLightSuccess: {
       main: defaultBgLightSuccess,
     },
-
     bgLightExtraPrimary: {
       main: defaultBgLightExtraPrimary,
     },

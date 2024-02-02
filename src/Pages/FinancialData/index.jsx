@@ -8,6 +8,7 @@ import {
   TableContainer,
   Box,
   Grid,
+  useTheme,
 } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -26,6 +27,8 @@ import { permissionStatus } from "../../Utils/enum";
 import { useLocation } from "react-router-dom";
 import DataNotFound from "../../Components/Common/DataNotFound";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import TextLabel from "../../Components/Common/Fields/TextLabel";
+import { globalAmountConfig } from "../../Utils/globalConfig";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -96,8 +99,9 @@ const FinancialData = () => {
   const { OnUpdateError, toggleLoader, menuList, user } = useAppContext();
   const location = useLocation();
   const { pathname } = location;
+  const theme = useTheme()
   //States
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
   const [financialDetails, setFinancialDetails] = useState([]);
   const [model, setModel] = useState(false);
   const [error, setError] = useState({});
@@ -126,23 +130,104 @@ const FinancialData = () => {
     let errors = {};
     if (!selectedClient) {
       formIsValid = false;
-      errors["selectedClient"] = "*Please select Client.";
+      errors["selectedClient"] = "* Please select Client.";
     }
 
-    if (!data?.investment) {
-      formIsValid = false;
-      errors["investment"] = "*Please enter Investment.";
-    }
-    if (!data?.investmentDays) {
-      formIsValid = false;
-      errors["investmentDays"] = "*Please enter Investment Days.";
-    }
-    if (!data?.returnOfInvestment) {
-      formIsValid = false;
-      errors["returnOfInvestment"] = "*Please enter Return Of Investment.";
-    }
+    // if (!data?.investment) {
+    //   formIsValid = false;
+    //   errors["investment"] = "*Please enter Investment.";
+    // }
+    // if (!data?.investmentDays) {
+    //   formIsValid = false;
+    //   errors["investmentDays"] = "*Please enter Investment Days.";
+    // }
+    // if (!data?.returnOfInvestment) {
+    //   formIsValid = false;
+    //   errors["returnOfInvestment"] = "*Please enter Return Of Investment.";
+    // }
+    data?.userPurchasePlan?.map((e) => {
+      if (!e?.investment) {
+        formIsValid = false;
+        errors["investment"] = "* Please enter Investment.";
+      }
+      if (!e?.investmentDays) {
+        formIsValid = false;
+        errors["investmentDays"] = "* Please enter Investment Days.";
+      }
+      if (!e?.returnOfInvestment) {
+        formIsValid = false;
+        errors["returnOfInvestment"] = "* Please enter Return Of Investment.";
+      }
+    });
     setError(errors);
     return formIsValid;
+  };
+
+  const handleChange = (e, isInvestmentPlan, i) => {
+    const { name, value } = e.target;
+
+    if (isInvestmentPlan && name === 'returnOfInvestment') {
+      if (value !== "" && (isNaN(value) || value < 0 || value > 100)) {
+        return;
+      }
+    }
+
+    if (isInvestmentPlan === true) {
+      const modifyData = { ...data };
+      if (modifyData.userPurchasePlan && modifyData.userPurchasePlan[i]) {
+        modifyData.userPurchasePlan[i][name] = value?.replace(/,/g, '');
+      }
+      setData(modifyData);
+    } else {
+      setData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
+  const setUserPurchasePlanDelete = (i) => {
+    const modifyData = { ...data };
+    if (modifyData.userPurchasePlan && modifyData.userPurchasePlan.length > i) {
+      modifyData.userPurchasePlan.splice(i, 1);
+      setData(modifyData);
+    }
+  };
+
+  const setUserPurchasePlanAdd = () => {
+    setData({
+      ...data,
+      userPurchasePlan: [
+        ...data?.userPurchasePlan,
+        { _id: null, investment: "", investmentDays: "", returnOfInvestment: "" },
+      ],
+    });
+  };
+
+  const _getUsers = () => {
+    toggleLoader();
+
+    axios
+      .post("/userPurchasePlan/userList")
+      .then((res) => {
+        if (res?.data?.data) {
+          setClients(res?.data?.data);
+        }
+        toggleLoader();
+      })
+      .catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
+      });
+  };
+  const handleClear = () => {
+    setModel(false);
+    setData({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
+    setError({});
+    setIsEdit(false);
+    setFinancialId("");
+    setSelectedClient("");
+    _getUsers()
   };
 
   const _getFinancialData = () => {
@@ -188,9 +273,10 @@ const FinancialData = () => {
       let body = {
         client: clients?.filter((e) => e?.name == selectedClient)[0]?._id,
         clientBranch: clients?.filter((e) => e?.name == selectedClient)[0]?.branch,
-        investment: data?.investment,
-        investmentDays: data?.investmentDays,
-        returnOfInvestment: data?.returnOfInvestment
+        userPurchasePlan: data?.userPurchasePlan
+        // investment: data?.investment,
+        // investmentDays: data?.investmentDays,
+        // returnOfInvestment: data?.returnOfInvestment
       };
       if (data?._id) {
         body.id = data?._id;
@@ -211,39 +297,9 @@ const FinancialData = () => {
     }
   };
 
-  const _getUsers = () => {
-    toggleLoader();
 
-    axios
-      .post("/userPurchasePlan/userList")
-      .then((res) => {
-        if (res?.data?.data) {
-          setClients(res?.data?.data);
-        }
-        toggleLoader();
-      })
-      .catch((err) => {
-        toggleLoader();
-        OnUpdateError(err.data.message);
-      });
-  };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
-  const handleClear = () => {
-    setModel(false);
-    setData({});
-    setError({});
-    setIsEdit(false);
-    setFinancialId("");
-    setSelectedClient("");
-  };
 
   useEffect(() => {
     _getFinancialData();
@@ -267,15 +323,9 @@ const FinancialData = () => {
       const menuPermissions = menu.permissions;
       setPermissions({
         view: menuPermissions.includes(permissionStatus.view) ? true : false,
-        create: menuPermissions.includes(permissionStatus.create)
-          ? true
-          : false,
-        update: menuPermissions.includes(permissionStatus.update)
-          ? true
-          : false,
-        delete: menuPermissions.includes(permissionStatus.delete)
-          ? true
-          : false,
+        create: menuPermissions.includes(permissionStatus.create) ? true : false,
+        update: menuPermissions.includes(permissionStatus.update) ? true : false,
+        delete: menuPermissions.includes(permissionStatus.delete) ? true : false,
       });
     }
   }, [menuList, location]);
@@ -312,7 +362,7 @@ const FinancialData = () => {
                       <StyledTableCell>
                         Total Balance
                       </StyledTableCell>
-                      <StyledTableCell>
+                      <StyledTableCell align="center">
                         ID Generated
                       </StyledTableCell>
                       <StyledTableCell>Action</StyledTableCell>
@@ -338,10 +388,12 @@ const FinancialData = () => {
                             <StyledTableCell>{`${(row.investment * row.returnOfInvestment) / 100
                               }(${row.returnOfInvestment}%)`}</StyledTableCell>
                             <StyledTableCell>
-                              {row.investment}
+                              {globalAmountConfig(row.investment)}
                             </StyledTableCell>
-                            <StyledTableCell style={{ color: row.isGenerateId ? "#72C75F" : "#FDCF71" }}>
-                              {row.isGenerateId ? "Generated" : "Pending"}
+                            <StyledTableCell align="center">
+                              <TextLabel fontSize={"14px"} color={row.isGenerateId ? theme.palette.bgLightSuccess.main : theme.palette.bgLightBlue2.main} title={row.isGenerateId ? "Generated" : "Pending"}
+                                // style={{ border: `1px solid ${row.isGenerateId ? theme.palette.bgLightSuccess.main : theme.palette.bgLightBlue2.main}`, padding }}
+                                textAlign={'center'} />
                             </StyledTableCell>
                             <StyledTableCell>
                               <Box display={"flex"} gap={1}>
@@ -402,6 +454,7 @@ const FinancialData = () => {
           open={model}
           onClose={handleClear}
           title={`${isEdit ? "Update" : "Add"} ${user?.userType === 3 ? "Assign File" : "Financial Data"}`}
+          maxWidth={'md'}
           content={
             <AddFinancialData
               data={data}
@@ -414,6 +467,8 @@ const FinancialData = () => {
               selectedClient={selectedClient}
               clients={clients}
               user={user}
+              setUserPurchasePlanDelete={setUserPurchasePlanDelete}
+              setUserPurchasePlanAdd={setUserPurchasePlanAdd}
             />
           }
         />

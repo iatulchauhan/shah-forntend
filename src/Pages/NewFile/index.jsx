@@ -29,6 +29,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import AddNewFile from "../../Components/New File";
 import CommonButton from "../../Components/Common/Button/CommonButton";
 import Swal from "sweetalert2";
+import { globalAmountConfig } from "../../Utils/globalConfig";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -99,7 +100,7 @@ const NewFile = () => {
     const location = useLocation();
     const { pathname } = location;
     //States
-    const [data, setData] = useState({});
+    const [data, setData] = useState({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
     const [newFileDetails, setNewFileDetails] = useState([]);
     const [model, setModel] = useState(false);
     const [error, setError] = useState({});
@@ -132,20 +133,85 @@ const NewFile = () => {
             errors["selectedClient"] = "*Please select Client.";
         }
 
-        if (!data?.investment) {
-            formIsValid = false;
-            errors["investment"] = "*Please enter Investment.";
-        }
-        if (!data?.investmentDays) {
-            formIsValid = false;
-            errors["investmentDays"] = "*Please enter Investment Days.";
-        }
-        if (!data?.returnOfInvestment) {
-            formIsValid = false;
-            errors["returnOfInvestment"] = "*Please enter Return Of Investment.";
-        }
+        data?.userPurchasePlan?.map((e) => {
+            if (!e?.investment) {
+                formIsValid = false;
+                errors["investment"] = "* Please enter Investment.";
+            }
+            if (!e?.investmentDays) {
+                formIsValid = false;
+                errors["investmentDays"] = "* Please enter Investment Days.";
+            }
+            if (!e?.returnOfInvestment) {
+                formIsValid = false;
+                errors["returnOfInvestment"] = "* Please enter Return Of Investment.";
+            }
+        });
+        // if (!data?.investment) {
+        //     formIsValid = false;
+        //     errors["investment"] = "*Please enter Investment.";
+        // }
+        // if (!data?.investmentDays) {
+        //     formIsValid = false;
+        //     errors["investmentDays"] = "*Please enter Investment Days.";
+        // }
+        // if (!data?.returnOfInvestment) {
+        //     formIsValid = false;
+        //     errors["returnOfInvestment"] = "*Please enter Return Of Investment.";
+        // }
         setError(errors);
         return formIsValid;
+    };
+
+    const handleChange = (e, isInvestmentPlan, i) => {
+        const { name, value } = e.target;
+
+        if (isInvestmentPlan && name === 'returnOfInvestment') {
+            if (value !== "" && (isNaN(value) || value < 0 || value > 100)) {
+                return;
+            }
+        }
+
+        if (isInvestmentPlan === true) {
+            const modifyData = { ...data };
+            if (modifyData.userPurchasePlan && modifyData.userPurchasePlan[i]) {
+                modifyData.userPurchasePlan[i][name] = value?.replace(/,/g, '');
+            }
+            setData(modifyData);
+        } else {
+            setData((prevState) => ({
+                ...prevState,
+                [name]: value,
+            }));
+        }
+    };
+
+    const setUserPurchasePlanDelete = (i) => {
+        const modifyData = { ...data };
+        if (modifyData.userPurchasePlan && modifyData.userPurchasePlan.length > i) {
+            modifyData.userPurchasePlan.splice(i, 1);
+            setData(modifyData);
+        }
+    };
+
+    const setUserPurchasePlanAdd = () => {
+        setData({
+            ...data,
+            userPurchasePlan: [
+                ...data?.userPurchasePlan,
+                { _id: null, investment: "", investmentDays: "", returnOfInvestment: "" },
+            ],
+        });
+    };
+
+    const handleClear = () => {
+        setModel(false);
+        setData({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
+        setError({});
+        setIsEdit(false);
+        setNewFileId("");
+        setSelectedClient("");
+        _getNewFiles()
     };
 
     const _getNewFiles = () => {
@@ -247,22 +313,9 @@ const NewFile = () => {
             });
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
 
-    const handleClear = () => {
-        setModel(false);
-        setData({});
-        setError({});
-        setIsEdit(false);
-        setNewFileId("");
-        setSelectedClient("");
-    };
+
+
 
     useEffect(() => {
         _getNewFiles();
@@ -356,12 +409,13 @@ const NewFile = () => {
                                                         <StyledTableCell>{`${(row.investment * row.returnOfInvestment) / 100
                                                             }(${row.returnOfInvestment}%)`}</StyledTableCell>
                                                         <StyledTableCell>
-                                                            {row.investment}
+                                                            {globalAmountConfig(row.investment)}
                                                         </StyledTableCell>
                                                         <StyledTableCell>
                                                             <CommonButton
                                                                 width={'120px'}
                                                                 text={`Generate ID`}
+                                                                padding={"3px 4px"}
                                                                 onClick={() => {
                                                                     Swal.fire({
                                                                         title: "<strong>Warning</strong>",
@@ -453,6 +507,8 @@ const NewFile = () => {
                             selectedClient={selectedClient}
                             clients={clients}
                             user={user}
+                            setUserPurchasePlanDelete={setUserPurchasePlanDelete}
+                            setUserPurchasePlanAdd={setUserPurchasePlanAdd}
                         />
                     }
                 />

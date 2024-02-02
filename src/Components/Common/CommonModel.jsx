@@ -10,7 +10,7 @@ const useStyles = makeStyles()((theme) => {
     return {
         dialog_Main: {
             '& .MuiDialog-paper.MuiPaper-rounded': {
-                borderRadius: '20px',
+                borderRadius: '10px',
                 overflow: 'hidden',
             }
         }
@@ -18,7 +18,7 @@ const useStyles = makeStyles()((theme) => {
     };
 });
 
-const CommonModal = ({ onClose, open, title, content }) => {
+const CommonModal = ({ onClose, open, title, content, maxWidth }) => {
     const { classes } = useStyles();
     return (
         <Dialog
@@ -26,6 +26,7 @@ const CommonModal = ({ onClose, open, title, content }) => {
             onClose={onClose}
             open={open}
             className={classes.dialog_Main}
+            maxWidth={maxWidth}
         >
             <DialogTitle
                 fontWeight={700}
@@ -50,15 +51,7 @@ const CommonModal = ({ onClose, open, title, content }) => {
                     <CloseOutlinedIcon sx={{ color: lightTheme.palette.bgWhite.main, fontSize: "18px" }} />
                 </Box>
             </DialogTitle>
-            <Box sx={{
-                overflow: "scroll",
-                "::-webkit-scrollbar": {
-                    width: "0.5px"
-                },
-                "::-webkit-scrollbar-thumb": {
-                    backgroundColor: "transparent"
-                }
-            }}>
+            <Box sx={{ overflow: "scroll", "::-webkit-scrollbar": { width: "0.5px" }, "::-webkit-scrollbar-thumb": { backgroundColor: "transparent" } }}>
                 {content}
             </Box>
         </Dialog>

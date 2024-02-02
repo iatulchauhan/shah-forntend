@@ -292,7 +292,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                                         fontWeight={400}
                                         text={'Investment Days'}
                                         placeholder={"Enter Investment Days"}
-                                        type='text'
+                                        type='number'
                                         name='investmentDays'
                                         value={e?.investmentDays}
                                         onChange={(e) => handleChange(e, true, i)}
@@ -304,7 +304,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                                         fontWeight={400}
                                         text={'Return Of Investment (%)'}
                                         placeholder={"Enter Return Of Investment"}
-                                        type='text'
+                                        type='number'
                                         name='returnOfInvestment'
                                         value={e?.returnOfInvestment}
                                         onChange={(e) => handleChange(e, true, i)}
