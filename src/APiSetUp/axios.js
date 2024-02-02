@@ -25,7 +25,12 @@ const onResponseSuccess = (response) => {
 const onResponseFailure = (error) => {
   if (error.response) {
     // console.log(error.response);
-    if (
+    if(error.response.status === 400 || error.response.status === 500){
+      swal(error.response.data.message, {
+        icon: "error",
+        timer: 5000,
+      });
+    }else if (
       error.response.status === 401 &&
       error.response.data.message == "Token Signature could not be verified."
     ) {
