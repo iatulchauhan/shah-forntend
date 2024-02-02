@@ -12,6 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from 'dayjs';
 import { Regex } from '../../Utils/regex';
+import { globalAmountConfig } from '../../Utils/globalConfig';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -279,9 +280,9 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                                         fontWeight={400}
                                         text={'Investment Amount'}
                                         placeholder={"Enter Investment"}
-                                        type='number'
+                                        type='text'
                                         name='investment'
-                                        value={e?.investment}
+                                        value={globalAmountConfig(e?.investment)}
                                         onChange={(e) => handleChange(e, true, i)}
                                     />
                                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!e?.investment ? error?.investment : ""} />
@@ -291,7 +292,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                                         fontWeight={400}
                                         text={'Investment Days'}
                                         placeholder={"Enter Investment Days"}
-                                        type='number'
+                                        type='text'
                                         name='investmentDays'
                                         value={e?.investmentDays}
                                         onChange={(e) => handleChange(e, true, i)}
@@ -303,7 +304,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                                         fontWeight={400}
                                         text={'Return Of Investment (%)'}
                                         placeholder={"Enter Return Of Investment"}
-                                        type='number'
+                                        type='text'
                                         name='returnOfInvestment'
                                         value={e?.returnOfInvestment}
                                         onChange={(e) => handleChange(e, true, i)}

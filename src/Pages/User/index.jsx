@@ -24,6 +24,7 @@ import { useLocation } from "react-router-dom";
 import CommonModal from "../../Components/Common/CommonModel";
 import MarketingModel from "../../Components/Common/MarketingModel";
 import Swal from "sweetalert2";
+import { globalAmountConfig } from "../../Utils/globalConfig";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -240,7 +241,6 @@ const User = () => {
 
 
   const _getDefaultId = (data, name) => {
-    console.log(name, data, "namename");
     return data?.length > 0 && data?.filter((e) => e?.name == name)?.[0]?.id;
   };
 
@@ -249,7 +249,7 @@ const User = () => {
     if (isInvestmentPlan === true) {
       const modifyData = { ...data };
       if (modifyData.userPurchasePlan && modifyData.userPurchasePlan[i]) {
-        modifyData.userPurchasePlan[i][name] = value;
+        modifyData.userPurchasePlan[i][name] = value?.replace(/,/g, '');
       }
       setData(modifyData);
     } else {
@@ -369,13 +369,13 @@ const User = () => {
         OnUpdateError(err.data.message);
       });
   };
-
+console.log(data,"datadatadata")
   const handleClear = () => {
+    setData({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
     setModel(false);
     setVisitorModel(false);
     setCustomerModel(false);
     setMarketingModel(false)
-    setData({ userPurchasePlan: [{ _id: null, investment: "", investmentDays: "", returnOfInvestment: "" }] });
     setError({});
     setIsEdit(false);
     setSelectedBranch("");
@@ -383,7 +383,9 @@ const User = () => {
     setSelectedCity("");
     setSelectedRole("");
     setMultiSelectedBranch([]);
+    _getUsers()
   };
+
   const handleEdit = (row) => {
     console.log(row?.userType === Roles.Guest, "row?.userType === Roles.Visitor")
     const roleConfig = roles?.filter((e) => e?.id == row?.userType)?.[0];
@@ -531,7 +533,7 @@ const User = () => {
   }, [menuList, location]);
   return (
     <>
-      <PaperContainer elevation={0} square={false}>
+      {user?.userType != Roles?.Accountant && <PaperContainer elevation={0} square={false}>
         <Grid container spacing={1} xs={12} md={12} sm={12} lg={12}>
           <Grid item xs={12} md={12} sm={12} lg={12}>
             <Box sx={{ display: "flex", justifyContent: { xs: "center", sm: "center", md: "end", lg: "end" }, padding: "10px", gap: 1, flexWrap: "wrap", }}>
@@ -580,7 +582,7 @@ const User = () => {
             </Box>
           </Grid>
         </Grid>
-      </PaperContainer>
+      </PaperContainer>}
       <PaperContainer elevation={0} square={false}>
         {marketingModel && (
           <CommonModal
@@ -654,8 +656,8 @@ const User = () => {
             <TableHeading
               title={`${isEdit ? "Update" : "Add"} Customer`}
               handleBack={() => {
-                setCustomerModel(false);
                 handleClear();
+                setCustomerModel(false);
               }}
               removeSearchField={true}
             />
