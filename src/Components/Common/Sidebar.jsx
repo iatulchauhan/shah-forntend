@@ -230,103 +230,88 @@ export default function SideBar(props) {
   }, []);
 
 
-  const logoutAdmin = () => {
-    Swal.fire({
-      title: "<strong>Warning</strong>",
-      icon: "warning",
-      html: "Are you sure you want to logout?",
-      showCancelButton: true,
-      confirmButtonColor: "#0492c2",
-      iconColor: "#0492c2",
-      confirmButtonText: "Yes",
-      cancelButtonColor: "#1A1B2F",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        logout();
-        navigate("/login")
-      }
-    });
-  };
-
   const getIcon = (page) => {
     const icon = menuIconList.find(e => e?.title === page)?.icon
     return icon
   }
 
-
   return (
     <>
-      {location?.pathname === "/login" || location?.pathname === "/register" || location?.pathname === "/forgot-password" || location?.pathname === "/otp-verification" || location?.pathname === "/reset-password" ? <>{props.children}</> : <Box sx={{ display: "flex" }}>
-        <CssBaseline />
-        <AppBar position="fixed" open={open} style={{ boxShadow: '0px 1px 0px 0px rgba(0, 0, 0, 0.05)', }}>
-          <Header open={open} sx={{ marginLeft: 0.8, }} onClick={handleDrawerOpen} handleDrawerOpen={handleDrawerOpen} />
-        </AppBar>
-        <Drawer
-          // className="drawer_main"
-          variant="permanent"
-          open={open}
-          onClose={handleDrawerOpen}
-          ref={sidebarRef}
-        >
-          <DrawerHeader sx={{ background: "#fff", zIndex: 999999, display: "flex", justifyContent: "center", marginTop: '10px', }}          >
-            {open &&
-              <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={10}>
-                <Assets style={{ cursor: "pointer" }} height={width < 991 ? "40px" : "50px"} src={"/assets/icons/logo.png"} absolutePath={true} />
-                <HighlightOffIcon sx={{ color: theme.palette.primary.main, fontSize: "30px" }} onClick={handleDrawerOpen} />
-              </Box>
-            }
-          </DrawerHeader>
-          <List sx={{
-            padding: { xs: 1, sm: 1, md: theme => theme.spacing(3), lg: theme => theme.spacing(3), marginTop: 15 },
-            overflow: "scroll",
-            "::-webkit-scrollbar": { width: "0.5px" },
-            "::-webkit-scrollbar-thumb": { backgroundColor: "transparent" }
-          }}>
-            {menuList.map((item, index) => {
-              console.log(item, "item")
-              return (
-                <Link
-                  to={item.path}
-                  className={item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "active" : "nav-link width-100"}
-                  onClick={width > 991 ? () => { } : () => handleDrawerOpen()}
-                >
-                  <ListItem key={index} disablePadding sx={{ display: "block", marginBottom: 0.2, }}>
-                    <ListItemButton
-                      sx={{
-                        minHeight: 18,
-                        justifyContent: open ? "initial" : "center",
-                        // px: 2,
-                        marginBottom: 1,
-                        borderLeft: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "5px solid #5D5FEF" : "",
-                        // borderRadius: '10px',
-                        "&:hover": {
-                          // borderLeft: "3px solid #8f8f8f"
-                          // ".MuiListItemText-root .MuiTypography-root": { color: "#8f8f8f", },
-                        },
-                      }}
-                    >
-                      <ListItemIcon sx={{ minWidth: 0, color: "#424448", mr: open ? 1 : "auto", justifyContent: "center", }}>
-                        {getIcon(item?.page)}
-                      </ListItemIcon>
-                      <ListItemText
-                        style={{ whiteSpace: "nowrap", }}
-                        primary={item?.page}
+      {location?.pathname === "/login" || location?.pathname === "/register" || location?.pathname === "/forgot-password" || location?.pathname === "/otp-verification" || location?.pathname === "/reset-password"
+        ? <>
+          {props.children}
+        </> :
+        <Box sx={{ display: "flex" }}>
+          <CssBaseline />
+          <AppBar position="fixed" open={open} style={{ boxShadow: '0px 1px 0px 0px rgba(0, 0, 0, 0.05)' }}>
+            <Header open={open} sx={{ marginLeft: 0.8, }} onClick={handleDrawerOpen} handleDrawerOpen={handleDrawerOpen} />
+          </AppBar>
+          <Drawer
+            // className="drawer_main"
+            variant="permanent"
+            open={open}
+            onClose={handleDrawerOpen}
+            ref={sidebarRef}
+          >
+            <DrawerHeader sx={{ background: "#fff", zIndex: 999999, display: "flex", justifyContent: "center", marginTop: '1px', borderBottom: `1px solid ${"#e9e9e9"}` }}>
+              {open &&
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={10}>
+                  <Assets style={{ cursor: "pointer" }} height={width < 991 ? "40px" : "48px"} src={"/assets/icons/logo.png"} absolutePath={true} />
+                  <HighlightOffIcon sx={{ color: theme.palette.primary.main, cursor: "pointer" }} onClick={handleDrawerOpen} />
+                </Box>
+              }
+            </DrawerHeader>
+            <List sx={{
+              padding: { xs: 1, sm: 1, md: theme => theme.spacing(3), lg: theme => theme.spacing(3), marginTop: 15 },
+              overflow: "scroll",
+              "::-webkit-scrollbar": { width: "0.5px" },
+              "::-webkit-scrollbar-thumb": { backgroundColor: "transparent" }
+            }}>
+              {menuList.map((item, index) => {
+                console.log(item, "item")
+                return (
+                  <Link
+                    to={item.path}
+                    className={item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "active" : "nav-link width-100"}
+                    onClick={width > 991 ? () => { } : () => handleDrawerOpen()}
+                  >
+                    <ListItem key={index} disablePadding sx={{ display: "block", marginBottom: 0.2, }}>
+                      <ListItemButton
                         sx={{
-                          color: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? theme.palette.primary.main : "#737791",
-                          opacity: open ? 1 : 0,
-                          "& .MuiTypography-root": {
-                            fontSize: '14px',
-                            fontWeight: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? 'bold' : "normal",
-                          }
+                          minHeight: 18,
+                          justifyContent: open ? "initial" : "center",
+                          // px: 2,
+                          marginBottom: 1,
+                          borderLeft: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? "5px solid #5D5FEF" : "",
+                          // borderRadius: '10px',
+                          "&:hover": {
+                            // borderLeft: "3px solid #8f8f8f"
+                            // ".MuiListItemText-root .MuiTypography-root": { color: "#8f8f8f", },
+                          },
                         }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-              )
-            })}
+                      >
+                        <ListItemIcon sx={{ minWidth: 0, color: "#424448", mr: open ? 1 : "auto", justifyContent: "center", }}>
+                          {getIcon(item?.page)}
+                        </ListItemIcon>
+                        <ListItemText
+                          style={{ whiteSpace: "nowrap", }}
+                          primary={item?.page}
+                          sx={{
+                            color: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? theme.palette.primary.main : "#737791",
+                            opacity: open ? 1 : 0,
+                            "& .MuiTypography-root": {
+                              fontSize: '14px',
+                              fontWeight: item?.activeLinks?.includes(location.pathname.split("/")?.[1]) ? 'bold' : "normal",
+                            }
+                          }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                )
+              })}
 
-            {/* <Link
+              {/* <Link
               onClick={() => logoutAdmin()}
               className={
                 location.pathname === "/logout" ? "active" : "nav-link width-100"
@@ -366,15 +351,19 @@ export default function SideBar(props) {
                 </ListItemButton>
               </ListItem>
             </Link>  */}
-          </List>
-        </Drawer>
-        <Box sx={{ marginTop: 8, width: "100%", overflow: "auto", marginBottom: '64px' }}>
-          <Box style={{ width: "100%" }}>
-            {props.children}
+            </List>
+          </Drawer>
+          <Box sx={{
+            marginTop: 7, width: "100%", overflow: "auto", marginBottom: "34px", [theme.breakpoints.down("xs")]: {
+              marginBottom: "44px"
+            },
+          }}>
+            <Box style={{ width: "100%" }}>
+              {props.children}
+            </Box>
           </Box>
-        </Box>
-        <Footer open={open} />
-      </Box>}
+          <Footer open={open} />
+        </Box >}
     </>
   );
 }

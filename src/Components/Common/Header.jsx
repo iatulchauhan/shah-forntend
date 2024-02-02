@@ -88,7 +88,7 @@ const Header = ({ onClick ,open}) => {
       container
       sx={{
         backgroundColor: "white",
-        padding: 1.5,
+        padding: "9px",
         display: "flex",
         justifyContent: "space-between",
       }}

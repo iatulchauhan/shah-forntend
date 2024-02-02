@@ -13,7 +13,7 @@ const clearLocalStore = () => {
   removeLSItem("user");
   removeLSItem("auth_token");
   removeLSItem("menuList");
-  removeLSItem("deviceToken");
+  // removeLSItem("deviceToken");
 }
 
 const onRequestSuccess = (config) => {
