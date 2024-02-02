@@ -165,16 +165,17 @@ const Payment = () => {
                             </Table>
                         </TableContainer>
                     </Grid>
+                    <Grid item xs={12}>
+                        <CommonPagination
+                            count={100}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            onPageChange={handleChangePage}
+                        />
+                    </Grid>
                 </Grid>
-                <Box p={1}>
-                    <CommonPagination
-                        count={100}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
+
             </PaperContainer>
         </>
     )

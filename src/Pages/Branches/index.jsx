@@ -455,16 +455,17 @@ const Branches = () => {
               )}
             </TableContainer>
           </Grid>
+          {brancesDetails?.count > 0 && <Grid item xs={12}>
+            <CommonPagination
+              count={brancesDetails?.count}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handleChangePage}
+            />
+          </Grid>}
         </Grid>
-        {brancesDetails?.count > 0 && <Box p={1}>
-          <CommonPagination
-            count={brancesDetails?.count}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            onPageChange={handleChangePage}
-          />
-        </Box>}
+
       </PaperContainer>
 
       {model && (

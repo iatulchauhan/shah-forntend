@@ -152,16 +152,17 @@ const VisitorHistory = () => {
                             </Table>
                         </TableContainer>
                     </Grid>
+                    {visitorHistoryDetails?.count > 0 && <Grid item xs={12}>
+                        <CommonPagination
+                            count={visitorHistoryDetails?.count}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            onPageChange={handleChangePage}
+                        />
+                    </Grid>}
                 </Grid>
-                {visitorHistoryDetails?.count > 0 && <Box p={1}>
-                    <CommonPagination
-                        count={visitorHistoryDetails?.count}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>}
+
             </PaperContainer>
         </>
     )

@@ -477,16 +477,17 @@ const Clients = () => {
               )}
             </TableContainer>
           </Grid>
+          {userDetails?.count > 0 && <Grid item xs={12}>
+            <CommonPagination
+              count={userDetails?.count}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handleChangePage}
+            />
+          </Grid>}
         </Grid>
-        {userDetails?.count > 0 && <Box p={1}>
-          <CommonPagination
-            count={userDetails?.count}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            onPageChange={handleChangePage}
-          />
-        </Box>}
+
       </PaperContainer>
       <CommonModal
         open={model}

@@ -364,16 +364,17 @@ const Visitor = () => {
                             }
                         </TableContainer>
                     </Grid>
+                    {visitorDetails?.count > 0 && <Grid item xs={12}>
+                        <CommonPagination
+                            count={visitorDetails?.count}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            onPageChange={handleChangePage}
+                        />
+                    </Grid>}
                 </Grid>
-                {visitorDetails?.count > 0 && <Box p={1}>
-                    <CommonPagination
-                        count={visitorDetails?.count}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>}
+
             </PaperContainer>
 
             {model && <CommonModal

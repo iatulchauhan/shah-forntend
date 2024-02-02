@@ -436,17 +436,19 @@ const FinancialData = () => {
                 />
               )}
             </TableContainer>
+
           </Grid>
+          {financialDetails?.count > 0 && <Grid item xs={12}>
+            <CommonPagination
+              count={financialDetails?.count}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handleChangePage}
+            />
+          </Grid>}
         </Grid>
-        {financialDetails?.count > 0 && <Box p={1}>
-          <CommonPagination
-            count={financialDetails?.count}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            onPageChange={handleChangePage}
-          />
-        </Box>}
+
       </PaperContainer>
 
       {model && (
