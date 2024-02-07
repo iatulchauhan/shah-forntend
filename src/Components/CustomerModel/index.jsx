@@ -241,7 +241,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
             <Grid item xs={12} sm={12} md={6} lg={6} marginBottom={1}>
                 <CommonTextField
                     fontWeight={400}
-                    text={'Referance'}
+                    text={'Reference'}
                     placeholder={"Please enter reference name"}
                     type='text'
                     name='reference'
@@ -321,7 +321,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
 
 
             {data?._id && <Grid item xs={12} marginTop={1}>
-                <TextLabel fontSize={"16px"} fontWeight={"400"} title={'Meeting History'} />
+                <TextLabel fontSize={"16px"} fontWeight={"400"} title={'Visit History'} />
                 <TableContainer component={Card} elevation={1} square>
                     <Table aria-label="customized table">
                         <TableHead>
@@ -329,7 +329,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                                 <StyledTableCell>No</StyledTableCell>
                                 <StyledTableCell align="center">Reason</StyledTableCell>
                                 <StyledTableCell align="center">Visit Date</StyledTableCell>
-                                <StyledTableCell align="center">Referance</StyledTableCell>
+                                <StyledTableCell align="center">Reference</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

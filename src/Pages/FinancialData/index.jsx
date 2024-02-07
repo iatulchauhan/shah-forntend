@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "tss-react/mui";
-import {
-  Table,
-  TableRow,
-  TableHead,
-  TableContainer,
-  Box,
-  Grid,
-  useTheme,
-} from "@mui/material";
+import { Table, TableRow, TableHead, Box, Grid, useTheme, } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import Assets from "../../Components/Common/ImageContainer";
 import PaperContainer from "../../Components/Common/PaperContainer";
 import TableHeading from "../../Components/Common/CommonTableHeading";
 import CommonPagination from "../../Components/Common/Pagination";
-import { lightTheme } from "../../theme";
 import { useAppContext } from "../../Context/context";
 import axios from "../../APiSetUp/axios";
 import dayjs from "dayjs";
@@ -30,16 +21,51 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import TextLabel from "../../Components/Common/Fields/TextLabel";
 import { globalAmountConfig } from "../../Utils/globalConfig";
 
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import MuiAccordion from '@mui/material/Accordion';
+import MuiAccordionSummary from '@mui/material/AccordionSummary';
+import MuiAccordionDetails from '@mui/material/AccordionDetails';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+
+
+const Accordion = styled((props) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  border: `3px solid ${"#FFF"}`,
+  '&:not(:last-child)': { borderBottom: 0, },
+  '&::before': { display: 'none', },
+}));
+
+const AccordionSummary = styled((props) => (
+  <MuiAccordionSummary expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.5rem' }} />}    {...props} />
+))(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .05)' : "#79797914",
+  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+    transform: 'rotate(90deg)',
+  },
+  '& .MuiAccordionSummary-content': {
+    marginLeft: theme.spacing(1),
+  },
+  padding: theme.spacing(0)
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  padding: theme.spacing(0.5),
+  borderTop: '0px solid rgba(0, 0, 0, .125)',
+}));
+
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     fontWeight: 600,
-    fontSize: 14,
+    fontSize: 12,
     color: theme.palette.primary.main,
     fontFamily: "Poppins",
     padding: 5,
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: "Poppins",
     fontWeight: 500,
     padding: "8px",
@@ -48,7 +74,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
+    // backgroundColor: theme.palette.action.hover,
   },
   // hide last border
   "&:last-child td, &:last-child th": {
@@ -56,14 +82,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const closeDate = (date, days) => {
-  const initialDate = new Date(date);
-  const newDate = new Date(initialDate);
-  newDate.setDate(initialDate.getDate() + days);
-  newDate.setUTCHours(0, 0, 0, 0);
-  const formattedDate = newDate.toISOString();
-  return dayjs(formattedDate).format("DD/MM/YYYY");
-};
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -72,24 +90,27 @@ const useStyles = makeStyles()((theme) => {
     },
     writeBox: {
       borderRadius: "6px",
-      padding: "8px",
-      backgroundColor: lightTheme.palette.bgLightExtraPrimary.main,
-      color: lightTheme.palette.primary.main,
+      padding: "6px",
+      backgroundColor: theme.palette.bgLightExtraPrimary.main,
+      color: theme.palette.primary.main,
       cursor: "pointer",
+      height: '26px'
     },
     viewBox: {
       borderRadius: "6px",
-      padding: "8px",
-      color: lightTheme.palette.bgLightSuccess.main,
-      backgroundColor: lightTheme.palette.bgLightExtraSuccess.main,
+      padding: "6px",
+      color: theme.palette.bgLightSuccess.main,
+      backgroundColor: theme.palette.bgLightExtraSuccess.main,
       cursor: "pointer",
+      height: '26px'
     },
     deleteBox: {
       borderRadius: "6px",
-      padding: "8px",
-      color: lightTheme.palette.bgLightRed.main,
-      backgroundColor: lightTheme.palette.bgLightExtraRed.main,
+      padding: "6px",
+      color: theme.palette.bgLightRed.main,
+      backgroundColor: theme.palette.bgLightExtraRed.main,
       cursor: "pointer",
+      height: '26px'
     },
   };
 });
@@ -113,7 +134,13 @@ const FinancialData = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedClient, setSelectedClient] = useState("");
-  console.log(selectedClient, "selectedClient");
+
+  const [expanded, setExpanded] = React.useState('panel1');
+
+  const handleAccordian = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
+
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -122,7 +149,15 @@ const FinancialData = () => {
     setPage(0);
   };
 
-  console.log(user, "user")
+  const closeDate = (date, days) => {
+    const initialDate = new Date(date);
+    const newDate = new Date(initialDate);
+    newDate.setDate(initialDate.getDate() + days);
+    newDate.setUTCHours(0, 0, 0, 0);
+    const formattedDate = newDate.toISOString();
+    return dayjs(formattedDate).format("DD/MM/YYYY");
+  };
+
 
   //Validation
   const handleValidation = () => {
@@ -133,18 +168,6 @@ const FinancialData = () => {
       errors["selectedClient"] = "* Please select Client.";
     }
 
-    // if (!data?.investment) {
-    //   formIsValid = false;
-    //   errors["investment"] = "*Please enter Investment.";
-    // }
-    // if (!data?.investmentDays) {
-    //   formIsValid = false;
-    //   errors["investmentDays"] = "*Please enter Investment Days.";
-    // }
-    // if (!data?.returnOfInvestment) {
-    //   formIsValid = false;
-    //   errors["returnOfInvestment"] = "*Please enter Return Of Investment.";
-    // }
     data?.userPurchasePlan?.map((e) => {
       if (!e?.investment) {
         formIsValid = false;
@@ -207,8 +230,7 @@ const FinancialData = () => {
   const _getUsers = () => {
     toggleLoader();
 
-    axios
-      .post("/userPurchasePlan/userList")
+    axios.post("/userPurchasePlan/userList")
       .then((res) => {
         if (res?.data?.data) {
           setClients(res?.data?.data);
@@ -230,15 +252,14 @@ const FinancialData = () => {
     _getUsers()
   };
 
-  const _getFinancialData = () => {
+  const _getFinancialData = async () => {
     toggleLoader();
     let body = {
       limit: rowsPerPage,
       page: page + 1,
       search: search || "",
     };
-    axios
-      .post(`/userPurchasePlanList`, body)
+    await axios.post(`/userPurchasePlanList`, body)
       .then((res) => {
         if (res?.data?.data) {
           setFinancialDetails(res?.data?.data);
@@ -251,14 +272,13 @@ const FinancialData = () => {
       });
   };
 
-  const _getFinancialById = () => {
-    axios
-      .get(`userPurchasePlan/${financialId}`)
+  const _getFinancialById = async () => {
+    await axios.get(`userPurchasePlan/${financialId}`)
       .then((res) => {
         if (res?.data?.data) {
           setIsEdit(true);
           setData(res?.data?.data);
-          setSelectedClient(res?.data?.data?.userDetails?.name);
+          setSelectedClient(res?.data?.data?.name);
         }
       })
       .catch((err) => {
@@ -267,21 +287,18 @@ const FinancialData = () => {
       });
   };
 
-  const _addUpdateFinancialData = () => {
+  const _addUpdateFinancialData = async () => {
     if (handleValidation()) {
       toggleLoader();
       let body = {
         client: clients?.filter((e) => e?.name == selectedClient)[0]?._id,
         clientBranch: clients?.filter((e) => e?.name == selectedClient)[0]?.branch,
         userPurchasePlan: data?.userPurchasePlan
-        // investment: data?.investment,
-        // investmentDays: data?.investmentDays,
-        // returnOfInvestment: data?.returnOfInvestment
       };
       if (data?._id) {
         body.id = data?._id;
       }
-      axios.post(`userPurchasePlan/${data?._id ? "update" : "create"}`, body)
+      await axios.post(`userPurchasePlan/${data?._id ? "update" : "create"}`, body)
         .then((res) => {
           if (res?.data?.data) {
             swal(res?.data?.message, { icon: "success", timer: 5000 });
@@ -296,10 +313,6 @@ const FinancialData = () => {
         });
     }
   };
-
-
-
-
 
   useEffect(() => {
     _getFinancialData();
@@ -329,7 +342,7 @@ const FinancialData = () => {
       });
     }
   }, [menuList, location]);
-
+  console.log(financialDetails, "financialDetails")
   return (
     <>
       <PaperContainer elevation={0} square={false}>
@@ -343,100 +356,90 @@ const FinancialData = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TableContainer>
-              {financialDetails?.response?.length > 0 ? (
-                <Table sx={{ minWidth: 600 }} aria-label="customized table">
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell>#</StyledTableCell>
-                      <StyledTableCell>Name</StyledTableCell>
-                      <StyledTableCell>
-                        Investment Date
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        Closing Date
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        Return Amount Of Interest
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        Total Balance
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        ID Generated
-                      </StyledTableCell>
-                      <StyledTableCell>Action</StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {financialDetails?.response?.length > 0 &&
-                      financialDetails?.response?.map((row, index) => {
-                        return (
-                          <StyledTableRow key={index}>
-                            <StyledTableCell style={{ paddingLeft: "15px" }}>
-                              {index + 1 + page * rowsPerPage}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              {row?.userDetails?.name}{" "}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              {dayjs(row.createdAt).format("DD/MM/YYYY")}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              {closeDate(row.createdAt, row?.investmentDays)}
-                            </StyledTableCell>
-                            <StyledTableCell>{`${(row.investment * row.returnOfInvestment) / 100
-                              }(${row.returnOfInvestment}%)`}</StyledTableCell>
-                            <StyledTableCell>
-                              {globalAmountConfig(row.investment)}
-                            </StyledTableCell>
-                            <StyledTableCell align="center">
-                              <TextLabel fontSize={"14px"} color={row.isGenerateId ? theme.palette.bgLightSuccess.main : theme.palette.bgLightBlue2.main} title={row.isGenerateId ? "Generated" : "Pending"}
-                                // style={{ border: `1px solid ${row.isGenerateId ? theme.palette.bgLightSuccess.main : theme.palette.bgLightBlue2.main}`, padding }}
-                                textAlign={'center'} />
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              <Box display={"flex"} gap={1}>
-                                {permissions?.update && (
-                                  <Assets
-                                    className={classes.writeBox}
-                                    src={"/assets/icons/write.svg"}
-                                    absolutePath={true}
-                                    onClick={() => {
-                                      setData(row);
-                                      setIsEdit(true);
-                                      setModel(true);
-                                      setFinancialId(row?._id);
-                                    }}
-                                  />
-                                )}
-                                {permissions?.delete && (
-                                  <Assets
-                                    className={classes.deleteBox}
-                                    src={"/assets/icons/delete.svg"}
-                                    absolutePath={true}
-                                  />
-                                )}
-                              </Box>
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              ) : (
-                <DataNotFound
-                  icon={
-                    <ErrorOutlineIcon
-                      color="primary"
-                      style={{ fontSize: "3rem" }}
-                    />
-                  }
-                  elevation={2}
-                />
-              )}
-            </TableContainer>
+            {financialDetails?.response?.length > 0 ? financialDetails?.response?.map((val, index) => {
+              console.log(val, "val")
+              const sumOfInvestment = val.userPurchasePlan?.reduce((total, plan) => { return total + plan.investment }, 0);
+              return <Accordion expanded={expanded === index + 'panel1'} onChange={handleAccordian(index + 'panel1')} >
+                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<ArrowDownwardIcon sx={{ marginLeft: 3, marginRight: 3, fontSize: '1rem', color: theme.palette.primary.main }} />}>
+                  <Box display={'flex'} alignItems={'center'} width="100%" justifyContent="space-between">
+                    <Box display={'flex'} alignItems={'center'} flexShrink={0} width={'180px'}>
+                      <PersonOutlineIcon color="primary" fontSize="small" />
+                      <TextLabel color={theme.palette.primary.main} fontSize={"14px"} title={val?.name?.toUpperCase()} />
+                    </Box>
+                    <Box display={'flex'} flexWrap={'wrap'} alignItems={'center'} gap={10}>
+                      <Box display={'flex'} flexWrap={'wrap'} alignItems={'center'} gap={2}>
+                        <Box>
+                          <TextLabel fontSize={"12px"} title={"Total Plan"} textAlign={'start'} line />
+                          <TextLabel fontSize={"12px"} title={val.userPurchasePlan?.length} textAlign={'start'} fontWeight={600} />
+                        </Box>
+                        <Box>
+                          <TextLabel fontSize={"12px"} title={"Total Investment"} textAlign={'start'} line />
+                          <TextLabel fontSize={"12px"} title={globalAmountConfig(sumOfInvestment) || 0} textAlign={'start'} fontWeight={600} />
+                        </Box>
+                        <Box>
+                          <TextLabel fontSize={"12px"} title={"Status"} textAlign={'start'} line />
+                          <TextLabel fontSize={"12px"} color={val?.isGenerateId ? theme.palette.bgLightSuccess.main : theme.palette.bgLightBlue2.main} title={val?.isGenerateId ? "Generated" : "Pending"} textAlign={'center'} />
+                        </Box>
+                      </Box>
+                      <Box display={"flex"} gap={1}>
+                        {permissions?.update && (
+                          <Assets className={classes.writeBox} src={"/assets/icons/write.svg"}
+                            absolutePath={true}
+                            onClick={() => {
+                              setData(val);
+                              setIsEdit(true);
+                              setModel(true);
+                              setFinancialId(val?._id);
+                            }}
+                          />
+                        )}
+                        {permissions?.delete && (
+                          <Assets
+                            className={classes.deleteBox}
+                            src={"/assets/icons/delete.svg"}
+                            absolutePath={true}
+                          />
+                        )}
+                      </Box>
+                    </Box>
 
+                  </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {/* <TableContainer> */}
+                  {val?.userPurchasePlan?.length > 0 && (
+                    <Table sx={{ minWidth: 600 }} aria-label="customized table">
+                      <TableHead>
+                        <TableRow>
+                          <StyledTableCell>No.</StyledTableCell>
+                          <StyledTableCell> Investment Date </StyledTableCell>
+                          <StyledTableCell> Closing Date </StyledTableCell>
+                          <StyledTableCell align="center"> Investment Days </StyledTableCell>
+                          <StyledTableCell> Return Amount Of Interest </StyledTableCell>
+                          <StyledTableCell> Investment Amount </StyledTableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {val?.userPurchasePlan?.length > 0 &&
+                          val?.userPurchasePlan?.map((row, index) => {
+                            console.log(row, "row")
+                            return (
+                              <StyledTableRow key={index}>
+                                <StyledTableCell style={{ paddingLeft: "15px" }}>{index + 1 + page * rowsPerPage}</StyledTableCell>
+                                <StyledTableCell>{dayjs(row.createdAt).format("DD/MM/YYYY")}</StyledTableCell>
+                                <StyledTableCell>{closeDate(row.createdAt, row?.investmentDays)}</StyledTableCell>
+                                <StyledTableCell align="center">{row?.investmentDays}</StyledTableCell>
+                                <StyledTableCell>{`${(row.investment * row.returnOfInvestment) / 100}(${row.returnOfInvestment}%)`}</StyledTableCell>
+                                <StyledTableCell>{globalAmountConfig(row.investment)}</StyledTableCell>
+                              </StyledTableRow>
+                            );
+                          })}
+                      </TableBody>
+                    </Table>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+            }) : <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={0} />}
           </Grid>
           {financialDetails?.count > 0 && <Grid item xs={12}>
             <CommonPagination

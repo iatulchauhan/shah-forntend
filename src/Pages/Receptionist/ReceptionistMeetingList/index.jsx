@@ -366,11 +366,11 @@ const ReceptionistMeetingList = () => {
                                                         src={"/assets/icons/write.svg"}
                                                         absolutePath={true}
                                                     />
-                                                    <Assets
+                                                    {/* <Assets
                                                         className={classes.viewBox}
                                                         src={"/assets/icons/view.svg"}
                                                         absolutePath={true}
-                                                    />
+                                                    /> */}
                                                     <Assets
                                                         className={classes.deleteBox}
                                                         src={"/assets/icons/delete.svg"}

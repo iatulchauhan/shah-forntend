@@ -19,6 +19,7 @@ export default function TextLabel({
     textOverflow,
     whiteSpace,
     overflow,
+    lineHeight
 }) {
     const variantToFontSize = {
         h1: "40px",
@@ -76,6 +77,7 @@ export default function TextLabel({
                     textOverflow: textOverflow,
                     whiteSpace: whiteSpace,
                     overflow: overflow,
+                    lineHeight:1.4,
                     ...style,
                 }}
                 color={color}

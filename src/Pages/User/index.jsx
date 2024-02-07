@@ -253,7 +253,7 @@ const User = () => {
       }
     }
 
-    
+
     if (isInvestmentPlan === true) {
       const modifyData = { ...data };
       if (modifyData.userPurchasePlan && modifyData.userPurchasePlan[i]) {
@@ -735,15 +735,7 @@ const User = () => {
           <>
             <Grid container>
               <Grid item xs={12}>
-                <TableHeading
-                  title="User List"
-                  // buttonText={'Add User'}
-                  onClick={() => {
-                    setModel(true);
-                  }}
-                  variant={"subtitle1"}
-                  handleSearch={(value) => { setSearch(value); }}
-                />
+                <TableHeading title="User List" onClick={() => { setModel(true) }} handleSearch={(value) => { setSearch(value); }} />
               </Grid>
               <Grid item xs={12}>
                 <TableContainer>
@@ -751,9 +743,7 @@ const User = () => {
                     <Table sx={{ minWidth: 600 }} aria-label="customized table">
                       <TableHead>
                         <TableRow>
-                          <StyledTableCell className={classes.paddedRow}>
-                            #
-                          </StyledTableCell>
+                          <StyledTableCell className={classes.paddedRow}>No.</StyledTableCell>
                           <StyledTableCell>Name</StyledTableCell>
                           <StyledTableCell>Address</StyledTableCell>
                           <StyledTableCell>Contact No.</StyledTableCell>
@@ -787,11 +777,11 @@ const User = () => {
                                       absolutePath={true}
                                       onClick={() => { handleEdit(row); }}
                                     />}
-                                    <Assets
+                                    {/* <Assets
                                       className={classes.viewBox}
                                       src={"/assets/icons/view.svg"}
                                       absolutePath={true}
-                                    />
+                                    /> */}
                                     {permissions?.delete && <Assets
                                       className={classes.deleteBox}
                                       src={"/assets/icons/delete.svg"}

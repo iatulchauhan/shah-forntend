@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { lightTheme } from '../../theme';
+import dayjs from 'dayjs';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -204,7 +205,7 @@ const VisitorModel = ({ data, branches, setSelectedBranch, selectedBranch, setSe
             <Grid item xs={12} sm={12} md={6} lg={6}>
                 <CommonTextField
                     fontWeight={400}
-                    text={'Referance'}
+                    text={'Reference'}
                     placeholder={"Please enter reference name"}
                     type='text'
                     name='reference'
@@ -216,20 +217,24 @@ const VisitorModel = ({ data, branches, setSelectedBranch, selectedBranch, setSe
                 <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!data?.reference ? error?.reference : ""} />
             </Grid>
             {data?._id && <Grid item xs={12} sm={12} md={12} lg={12} sx={{ marginTop: 1 }}>
-                <TextLabel fontSize={"15px"} fontWeight={"400"} color='#151D48' title={'Meeting History'} />
+                <TextLabel fontSize={"15px"} fontWeight={"400"} color='#151D48' title={'Visit History'} />
                 <TableContainer component={Paper} square style={{ marginTop: '5px' }}>
                     <Table aria-label="customized table">
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
+                                <StyledTableCell align="center">Visit Date</StyledTableCell>
+                                <StyledTableCell align="center">Visit Time</StyledTableCell>
                                 <StyledTableCell align="center">Reason</StyledTableCell>
-                                <StyledTableCell align="center">Referance</StyledTableCell>
+                                <StyledTableCell align="center">Reference</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {data?.history?.map((row, index) => (
                                 <StyledTableRow key={row.id}>
                                     <StyledTableCell style={{ paddingLeft: '10px' }}>{index + 1}</StyledTableCell>
+                                    <StyledTableCell align="center">{dayjs(row.createdAt).format("DD/MM/YYYY")} </StyledTableCell>
+                                    <StyledTableCell align="center">{dayjs(row.createdAt).format("hh:mm")} </StyledTableCell>
                                     <StyledTableCell align="center">{row?.reason}</StyledTableCell>
                                     <StyledTableCell align="center">{row?.reference} </StyledTableCell>
                                 </StyledTableRow>

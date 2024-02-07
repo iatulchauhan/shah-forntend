@@ -390,11 +390,11 @@ const ReceptionistVisitorData = () => {
                                                                     absolutePath={true}
                                                                     onClick={() => { handleEdit(row) }}
                                                                 />
-                                                                <Assets
+                                                                {/* <Assets
                                                                     className={classes.viewBox}
                                                                     src={"/assets/icons/view.svg"}
                                                                     absolutePath={true}
-                                                                />
+                                                                /> */}
                                                                 <Assets
                                                                     className={classes.deleteBox}
                                                                     src={"/assets/icons/delete.svg"}

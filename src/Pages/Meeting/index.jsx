@@ -28,7 +28,8 @@ import dayjs, { Dayjs } from "dayjs";
 import TextLabel from "../../Components/Common/Fields/TextLabel";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import DataNotFound from "../../Components/Common/DataNotFound";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     fontWeight: 600,
@@ -465,7 +466,7 @@ const MeetingList = () => {
           </Grid>
           <Grid item xs={12}>
             <TableContainer>
-              <Table sx={{ minWidth: 600 }} aria-label="customized table">
+              {meetingDetails?.response?.length > 0 ? <Table sx={{ minWidth: 600 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell className={classes.paddedRow}>
@@ -484,7 +485,6 @@ const MeetingList = () => {
                 <TableBody>
                   {meetingDetails?.response?.map((row, index) => {
                     const getSlotStartTime = row?.slot_time?.filter((e) => e?.isBooked)
-                    console.log(getSlotStartTime, "row?.startTime?.slot_time[0]?.startTime")
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
@@ -508,11 +508,7 @@ const MeetingList = () => {
                               fontSize={"12px"}
                               color={"white"}
                               fontWeight={"400"}
-                              title={
-                                meetinStatusConfig?.find(
-                                  (e) => e?.statusId === row.status
-                                )?.statusName
-                              }
+                              title={meetinStatusConfig?.find((e) => e?.statusId === row.status)?.statusName}
                               textAlign={"center"}
                               style={{
                                 backgroundColor: statusColors[row?.status],
@@ -563,10 +559,10 @@ const MeetingList = () => {
                     )
                   })}
                 </TableBody>
-              </Table>
+              </Table> : <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={2} />}
             </TableContainer>
           </Grid>
-          {meetingDetails?.count && <Grid item xs={12}>
+          {meetingDetails?.count > 0 && <Grid item xs={12}>
             <CommonPagination
               count={meetingDetails?.count}
               rowsPerPage={rowsPerPage}
@@ -576,7 +572,6 @@ const MeetingList = () => {
             />
           </Grid>}
         </Grid>
-
       </PaperContainer>
       <CommonModal
         open={model}

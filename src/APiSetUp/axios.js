@@ -2,9 +2,9 @@ import axios from "axios";
 import { getLSItem, removeLSItem } from "./LocalStorage";
 import swal from "sweetalert";
 
-// export const BASE_URL = `${window?.location?.hostname == "localhost" ? "http://localhost:8000/" : "http://shah.webisheet.in/"}`;
-// export const BASE_URL = `http://192.168.1.37:8000/`;
-export const BASE_URL = `https://shah.webisheet.in/`;
+// export const BASE_URL = `${window?.location?.hostname === "localhost" ? "http://localhost:8000/" : "http://shah.webisheet.in/"}`;
+export const BASE_URL = `http://192.168.1.37:8000/`;
+// export const BASE_URL = `https://shah.webisheet.in/`;
 export const Image_BASE_URL = "https://shiv-gas-agency.s3.ap-south-1.amazonaws.com/";
 
 const instance = axios.create({ baseURL: BASE_URL });
@@ -34,13 +34,13 @@ const onResponseFailure = (error) => {
         icon: "error",
         timer: 5000,
       });
-    } else if (error.response.status === 401 && error.response.data.message == "Token Signature could not be verified.") {
+    } else if (error.response.status === 401 && error.response.data.message === "Token Signature could not be verified.") {
       swal(error.response.data.message, { icon: "warning", timer: 5000, })
         .then(() => {
           clearLocalStore()
           window.location.reload(false);
         });
-    } else if (error.response.status === 401 && error.response.data.message == "Token has expired") {
+    } else if (error.response.status === 401 && error.response.data.message === "Token has expired") {
       swal("Please login again", { icon: "warning", timer: 5000, })
         .then(() => {
           clearLocalStore()

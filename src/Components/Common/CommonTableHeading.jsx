@@ -75,7 +75,7 @@ const TableHeading = ({ title, buttonText, onClick, showSelectDropDown, borderBo
         <Box style={{ borderBottom: borderBottom ? borderBottom : '1px solid #e3e1e1' }} className={classes.commonHeader}>
             <SectionHeading
                 title={title}
-                style={{ fontSize: responsiveFontSize || "18px", fontWeight: 600, color: lightTheme.palette.bgDarkPrimary.main, marginTop: '5px' }}
+                style={{ fontSize: responsiveFontSize || "15px", fontWeight: 600, color: lightTheme.palette.bgDarkPrimary.main, marginTop: '5px' }}
                 variant={variant}
             />
             <Box display={'flex'} gap={1} flexWrap={'wrap'} justifyContent={'center'}>

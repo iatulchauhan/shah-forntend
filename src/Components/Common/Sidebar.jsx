@@ -21,7 +21,7 @@ import { makeStyles } from "tss-react/mui";
 import { getLSItem } from "../../APiSetUp/LocalStorage";
 import axios from "../../APiSetUp/axios";
 import DashboardIcon from "../Icons/dashboardIcon";
-import { Divider, useTheme } from "@mui/material";
+import { Divider, Tooltip, useTheme } from "@mui/material";
 import ProfileIcon from "../Icons/profileIcon";
 import BranchIcon from "../Icons/branchIcon";
 import ClientIcon from "../Icons/clientIcon";
@@ -34,7 +34,7 @@ import InfoIcon from "../Icons/infoIcon";
 import ReminderIcon from "../Icons/reminderIcon";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-const drawerWidth = 275;
+const drawerWidth = 255;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -246,13 +246,7 @@ export default function SideBar(props) {
           <AppBar position="fixed" open={open} style={{ boxShadow: '0px 1px 0px 0px rgba(0, 0, 0, 0.05)' }}>
             <Header open={open} sx={{ marginLeft: 0.8, }} onClick={handleDrawerOpen} handleDrawerOpen={handleDrawerOpen} />
           </AppBar>
-          <Drawer
-            // className="drawer_main"
-            variant="permanent"
-            open={open}
-            onClose={handleDrawerOpen}
-            ref={sidebarRef}
-          >
+          <Drawer variant="permanent" open={open} onClose={handleDrawerOpen} ref={sidebarRef}>
             <DrawerHeader sx={{ background: "#fff", zIndex: 999999, display: "flex", justifyContent: "center", marginTop: '1px', borderBottom: `1px solid ${"#e9e9e9"}` }}>
               {open &&
                 <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={10}>
@@ -262,7 +256,7 @@ export default function SideBar(props) {
               }
             </DrawerHeader>
             <List sx={{
-              padding: { xs: 1, sm: 1, md: theme => theme.spacing(3), lg: theme => theme.spacing(3), marginTop: 15 },
+              padding: { xs: 1, sm: 1, md: theme => theme.spacing(3), lg: theme => theme.spacing(3), marginTop: 1 },
               overflow: "scroll",
               "::-webkit-scrollbar": { width: "0.5px" },
               "::-webkit-scrollbar-thumb": { backgroundColor: "transparent" }
@@ -290,9 +284,11 @@ export default function SideBar(props) {
                           },
                         }}
                       >
-                        <ListItemIcon sx={{ minWidth: 0, color: "#424448", mr: open ? 1 : "auto", justifyContent: "center", }}>
-                          {getIcon(item?.page)}
-                        </ListItemIcon>
+                        <Tooltip title={item?.page} placement="right-start">
+                          <ListItemIcon sx={{ minWidth: 0, color: "#424448", mr: open ? 1 : "auto", justifyContent: "center", }}>
+                            {getIcon(item?.page)}
+                          </ListItemIcon>
+                        </Tooltip>
                         <ListItemText
                           style={{ whiteSpace: "nowrap", }}
                           primary={item?.page}

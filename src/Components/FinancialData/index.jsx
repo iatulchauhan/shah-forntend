@@ -171,17 +171,16 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                     />
                     <TextLabel fontSize={"12px"} color={"red"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
                 </Grid> */}
-                {!data?.isGenerateId && <Grid item xs={12} sm={12} md={12} lg={12}>
+                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                         <CommonButton
-                            width={'160px'}
+                            width={'180px'}
                             text={`${isEdit ? "Update" : "Add"}  ${user?.userType === 3 ? "Assign File" : "Financial Data"}`}
                             type="submit"
                             onClick={onSubmit}
                         />
                     </Box>
-                </Grid>}
-
+                </Grid>
             </Grid>
         </Box>
     )
