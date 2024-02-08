@@ -342,7 +342,7 @@ const FinancialData = () => {
       });
     }
   }, [menuList, location]);
-  console.log(financialDetails, "financialDetails")
+  
   return (
     <>
       <PaperContainer elevation={0} square={false}>
@@ -357,7 +357,6 @@ const FinancialData = () => {
           </Grid>
           <Grid item xs={12}>
             {financialDetails?.response?.length > 0 ? financialDetails?.response?.map((val, index) => {
-              console.log(val, "val")
               const sumOfInvestment = val.userPurchasePlan?.reduce((total, plan) => { return total + plan.investment }, 0);
               return <Accordion expanded={expanded === index + 'panel1'} onChange={handleAccordian(index + 'panel1')} >
                 <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<ArrowDownwardIcon sx={{ marginLeft: 3, marginRight: 3, fontSize: '1rem', color: theme.palette.primary.main }} />}>

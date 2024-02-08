@@ -327,8 +327,9 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
-                                <StyledTableCell align="center">Reason</StyledTableCell>
                                 <StyledTableCell align="center">Visit Date</StyledTableCell>
+                                <StyledTableCell align="center">Visit Time</StyledTableCell>
+                                <StyledTableCell align="center">Reason</StyledTableCell>
                                 <StyledTableCell align="center">Reference</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -336,8 +337,9 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                             {data?.history?.map((row, index) => (
                                 <StyledTableRow key={row.id}>
                                     <StyledTableCell style={{ paddingLeft: '10px' }}>{index + 1}</StyledTableCell>
+                                    <StyledTableCell align="center">{dayjs(row.createdAt).format("DD/MM/YYYY")} </StyledTableCell>
+                                    <StyledTableCell align="center">{dayjs(row.createdAt).format("hh:mm")} </StyledTableCell>
                                     <StyledTableCell align="center">{row?.reason}</StyledTableCell>
-                                    <StyledTableCell align="center">{dayjs(row?.createdAt).format('DD/MM/YYYY')}</StyledTableCell>
                                     <StyledTableCell align="center">{row?.reference} </StyledTableCell>
                                 </StyledTableRow>
                             ))}
