@@ -95,7 +95,7 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Box bgcolor={theme.palette.bgLightExtraPrimary.main} width={'100%'} border={`1px solid ${theme.palette.bgLightExtraPrimary.main}`} borderRadius={"10px"}>
 
-                                {isEdit && e?._id !== null ? <Box display={"flex"} sx={{ cursor: "pointer" }} margin={'4px 1px'} justifyContent={'end'} onClick={() => Swal.fire({
+                                {isEdit && e?._id !== null ? <Box display={"flex"} style={{ cursor: "pointer" }} margin={'4px 1px'} justifyContent={'end'} onClick={() => Swal.fire({
                                     title: "<strong>Warning</strong>",
                                     icon: "warning",
                                     html: "Are you sure you want to delete plan?",
@@ -111,8 +111,8 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                                 })}>
                                     <DeleteForeverIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "22px", marginRight: "1px", backgroundColor: "" }} />
                                 </Box> :
-                                    <Box display={"flex"} sx={{ cursor: "" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
-                                        <CloseIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "16px", marginRight: "1px", border: "0.5px dashed #F14336", }} />
+                                    <Box display={"flex"} style={{ cursor: "pointer" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
+                                        <CloseIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "16px", marginRight: "1px", border: "0.5px dashed #F14336",cursor: "pointer" }} />
                                     </Box>
                                 }
 
