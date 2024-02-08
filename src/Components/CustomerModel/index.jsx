@@ -274,7 +274,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                                     <CloseIcon sx={{ color: "#fff", borderRadius: 1, fontSize: "18px", marginRight: "1px", backgroundColor: "#F14336", }} />
                                 </Box>
                             )}
-                            <Grid container padding={'0px 15px 15px 15px'} spacing={2}>
+                            <Grid container padding={'0px 5px 10px 5px'} spacing={2}>
                                 <Grid item xs={12} sm={12} md={6} lg={4}>
                                     <CommonTextField
                                         fontWeight={400}

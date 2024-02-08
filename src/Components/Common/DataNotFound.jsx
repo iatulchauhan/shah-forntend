@@ -13,7 +13,7 @@ export default function DataNotFound({ title, icon, elevation, color }) {
                     {icon}
                 </div>
                 <div style={{ textAlign: "center", color: color ? color : "inherit", }}>
-                    <Typography fontSize={"20px"} fontWeight={600} >
+                    <Typography fontSize={"16px"} fontWeight={500} >
                         {title ? title : "No record found !"}
                     </Typography>
                 </div>

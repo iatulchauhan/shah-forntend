@@ -6,12 +6,21 @@ import CommonButton from '../../Components/Common/Button/CommonButton';
 import { makeStyles } from "tss-react/mui";
 import { useTheme } from '@mui/styles';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddIcon from '@mui/icons-material/Add';
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+
 import AutoCompleteSearch from '../Common/commonAutoComplete';
+
 import { lightTheme } from '../../theme';
 import { globalAmountConfig } from '../../Utils/globalConfig';
+import DataNotFound from '../Common/DataNotFound';
+import Swal from 'sweetalert2';
 const useStyles = makeStyles()((theme) => {
     return {
+        customGridItem: {
+            paddingTop: '0px !important', // Adjust the margin top as needed
+        },
         dateBox: {
             "& .MuiOutlinedInput-root": {
                 borderRadius: "10px",
@@ -43,13 +52,13 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSelectedClient, selectedClient, clients, user, setUserPurchasePlanDelete, setUserPurchasePlanAdd }) => {
+const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSelectedClient, selectedClient, clients, user, setUserPurchasePlanDelete, setUserPurchasePlanAdd, deleteUserPlan }) => {
     const { classes } = useStyles();
     const theme = useTheme();
     return (
         <Box>
             <Grid container spacing={1} xs={12} md={12} lg={12} sm={12} p={2}>
-                <Grid item xs={12} sm={12} md={12} lg={12}>
+                <Grid item xs={12} sm={12} md={12} lg={12} >
                     {data?.isGenerateId && <TextLabel fontSize={"14px"} color={theme.palette.error.main} title={"UserId is already generateId !"} />}
                     <AutoCompleteSearch
                         fullWidth
@@ -69,7 +78,7 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                 <Divider />
                 <Grid item xs={12} sm={12} md={12} lg={12} >
                     <Box style={{ display: "flex", justifyContent: "space-between", alignItems: "center", }} >
-                        <TextLabel fontSize={"16px"} fontWeight={"400"} title={'Enter Investment Details'} />
+                        <TextLabel fontWeight={600} fontSize={16} title={'Investment Details'} />
                         <Box display={'flex'} gap={2} alignItems={'center'} >
                             <CommonButton
                                 width={'120px'}
@@ -80,18 +89,35 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                         </Box>
                     </Box>
                 </Grid>
-                {data?.userPurchasePlan?.map((e, i) => {
-                    console.log(e, "eee")
+                {data?.userPurchasePlan?.length > 0 ? data?.userPurchasePlan?.map((e, i) => {
+                    console.log(e?._id, "eee")
                     return (
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Box bgcolor={theme.palette.bgLightExtraPrimary.main} width={'100%'} border={`1px solid ${theme.palette.bgLightExtraPrimary.main}`} borderRadius={"10px"}>
-                                {i > 0 && (
-                                    <Box display={"flex"} sx={{ cursor: "pointer" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
-                                        <CloseIcon sx={{ color: "#fff", borderRadius: 1, fontSize: "18px", marginRight: "1px", backgroundColor: "#F14336", }} />
+
+                                {isEdit && e?._id !== null ? <Box display={"flex"} sx={{ cursor: "pointer" }} margin={'4px 1px'} justifyContent={'end'} onClick={() => Swal.fire({
+                                    title: "<strong>Warning</strong>",
+                                    icon: "warning",
+                                    html: "Are you sure you want to delete plan?",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#0492c2",
+                                    iconColor: "#0492c2",
+                                    confirmButtonText: "Yes",
+                                    cancelButtonColor: "#1A1B2F",
+                                }).then(async (result) => {
+                                    if (result.isConfirmed) {
+                                        deleteUserPlan(e?._id)
+                                    }
+                                })}>
+                                    <DeleteForeverIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "22px", marginRight: "1px", backgroundColor: "" }} />
+                                </Box> :
+                                    <Box display={"flex"} sx={{ cursor: "" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
+                                        <CloseIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "16px", marginRight: "1px", border: "0.5px dashed #F14336", }} />
                                     </Box>
-                                )}
-                                <Grid container padding={'0px 15px 15px 15px'} spacing={2}>
-                                    <Grid item xs={12} sm={12} md={6} lg={4}>
+                                }
+
+                                <Grid container padding={'0px 5px 10px 5px'} spacing={2}>
+                                    <Grid item xs={12} sm={12} md={6} lg={4} className={classes.customGridItem}>
                                         <CommonTextField
                                             fontWeight={400}
                                             text={'Investment Amount'}
@@ -103,7 +129,7 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                                         />
                                         <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!e?.investment ? error?.investment : ""} />
                                     </Grid>
-                                    <Grid item xs={12} sm={12} md={6} lg={4}>
+                                    <Grid item xs={12} sm={12} md={6} lg={4} className={classes.customGridItem}>
                                         <CommonTextField
                                             fontWeight={400}
                                             text={'Investment Days'}
@@ -115,7 +141,7 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                                         />
                                         <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!e?.investmentDays ? error?.investmentDays : ""} />
                                     </Grid>
-                                    <Grid item xs={12} sm={12} md={6} lg={4}>
+                                    <Grid item xs={12} sm={12} md={6} lg={4} className={classes.customGridItem}>
                                         <CommonTextField
                                             fontWeight={400}
                                             text={'Return Of Investment (%)'}
@@ -131,7 +157,10 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                             </Box>
                         </Grid>
                     );
-                })}
+                }) : <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <DataNotFound icon={<ErrorOutlineIcon color="error" style={{ fontSize: "3rem" }} />} elevation={0} title={'No Investment Detail Found!'} />
+                </Grid>
+                }
                 {/* <Grid item xs={12} sm={12} md={6} lg={6}>
                     <CommonTextField
                         fontWeight={400}
@@ -171,7 +200,7 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                     />
                     <TextLabel fontSize={"12px"} color={"red"} title={!data?.returnOfInvestment ? error?.returnOfInvestment : ""} />
                 </Grid> */}
-                 <Grid item xs={12} sm={12} md={12} lg={12}>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '35px' }}>
                         <CommonButton
                             width={'180px'}

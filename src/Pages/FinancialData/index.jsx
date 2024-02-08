@@ -250,6 +250,7 @@ const FinancialData = () => {
     setFinancialId("");
     setSelectedClient("");
     _getUsers()
+    _getFinancialData()
   };
 
   const _getFinancialData = async () => {
@@ -286,6 +287,24 @@ const FinancialData = () => {
         OnUpdateError(err.data.message);
       });
   };
+
+  const _deleteUserPlanById = async (id) => {
+    toggleLoader();
+    await axios.post(`userPurchasePlan/delete/${id}`)
+      .then(async (res) => {
+        console.log(res, "res?.data?.data")
+        if (res?.data?.status === 200 && financialId) {
+          await _getFinancialById()
+          toggleLoader();
+          swal(res?.data?.message, { icon: "success", timer: 5000 });
+          await _getFinancialData()
+        }
+      })
+      .catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
+      });
+  }
 
   const _addUpdateFinancialData = async () => {
     if (handleValidation()) {
@@ -342,7 +361,7 @@ const FinancialData = () => {
       });
     }
   }, [menuList, location]);
-  
+
   return (
     <>
       <PaperContainer elevation={0} square={false}>
@@ -392,13 +411,13 @@ const FinancialData = () => {
                             }}
                           />
                         )}
-                        {permissions?.delete && (
+                        {/* {permissions?.delete && (
                           <Assets
                             className={classes.deleteBox}
                             src={"/assets/icons/delete.svg"}
                             absolutePath={true}
                           />
-                        )}
+                        )} */}
                       </Box>
                     </Box>
 
@@ -473,6 +492,7 @@ const FinancialData = () => {
               user={user}
               setUserPurchasePlanDelete={setUserPurchasePlanDelete}
               setUserPurchasePlanAdd={setUserPurchasePlanAdd}
+              deleteUserPlan={_deleteUserPlanById}
             />
           }
         />

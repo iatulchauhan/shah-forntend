@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Grid,Divider } from "@mui/material";
+import { Box, Grid, Divider } from "@mui/material";
 import { useTheme } from '@mui/styles';
 import { makeStyles } from "tss-react/mui";
 import TextLabel from '../../Components/Common/Fields/TextLabel';
@@ -8,7 +8,11 @@ import CommonButton from '../../Components/Common/Button/CommonButton';
 import AutoCompleteSearch from '../Common/commonAutoComplete';
 import { globalAmountConfig } from '../../Utils/globalConfig';
 import CloseIcon from '@mui/icons-material/Close';
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
 import AddIcon from '@mui/icons-material/Add';
+import Swal from 'sweetalert2';
 const useStyles = makeStyles()((theme) => {
     return {
         dateBox: {
@@ -42,7 +46,7 @@ const useStyles = makeStyles()((theme) => {
         },
     };
 });
-const AddNewFile = ({ data, error, handleChange, isEdit, onSubmit, setSelectedClient, selectedClient, clients, user,setUserPurchasePlanAdd,setUserPurchasePlanDelete }) => {
+const AddNewFile = ({ data, error, handleChange, isEdit, onSubmit, setSelectedClient, selectedClient, clients, user, setUserPurchasePlanAdd, setUserPurchasePlanDelete, deleteUserPlan }) => {
     const { classes } = useStyles();
     const theme = useTheme();
     return (
@@ -83,12 +87,27 @@ const AddNewFile = ({ data, error, handleChange, isEdit, onSubmit, setSelectedCl
                     return (
                         <Grid item xs={12} sm={12} md={12} lg={12}>
                             <Box bgcolor={theme.palette.bgLightExtraPrimary.main} width={'100%'} border={`1px solid ${theme.palette.bgLightExtraPrimary.main}`} borderRadius={"10px"}>
-                                {i > 0 && (
-                                    <Box display={"flex"} sx={{ cursor: "pointer" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
-                                        <CloseIcon sx={{ color: "#fff", borderRadius: 1, fontSize: "18px", marginRight: "1px", backgroundColor: "#F14336", }} />
+                                {isEdit && e?._id !== null ? <Box display={"flex"} sx={{ cursor: "pointer" }} margin={'4px 1px'} justifyContent={'end'} onClick={() => Swal.fire({
+                                    title: "<strong>Warning</strong>",
+                                    icon: "warning",
+                                    html: "Are you sure you want to delete plan?",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#0492c2",
+                                    iconColor: "#0492c2",
+                                    confirmButtonText: "Yes",
+                                    cancelButtonColor: "#1A1B2F",
+                                }).then(async (result) => {
+                                    if (result.isConfirmed) {
+                                        deleteUserPlan(e?._id)
+                                    }
+                                })}>
+                                    <DeleteForeverIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "22px", marginRight: "1px", backgroundColor: "" }} />
+                                </Box> :
+                                    <Box display={"flex"} sx={{ cursor: "" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
+                                        <CloseIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "16px", marginRight: "1px", border: "0.5px dashed #F14336", }} />
                                     </Box>
-                                )}
-                                <Grid container padding={'0px 15px 15px 15px'} spacing={2}>
+                                }
+                                <Grid container padding={'0px 5px 10px 5px'} spacing={2}>
                                     <Grid item xs={12} sm={12} md={6} lg={4}>
                                         <CommonTextField
                                             fontWeight={400}

@@ -12,6 +12,9 @@ const useStyles = makeStyles()((theme) => {
             '& .MuiDialog-paper.MuiPaper-rounded': {
                 borderRadius: '10px',
                 overflow: 'hidden',
+            },
+            "& .MuiDialogTitle-root": {
+                padding: "8px 9px !important"
             }
         }
 
@@ -28,15 +31,7 @@ const CommonModal = ({ onClose, open, title, content, maxWidth }) => {
             className={classes.dialog_Main}
             maxWidth={maxWidth}
         >
-            <DialogTitle
-                fontWeight={700}
-                fontSize={16}
-                sx={{ borderBottom: "1px solid #CDCDCD" }}
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                gap={1}
-            >
+            <DialogTitle fontWeight={700} fontSize={16} sx={{ borderBottom: "1px solid #CDCDCD" }} display={"flex"} alignItems={"center"} justifyContent={"space-between"} gap={1}>
                 {title}
                 <Box
                     display={"flex"}

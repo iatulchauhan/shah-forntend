@@ -237,6 +237,22 @@ const NewFile = () => {
         _getNewFiles()
     };
 
+    const _getUsers = async () => {
+        toggleLoader();
+
+        await axios.post("/userPurchasePlan/userList")
+            .then((res) => {
+                if (res?.data?.data) {
+                    setClients(res?.data?.data);
+                }
+                toggleLoader();
+            })
+            .catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            });
+    };
+
     const _getNewFiles = async () => {
         toggleLoader();
         let body = {
@@ -273,13 +289,31 @@ const NewFile = () => {
             });
     };
 
+
+    const _deleteUserPlanById = async (id) => {
+        toggleLoader();
+        await axios.post(`userPurchasePlan/delete/${id}`)
+            .then(async (res) => {
+                console.log(res, "res?.data?.data")
+                if (res?.data?.status === 200 && newFileId) {
+                    await _getNewFIleById()
+                    toggleLoader();
+                    swal(res?.data?.message, { icon: "success", timer: 5000 });
+                    await _getNewFiles()
+                }
+            })
+            .catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            });
+    }
+
     const _generateCredential = (id) => {
         toggleLoader();
         axios.post(`generateId/${id}`)
             .then((res) => {
                 if (res?.data?.data) {
                     swal(res?.data?.message, { icon: "success", timer: 5000 });
-                    toggleLoader();
                     _getNewFiles()
                 }
             })
@@ -316,21 +350,7 @@ const NewFile = () => {
         }
     };
 
-    const _getUsers = async () => {
-        toggleLoader();
 
-        await axios.post("/userPurchasePlan/userList")
-            .then((res) => {
-                if (res?.data?.data) {
-                    setClients(res?.data?.data);
-                }
-                toggleLoader();
-            })
-            .catch((err) => {
-                toggleLoader();
-                OnUpdateError(err.data.message);
-            });
-    };
 
 
 
@@ -414,13 +434,13 @@ const NewFile = () => {
                                                         }}
                                                     />
                                                 )}
-                                                {permissions?.delete && (
+                                                {/* {permissions?.delete && (
                                                     <Assets
                                                         className={classes.deleteBox}
                                                         src={"/assets/icons/delete.svg"}
                                                         absolutePath={true}
                                                     />
-                                                )}
+                                                )} */}
                                                 <Box>
                                                     <CommonButton
                                                         width={'90px'}
@@ -518,6 +538,7 @@ const NewFile = () => {
                             user={user}
                             setUserPurchasePlanDelete={setUserPurchasePlanDelete}
                             setUserPurchasePlanAdd={setUserPurchasePlanAdd}
+                            deleteUserPlan={_deleteUserPlanById}
                         />
                     }
                 />
