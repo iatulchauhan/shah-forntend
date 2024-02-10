@@ -152,12 +152,11 @@ const FinancialData = () => {
   const closeDate = (date, days) => {
     const initialDate = new Date(date);
     const newDate = new Date(initialDate);
-    newDate.setDate(initialDate.getDate() + days);
-    newDate.setUTCHours(0, 0, 0, 0);
-    const formattedDate = newDate.toISOString();
+    newDate?.setDate(initialDate.getDate() + days);
+    newDate?.setUTCHours(0, 0, 0, 0);
+    const formattedDate = newDate?.toISOString();
     return dayjs(formattedDate).format("DD/MM/YYYY");
   };
-
 
   //Validation
   const handleValidation = () => {
@@ -440,12 +439,12 @@ const FinancialData = () => {
                       <TableBody>
                         {val?.userPurchasePlan?.length > 0 &&
                           val?.userPurchasePlan?.map((row, index) => {
-                            console.log(row, "row")
+                            console.log(row.createdAt, "row.createdAt")
                             return (
                               <StyledTableRow key={index}>
                                 <StyledTableCell style={{ paddingLeft: "15px" }}>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                                <StyledTableCell>{dayjs(row.createdAt).format("DD/MM/YYYY")}</StyledTableCell>
-                                <StyledTableCell>{closeDate(row.createdAt, row?.investmentDays)}</StyledTableCell>
+                                <StyledTableCell>{dayjs(row?.createdAt).format("DD/MM/YYYY")}</StyledTableCell>
+                                <StyledTableCell>{closeDate(row?.createdAt, row?.investmentDays)}</StyledTableCell>
                                 <StyledTableCell align="center">{row?.investmentDays}</StyledTableCell>
                                 <StyledTableCell>{`${(row.investment * row.returnOfInvestment) / 100}(${row.returnOfInvestment}%)`}</StyledTableCell>
                                 <StyledTableCell>{globalAmountConfig(row.investment)}</StyledTableCell>
