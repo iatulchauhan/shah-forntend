@@ -13,6 +13,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { format } from 'date-fns';
 import TextLabel from "../../Components/Common/Fields/TextLabel";
 import CommonButton from "../../Components/Common/Button/CommonButton";
 import { lightTheme } from "../../theme";
@@ -166,38 +167,35 @@ const Dashboard = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
- 
-  const upcomingData = meetingDetails.map((item) => ({
-    name: item?.creatorDetails?.name,
-    subline: "Design Review",
-    time: "1st Oct, 10 AM to 11: AM",
-    backgroundColor: "rgba(205, 249, 255, 1)",
-    borderColor: "rgba(0, 196, 223, 1)",
-  }));
-  const upcomingData1 = [
-    {
-      name: "Javob John",
-      subline: "Design Review",
-      time: "1st Oct, 10 AM to 11: AM",
-      backgroundColor: "rgba(205, 249, 255, 1)",
-      borderColor: "rgba(0, 196, 223, 1)",
-    },
-    {
-      name: "Javob John",
-      subline: "Design Review",
-      time: "1st Oct, 10 AM to 11: AM",
-      backgroundColor: "rgba(255, 229, 205, 1)",
-      borderColor: "rgba(231, 142, 60, 1)",
-    },
-    {
-      name: "Javob John",
-      subline: "Design Review",
-      time: "1st Oct, 10 AM to 11: AM",
-      backgroundColor: "rgba(215, 205, 255, 1)",
-      borderColor: "rgba(119, 97, 205, 1)",
-    },
+  const convertToAmPm = (timeInMinutes) => {
+    const hours = Math.floor(timeInMinutes / 60);
+    const minutes = timeInMinutes % 60;
+    const period = hours < 12 ? "AM" : "PM";
+    const formattedHours = hours % 12 || 12;
+    return `${formattedHours}:${minutes < 10 ? "0" : ""}${minutes} ${period}`;
+  };
+  const colorCombinations = [
+    { backgroundColor: "rgba(205, 249, 255, 1)", borderColor: "rgba(0, 196, 223, 1)" },
+    { backgroundColor: "rgba(255, 229, 205, 1)", borderColor: "rgba(231, 142, 60, 1)" },
+    { backgroundColor: "rgba(215, 205, 255, 1)", borderColor: "rgba(119, 97, 205, 1)" }
   ];
 
+const upcomingData = meetingDetails.map((item, index) => {
+  const colorIndex = index % colorCombinations.length;
+  const colorCombination = colorCombinations[colorIndex];
+  const getSlotStartTime = item?.slot_time?.filter((e) => e?.isBooked)
+  const meetingDate = new Date(item?.meetingDate);
+   const formattedDate = format(meetingDate, "do MMM");
+  return {
+    name: item?.creatorDetails?.name,
+    subline: '',
+    time:`${formattedDate}, ${convertToAmPm(getSlotStartTime[0]?.startTime)}`,
+    backgroundColor: colorCombination.backgroundColor,
+    borderColor: colorCombination.borderColor,
+    buttonName: item?.meetingWithDetails?.name
+  };
+});
+ 
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -207,7 +205,6 @@ const Dashboard = () => {
     setPage(0);
   };
 
-  console.log(meetingDetails, "meetingDetails ");
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -620,7 +617,7 @@ const Dashboard = () => {
                               <Avatar sx={{ height: "30px", width: "30px" }} />
                             </Box>
                             <CommonButton
-                              text="Export"
+                              text={item?.buttonName}
                               color={lightTheme.palette.bgWhite.main}
                               borderRadius={2}
                               background={item.borderColor}
