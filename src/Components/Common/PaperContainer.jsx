@@ -3,7 +3,7 @@ import React from 'react';
 import Paper from '@mui/material/Paper';
 import { lightTheme } from '../../theme';
 
-const PaperContainer = ({ children, elevation, square, ...otherProps }) => {
+const PaperContainer = ({sx, children, elevation, square, ...otherProps }) => {
     return (
         <Paper elevation={elevation} square={square}
             sx={{
@@ -11,6 +11,7 @@ const PaperContainer = ({ children, elevation, square, ...otherProps }) => {
                 border: '1px solid #F8F9FA',
                 background: lightTheme.palette.bgWhite.main,
                 marginTop: '10px',
+                ...sx
             }}
             {...otherProps}>
             {children}

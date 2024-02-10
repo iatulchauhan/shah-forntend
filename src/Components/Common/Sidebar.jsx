@@ -350,7 +350,7 @@ export default function SideBar(props) {
             </List>
           </Drawer>
           <Box sx={{
-            marginTop: 7, width: "100%", overflow: "auto", marginBottom: "34px", [theme.breakpoints.down("xs")]: {
+            marginTop: 7, width: "100%", marginBottom: "34px", [theme.breakpoints.down("xs")]: {
               marginBottom: "44px"
             },
           }}>

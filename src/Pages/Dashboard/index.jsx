@@ -31,6 +31,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import axios, { Image_BASE_URL } from "../../APiSetUp/axios";
 import { useAppContext } from "../../Context/context";
 import DashboardSummaryBox from "../../Components/Common/DashboardSummaryBox";
+import CommonPagination from "../../Components/Common/Pagination";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -123,64 +124,9 @@ const useStyles = makeStyles()((theme) => {
   };
 });
 
-const rows = [
-  {
-    key: "1",
-    name: "John Doe",
-    contactNo: "+91 9865998545",
-    emailId: "johndoe@gmail.com",
-    expiringPlan: "$2000",
-    activePlan: "Lorem ipsum",
-  },
-  {
-    key: "2",
-    name: "John Doe",
-    contactNo: "+91 9865998545",
-    emailId: "johndoe@gmail.com",
-    expiringPlan: "$2000",
-    activePlan: "Lorem ipsum",
-  },
-  {
-    key: "3",
-    name: "John Doe",
-    contactNo: "+91 9865998545",
-    emailId: "johndoe@gmail.com",
-    expiringPlan: "$2000",
-    activePlan: "Lorem ipsum",
-  },
-  {
-    key: "4",
-    name: "John Doe",
-    contactNo: "+91 9865998545",
-    emailId: "johndoe@gmail.com",
-    expiringPlan: "$2000",
-    activePlan: "Lorem ipsum",
-  },
-];
+ 
 
-const upcomingData = [
-  {
-    name: "Javob John",
-    subline: "Design Review",
-    time: "1st Oct, 10 AM to 11: AM",
-    backgroundColor: "rgba(205, 249, 255, 1)",
-    borderColor: "rgba(0, 196, 223, 1)",
-  },
-  {
-    name: "Javob John",
-    subline: "Design Review",
-    time: "1st Oct, 10 AM to 11: AM",
-    backgroundColor: "rgba(255, 229, 205, 1)",
-    borderColor: "rgba(231, 142, 60, 1)",
-  },
-  {
-    name: "Javob John",
-    subline: "Design Review",
-    time: "1st Oct, 10 AM to 11: AM",
-    backgroundColor: "rgba(215, 205, 255, 1)",
-    borderColor: "rgba(119, 97, 205, 1)",
-  },
-];
+
 const past = [
   {
     name: "Javob John",
@@ -212,28 +158,75 @@ const Dashboard = () => {
   const { OnUpdateError, toggleLoader, user } = useAppContext();
   const [value, setValue] = useState("Upcoming");
   const [dashboardSummary, setDashboardSummary] = useState([]);
+  const [totalRevenue, setTotalRevenue] = useState([]);
+  const [topInvestors, setTopInvestors] = useState([]);
   const [offerDetails, setOfferDetails] = useState([]);
+  const [visitorInsights, setVisitorInsights] = useState([]);
+  const [meetingDetails, setMeetingDetails] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+  const [search, setSearch] = useState("");
+ 
+  const upcomingData = meetingDetails.map((item) => ({
+    name: item?.creatorDetails?.name,
+    subline: "Design Review",
+    time: "1st Oct, 10 AM to 11: AM",
+    backgroundColor: "rgba(205, 249, 255, 1)",
+    borderColor: "rgba(0, 196, 223, 1)",
+  }));
+  const upcomingData1 = [
+    {
+      name: "Javob John",
+      subline: "Design Review",
+      time: "1st Oct, 10 AM to 11: AM",
+      backgroundColor: "rgba(205, 249, 255, 1)",
+      borderColor: "rgba(0, 196, 223, 1)",
+    },
+    {
+      name: "Javob John",
+      subline: "Design Review",
+      time: "1st Oct, 10 AM to 11: AM",
+      backgroundColor: "rgba(255, 229, 205, 1)",
+      borderColor: "rgba(231, 142, 60, 1)",
+    },
+    {
+      name: "Javob John",
+      subline: "Design Review",
+      time: "1st Oct, 10 AM to 11: AM",
+      backgroundColor: "rgba(215, 205, 255, 1)",
+      borderColor: "rgba(119, 97, 205, 1)",
+    },
+  ];
 
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (value) => {
+    setRowsPerPage(value);
+    setPage(0);
+  };
+
+  console.log(meetingDetails, "meetingDetails ");
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
   const _getOffer = () => {
     toggleLoader();
     axios
-    .get("offer")
-    .then((res) => {
-      if (res?.data?.data) {
-        setOfferDetails(res?.data?.data);
-      }
-      toggleLoader();
-    })
-    .catch((err) => {
-      toggleLoader();
-      OnUpdateError(err.data.message);
-    });
+      .get("offer")
+      .then((res) => {
+        if (res?.data?.data) {
+          setOfferDetails(res?.data?.data);
+        }
+        toggleLoader();
+      })
+      .catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
+      });
   };
-  
+
   const _getDashboardSummary = () => {
     let body = {};
     axios
@@ -249,151 +242,231 @@ const Dashboard = () => {
       });
   };
 
+  const _getDashboardTotalRevenue = () => {
+    let body = {};
+    axios
+      .post(`/total_Revenue`, body)
+      .then((res) => {
+        if (res?.data?.data?.response) {
+          setTotalRevenue(res?.data?.data?.response);
+        }
+      })
+      .catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
+      });
+  };
+
+  const _getDashboardTopInvestors = () => {
+    let body = {};
+    axios
+      .post(`/top_invester`, body)
+      .then((res) => {
+        if (res?.data?.data) {
+          setTopInvestors(res?.data?.data);
+        }
+      })
+      .catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
+      });
+  };
+
+  const _getDashboardVisitorInsights = () => {
+    let body = {};
+    axios
+      .post(`/visitor_Insights`, body)
+      .then((res) => {
+        if (res?.data?.data) {
+          setVisitorInsights(res?.data?.data);
+        }
+      })
+      .catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
+      });
+  };
+
+  const _getMeetingList = () => {
+    toggleLoader();
+    let body = {
+      limit: rowsPerPage,
+      page: page + 1,
+      search: search || "",
+    };
+    // let body = {
+    //   limit: 1,
+    //   page: 1,
+    //   search:   "",
+    // };
+    axios
+      .post(`meetingList`, body)
+      .then((res) => {
+        if (res?.data?.data?.response) {
+          setMeetingDetails(res?.data?.data?.response);
+        }
+        toggleLoader();
+      })
+      .catch((err) => {
+        toggleLoader();
+        OnUpdateError(err.data.message);
+      });
+  };
   useEffect(() => {
     _getOffer();
     _getDashboardSummary();
+    _getDashboardTotalRevenue();
+    _getDashboardTopInvestors();
+    _getDashboardVisitorInsights();
+    _getMeetingList();
   }, []);
-
-  return (
+   return (
     <>
-      {dashboardSummary?.todaySummary && (
-        <PaperContainer>
-          <Box
-            padding={3}
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <TextLabel
-              variant={"h6"}
-              fontWeight={"600"}
-              title={"Today’s Summary"}
-            />
-            <CommonButton
+      <Grid container spacing={2} mb={4}>
+        {dashboardSummary?.todaySummary && (
+          <Grid item xs={12}>
+            <PaperContainer>
+              <Box
+                padding={3}
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+              >
+                <TextLabel
+                  variant={"h6"}
+                  fontWeight={"600"}
+                  title={"Today’s Summary"}
+                />
+                {/* <CommonButton
               text="Export"
               className={classes.customButtom}
               // startIcon={<Assets src={exportIcon} absolutePath={true} />}
-            />
-          </Box>
-          <Grid container padding={3} spacing={3}>
-            <DashboardSummaryBox
-              count={dashboardSummary?.todaySummary?.todayVisitor || 0}
-              title={"Total Visitor"}
-              iconColor={"#FA5A7D"}
-              backgroundColor={"#FFE2E5"}
-              avtar={"/assets/icons/DashboardIcon1.png"}
-            />
-            <DashboardSummaryBox
-              count={dashboardSummary?.todaySummary?.todayMetting || 0}
-              title={"Total Meetings"}
-              iconColor={"#FF947A"}
-              backgroundColor={"#FFF4DE"}
-              avtar={"/assets/icons/DashboardIcon2.png"}
-              />
-            <DashboardSummaryBox
-              count={dashboardSummary?.todaySummary?.totalInvestmentAmount || 0}
-              title={"Total Investment Amount"}
-              iconColor={"#3CD856"}
-              backgroundColor={"#DCFCE7"}
-              avtar={"/assets/icons/DashboardIcon3.png"}
-              />
-            <DashboardSummaryBox
-              count={dashboardSummary?.todaySummary?.totalPayout || 0}
-              title={"Total Payout"}
-              iconColor={"#BF83FF"}
-              backgroundColor={"#F3E8FF"}
-              avtar={"/assets/icons/DashboardIcon4.png"}
-            />
-            <DashboardSummaryBox
-              count={dashboardSummary?.todaySummary?.todayClient || 0}
-              title={"Total New Client"}
-              iconColor={"#4FA3F1"}
-              backgroundColor={"#E0F0FF"}
-              avtar={"/assets/icons/DashboardIcon4.png"}
-            />
+            /> */}
+              </Box>
+              <Grid container padding={3} spacing={3}>
+                <DashboardSummaryBox
+                  count={dashboardSummary?.todaySummary?.todayVisitor || 0}
+                  title={"Total Visitor"}
+                  iconColor={"#FA5A7D"}
+                  backgroundColor={"#FFE2E5"}
+                  avtar={"/assets/icons/DashboardIcon1.png"}
+                />
+                <DashboardSummaryBox
+                  count={dashboardSummary?.todaySummary?.todayMetting || 0}
+                  title={"Total Meetings"}
+                  iconColor={"#FF947A"}
+                  backgroundColor={"#FFF4DE"}
+                  avtar={"/assets/icons/DashboardIcon2.png"}
+                />
+                <DashboardSummaryBox
+                  count={
+                    dashboardSummary?.todaySummary?.totalInvestmentAmount || 0
+                  }
+                  title={"Total Investment Amount"}
+                  iconColor={"#3CD856"}
+                  backgroundColor={"#DCFCE7"}
+                  avtar={"/assets/icons/DashboardIcon3.png"}
+                />
+                <DashboardSummaryBox
+                  count={dashboardSummary?.todaySummary?.totalPayout || 0}
+                  title={"Total Payout"}
+                  iconColor={"#BF83FF"}
+                  backgroundColor={"#F3E8FF"}
+                  avtar={"/assets/icons/DashboardIcon4.png"}
+                />
+                <DashboardSummaryBox
+                  count={dashboardSummary?.todaySummary?.todayClient || 0}
+                  title={"Total New Client"}
+                  iconColor={"#4FA3F1"}
+                  backgroundColor={"#E0F0FF"}
+                  avtar={"/assets/icons/DashboardIcon4.png"}
+                />
+              </Grid>
+            </PaperContainer>
           </Grid>
-        </PaperContainer>
-      )}
-
-      {dashboardSummary?.allOverSummary && (
-        <PaperContainer>
-          <Box
-            padding={3}
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <TextLabel
-              variant={"h6"}
-              fontWeight={"600"}
-              title={"All Over Summary"}
-            />
-            <CommonButton
-              text="Export"
-              className={classes.customButtom}
-            />
-          </Box>
-          <Grid container padding={3} spacing={3}>
-            <DashboardSummaryBox
-              count={dashboardSummary?.allOverSummary?.totalReceptionist || 0}
-              title={"Total Receptionist"}
-              iconColor={"#FA5A7D"}
-              backgroundColor={"#FFE2E5"}
-              avtar={"/assets/icons/DashboardIcon1.png"}
-            />
-            <DashboardSummaryBox
-              count={dashboardSummary?.allOverSummary?.totalCounsellor || 0}
-              title={"Total Counsellor"}
-              iconColor={"#FF947A"}
-              backgroundColor={"#FFF4DE"}
-              avtar={"/assets/icons/DashboardIcon2.png"}
-            />
-            <DashboardSummaryBox
-              count={dashboardSummary?.allOverSummary?.totalAccountant || 0}
-              title={"Total Accountant"}
-              iconColor={"#3CD856"}
-              backgroundColor={"#DCFCE7"}
-              avtar={"/assets/icons/DashboardIcon3.png"}
-            />
-            <DashboardSummaryBox
-              count={dashboardSummary?.allOverSummary?.totalUser || 0}
-              title={"Total Users"}
-              iconColor={"#BF83FF"}
-              backgroundColor={"#F3E8FF"}
-              avtar={"/assets/icons/DashboardIcon4.png"}
-            />
-            <DashboardSummaryBox
-              count={dashboardSummary?.allOverSummary?.totalInvestmentAmount || 0}
-              title={"Total Investment Amount"}
-              iconColor={"#4FA3F1"}
-              backgroundColor={"#E0F0FF"}
-              avtar={"/assets/icons/DashboardIcon4.png"}
-            />
+        )}
+        {dashboardSummary?.allOverSummary && (
+          <Grid item xs={12}>
+            <PaperContainer>
+              <Box
+                padding={3}
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+              >
+                <TextLabel
+                  variant={"h6"}
+                  fontWeight={"600"}
+                  title={"All Over Summary"}
+                />
+                {/* <CommonButton text="Export" className={classes.customButtom} /> */}
+              </Box>
+              <Grid container padding={3} spacing={3}>
+                <DashboardSummaryBox
+                  count={
+                    dashboardSummary?.allOverSummary?.totalReceptionist || 0
+                  }
+                  title={"Total Receptionist"}
+                  iconColor={"#FA5A7D"}
+                  backgroundColor={"#FFE2E5"}
+                  avtar={"/assets/icons/DashboardIcon1.png"}
+                />
+                <DashboardSummaryBox
+                  count={dashboardSummary?.allOverSummary?.totalCounsellor || 0}
+                  title={"Total Counsellor"}
+                  iconColor={"#FF947A"}
+                  backgroundColor={"#FFF4DE"}
+                  avtar={"/assets/icons/DashboardIcon2.png"}
+                />
+                <DashboardSummaryBox
+                  count={dashboardSummary?.allOverSummary?.totalAccountant || 0}
+                  title={"Total Accountant"}
+                  iconColor={"#3CD856"}
+                  backgroundColor={"#DCFCE7"}
+                  avtar={"/assets/icons/DashboardIcon3.png"}
+                />
+                <DashboardSummaryBox
+                  count={dashboardSummary?.allOverSummary?.totalUser || 0}
+                  title={"Total Users"}
+                  iconColor={"#BF83FF"}
+                  backgroundColor={"#F3E8FF"}
+                  avtar={"/assets/icons/DashboardIcon4.png"}
+                />
+                <DashboardSummaryBox
+                  count={
+                    dashboardSummary?.allOverSummary?.totalInvestmentAmount || 0
+                  }
+                  title={"Total Investment Amount"}
+                  iconColor={"#4FA3F1"}
+                  backgroundColor={"#E0F0FF"}
+                  avtar={"/assets/icons/DashboardIcon4.png"}
+                />
+              </Grid>
+            </PaperContainer>
           </Grid>
-        </PaperContainer>
-      )}
-
-      {user?.userType === 1 && (
-        <Grid container spacing={4} paddingY={2}>
-          {offerDetails?.response?.length > 0 &&
-            offerDetails?.response?.map((item) => {
-              return (
-                <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
-                  <Card className={classes.card}>
-                    <CardMedia
-                      className={classes.cardImage}
-                      image={`${Image_BASE_URL}${item?.image}`}
-                      title="green iguana"
-                    />
-                    <CardContent className={classes.cardContent}>
-                      <TextLabel
-                        fontSize={"18px"}
-                        color={"#000"}
-                        fontWeight={"600"}
-                        title={item?.title}
-                      />
-                      <Box display={"flex"} justifyContent={"end"} gap={1}>
-                        {/* <Assets
+        )}
+        {user?.userType === 1 && (
+          <Grid item xs={12}>
+            <Grid container spacing={4}>
+              {offerDetails?.response?.length > 0 &&
+                offerDetails?.response?.map((item) => {
+                  return (
+                    <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                      <Card className={classes.card}>
+                        <CardMedia
+                          className={classes.cardImage}
+                          image={`${Image_BASE_URL}${item?.image}`}
+                          title="green iguana"
+                        />
+                        <CardContent className={classes.cardContent}>
+                          <TextLabel
+                            fontSize={"18px"}
+                            color={"#000"}
+                            fontWeight={"600"}
+                            title={item?.title}
+                          />
+                          <Box display={"flex"} justifyContent={"end"} gap={1}>
+                            {/* <Assets
                           className={classes.writeBox}
                           src={"/assets/icons/write.svg"}
                           absolutePath={true}
@@ -413,54 +486,41 @@ const Dashboard = () => {
                             _handleDelete();
                           }}
                         /> */}
-                      </Box>
-                    </CardContent>
-                    <TextLabel
-                      className={classes.cardDescription}
-                      variant={"body2"}
-                      color={lightTheme.palette.bgLightExtraLightGray.main}
-                      fontWeight={"400"}
-                      title={
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: item?.description,
-                          }}
+                          </Box>
+                        </CardContent>
+                        <TextLabel
+                          className={classes.cardDescription}
+                          variant={"body2"}
+                          color={lightTheme.palette.bgLightExtraLightGray.main}
+                          fontWeight={"400"}
+                          title={
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: item?.description,
+                              }}
+                            />
+                          }
                         />
-                      }
-                    />
-                  </Card>
-                </Grid>
-              );
-            })}
-        </Grid>
-      )}
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={12} md={6} lg={4}>
-          <PaperContainer>
+                      </Card>
+                    </Grid>
+                  );
+                })}
+            </Grid>
+          </Grid>
+        )}
+        <Grid item xs={12} sm={12} md={6} lg={7}>
+          <PaperContainer sx={{ height: "400px" }}>
             <TextLabel
               variant={"h6"}
               fontWeight={600}
               title={"Total Revenue"}
               style={{ padding: "20px 0px 0px 10px" }}
             />
-            <CommonBarChart />
+            <CommonBarChart totalRevenue={totalRevenue} />
           </PaperContainer>
         </Grid>
-
-        <Grid item xs={12} sm={12} md={6} lg={4}>
-          <PaperContainer>
-            <TextLabel
-              variant={"h6"}
-              fontWeight={600}
-              title={"Customer Satisfaction"}
-              style={{ padding: "20px 0px 0px 10px" }}
-            />
-            <CommonAreaChart />
-          </PaperContainer>
-        </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={4}>
-          <PaperContainer>
+        <Grid item xs={12} sm={12} md={6} lg={5}>
+          <PaperContainer sx={{ height: "400px" }}>
             <TextLabel
               variant={"h6"}
               fontWeight={600}
@@ -566,7 +626,7 @@ const Dashboard = () => {
                               background={item.borderColor}
                               fontSize={"10px"}
                             />
-                          </Box>
+                          </Box>{" "}
                         </Box>
                       );
                     })}
@@ -738,10 +798,21 @@ const Dashboard = () => {
                 </TabPanel>
               </TabContext>
             </Box>
+            {/* {meetingDetails?.count > 0 && (
+              <Grid item xs={12}>
+                <CommonPagination
+                  count={meetingDetails?.count}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  onPageChange={handleChangePage}
+                />
+              </Grid>
+            )} */}
           </PaperContainer>
         </Grid>
         <Grid item xs={12} md={6} lg={7}>
-          <PaperContainer>
+          <PaperContainer sx={{ height: "460px", overflow: "auto" }}>
             <Grid item xs={12}>
               <TableHeading
                 title="Investors"
@@ -765,20 +836,26 @@ const Dashboard = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.map((row, index) => (
+                    {topInvestors.map((investor, index) => (
                       <StyledTableRow key={index}>
-                        <StyledTableCell>{row.key}</StyledTableCell>
+                        <StyledTableCell>{index + 1}</StyledTableCell>
                         <StyledTableCell
                           className={classes.paddedRow}
                           component="th"
                           scope="row"
                         >
-                          {row.name}
+                          {investor.userDetails.name}
                         </StyledTableCell>
-                        <StyledTableCell>{row.contactNo}</StyledTableCell>
-                        <StyledTableCell>{row.emailId}</StyledTableCell>
-                        <StyledTableCell>{row.expiringPlan}</StyledTableCell>
-                        <StyledTableCell>{row.activePlan}</StyledTableCell>
+                        <StyledTableCell>
+                          {investor.userDetails.mobileNo}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {investor.userDetails.email}
+                        </StyledTableCell>
+                        <StyledTableCell>{investor.investment}</StyledTableCell>
+                        <StyledTableCell>
+                          {investor.iscompleted ? "Yes" : "No"}
+                        </StyledTableCell>
                       </StyledTableRow>
                     ))}
                   </TableBody>
@@ -787,18 +864,31 @@ const Dashboard = () => {
             </Grid>
           </PaperContainer>
         </Grid>
-
         <Grid item xs={12} md={6} lg={5}>
-          <PaperContainer>
+          <PaperContainer sx={{ height: "460px", overflow: "auto" }}>
             <TextLabel
               variant={"h6"}
               fontWeight={600}
               title={"Visitor Insights"}
               style={{ padding: "20px 0px 0px 10px" }}
             />
-            <CommonLineChart />
+            <CommonLineChart visitorInsights={visitorInsights} />
           </PaperContainer>
         </Grid>
+      </Grid>
+
+      <Grid container spacing={2}>
+        {/* <Grid item xs={12} sm={12} md={6} lg={4}>
+          <PaperContainer>
+            <TextLabel
+              variant={"h6"}
+              fontWeight={600}
+              title={"Customer Satisfaction"}
+              style={{ padding: "20px 0px 0px 10px" }}
+            />
+            <CommonAreaChart />
+          </PaperContainer>
+        </Grid> */}
       </Grid>
     </>
   );
