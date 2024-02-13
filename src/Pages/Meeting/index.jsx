@@ -30,6 +30,7 @@ import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import DataNotFound from "../../Components/Common/DataNotFound";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import WidgetLoader from "../../Components/Common/widgetLoader";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     fontWeight: 600,
@@ -269,7 +270,6 @@ const MeetingList = () => {
     setUpdateMeetingStatus([]);
   };
   const _getMeetingList = () => {
-    toggleLoader();
     let body = {
       limit: rowsPerPage,
       page: page + 1,
@@ -281,10 +281,8 @@ const MeetingList = () => {
         if (res?.data?.data) {
           setMeetingDetails(res?.data?.data);
         }
-        toggleLoader();
       })
       .catch((err) => {
-        toggleLoader();
         OnUpdateError(err.data.message);
       });
   };
@@ -332,22 +330,7 @@ const MeetingList = () => {
       }
     });
   };
-  // const _deleteScheduleMeeting = (meetingId) => {
-  //   toggleLoader();
-  //   axios
-  //     .delete(`meeting/delete/${meetingId}`)
-  //     .then((res) => {
-  //       if (res?.data?.data) {
-  //         swal(res?.data?.message, { icon: "success", timer: 5000 });
-  //         _getMeetingList();
-  //       }
-  //       toggleLoader();
-  //     })
-  //     .catch((err) => {
-  //       toggleLoader();
-  //       OnUpdateError(err.data.message);
-  //     });
-  // };
+
   const _addUpdateMeetingSchedule = () => {
     if (handleValidation()) {
       toggleLoader();
@@ -466,13 +449,12 @@ const MeetingList = () => {
           </Grid>
           <Grid item xs={12}>
             <TableContainer>
-              {meetingDetails?.response?.length > 0 ? <Table sx={{ minWidth: 600 }} aria-label="customized table">
+              {meetingDetails?.response != undefined ? <Table sx={{ minWidth: 600 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell className={classes.paddedRow}>
                       No.
                     </StyledTableCell>
-                    {/* <StyledTableCell>Title</StyledTableCell> */}
                     <StyledTableCell>Client</StyledTableCell>
                     <StyledTableCell>Meeting With</StyledTableCell>
                     <StyledTableCell>Date</StyledTableCell>
@@ -483,83 +465,84 @@ const MeetingList = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {meetingDetails?.response?.map((row, index) => {
-                    const getSlotStartTime = row?.slot_time?.filter((e) => e?.isBooked)
-                    return (
-                      <StyledTableRow key={index}>
-                        <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                        <StyledTableCell
-                          className={classes.paddedRow}
-                          component="th"
-                          scope="row"
-                        >
-                          {row?.clientDetails?.name}
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          {row?.meetingWithDetails?.name}
-                        </StyledTableCell>
-                        <StyledTableCell>{row?.meetingDate}</StyledTableCell>
-                        <StyledTableCell align="center">
-                          {convertToAmPm(getSlotStartTime[0]?.startTime)}
-                        </StyledTableCell>
-                        <StyledTableCell className={classes.paddedRow}>
-                          <Box display={"flex"} justifyContent={"center"}>
-                            <TextLabel
-                              fontSize={"12px"}
-                              color={"white"}
-                              fontWeight={"400"}
-                              title={meetinStatusConfig?.find((e) => e?.statusId === row.status)?.statusName}
-                              textAlign={"center"}
-                              style={{
-                                backgroundColor: statusColors[row?.status],
-                                borderRadius: "20px",
-                                width: "130px",
-                                padding: "5px 5px",
-                              }}
-                            />
-                          </Box>
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          {row?.creatorDetails?.name}
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          <Box display={"flex"} gap={1}>
-                            {/* <Assets
-                            className={classes.viewBox}
-                            src={"/assets/icons/view.svg"}
-                            absolutePath={true}
-                          /> */}
-                            {permissions?.update && (
-                              <Assets
-                                className={classes.writeBox}
-                                src={"/assets/icons/write.svg"}
-                                absolutePath={true}
-                                onClick={() => {
-                                  console.log("lodaaa")
-                                  setMeetingId(row?._id);
-                                  setModel(true);
-                                  setIsEdit(true);
+                  {meetingDetails?.response?.length > 0 ?
+                    meetingDetails?.response?.map((row, index) => {
+                      const getSlotStartTime = row?.slot_time?.filter((e) => e?.isBooked)
+                      return (
+                        <StyledTableRow key={index}>
+                          <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
+                          <StyledTableCell
+                            className={classes.paddedRow}
+                            component="th"
+                            scope="row"
+                          >
+                            {row?.clientDetails?.name}
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            {row?.meetingWithDetails?.name}
+                          </StyledTableCell>
+                          <StyledTableCell>{row?.meetingDate}</StyledTableCell>
+                          <StyledTableCell align="center">
+                            {convertToAmPm(getSlotStartTime[0]?.startTime)}
+                          </StyledTableCell>
+                          <StyledTableCell className={classes.paddedRow}>
+                            <Box display={"flex"} justifyContent={"center"}>
+                              <TextLabel
+                                fontSize={"12px"}
+                                color={"white"}
+                                fontWeight={"400"}
+                                title={meetinStatusConfig?.find((e) => e?.statusId === row.status)?.statusName}
+                                textAlign={"center"}
+                                style={{
+                                  backgroundColor: statusColors[row?.status],
+                                  borderRadius: "20px",
+                                  width: "130px",
+                                  padding: "5px 5px",
                                 }}
                               />
-                            )}
-
-                            {permissions?.delete && (
-                              <Assets
-                                className={classes.deleteBox}
-                                src={"/assets/icons/delete.svg"}
-                                absolutePath={true}
-                                onClick={() => {
-                                  _deleteScheduleMeeting(row?._id);
-                                }}
-                              />
-                            )}
-                          </Box>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    )
-                  })}
+                            </Box>
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            {row?.creatorDetails?.name}
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            <Box display={"flex"} gap={1}>
+                              {permissions?.update && (
+                                <Assets
+                                  className={classes.writeBox}
+                                  src={"/assets/icons/write.svg"}
+                                  absolutePath={true}
+                                  onClick={() => {
+                                    console.log("lodaaa")
+                                    setMeetingId(row?._id);
+                                    setModel(true);
+                                    setIsEdit(true);
+                                  }}
+                                />
+                              )}
+                              {permissions?.delete && (
+                                <Assets
+                                  className={classes.deleteBox}
+                                  src={"/assets/icons/delete.svg"}
+                                  absolutePath={true}
+                                  onClick={() => {
+                                    _deleteScheduleMeeting(row?._id);
+                                  }}
+                                />
+                              )}
+                            </Box>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      )
+                    }) :
+                    <TableRow>
+                      <TableCell colSpan={12}> <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={2} />
+                      </TableCell>
+                    </TableRow>
+                  }
                 </TableBody>
-              </Table> : <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={2} />}
+              </Table> :
+                <WidgetLoader />}
             </TableContainer>
           </Grid>
           {meetingDetails?.count > 0 && <Grid item xs={12}>

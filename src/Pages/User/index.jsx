@@ -25,6 +25,7 @@ import CommonModal from "../../Components/Common/CommonModel";
 import MarketingModel from "../../Components/Common/MarketingModel";
 import Swal from "sweetalert2";
 import { globalAmountConfig } from "../../Utils/globalConfig";
+import WidgetLoader from "../../Components/Common/widgetLoader";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -163,12 +164,12 @@ const User = () => {
       if (model) {
         if (multiSelectedBranch?.length === 0) {
           formIsValid = false;
-          errors["branchName"] = "Please select branchName.";
+          errors["branchName"] = "Please select branch name.";
         }
       } else {
         if (!selectedBranch) {
           formIsValid = false;
-          errors["branchName"] = "Please select branchName.";
+          errors["branchName"] = "Please select branch name.";
         }
       }
     }
@@ -287,8 +288,6 @@ const User = () => {
   };
 
   const _getUsers = async () => {
-    toggleLoader();
-    // let body = `/users?limit=${rowsPerPage}&page=${page + 1}`
     let body = {
       limit: rowsPerPage,
       page: page + 1,
@@ -299,10 +298,8 @@ const User = () => {
         if (res?.data?.data) {
           setUserDetails(res?.data?.data);
         }
-        toggleLoader();
       })
       .catch((err) => {
-        toggleLoader();
         OnUpdateError(err.data.message);
       });
   };
@@ -320,24 +317,22 @@ const User = () => {
         }
       })
       .catch((err) => {
-        toggleLoader();
         OnUpdateError(err.data.message);
       });
   };
 
   const _getCountries = () => {
     toggleLoader();
-    axios
-      .get("/countries")
+    axios.get("/countries")
       .then((res) => {
         if (res?.data?.data) {
           setCountries(res?.data?.data);
         }
-        toggleLoader();
       })
       .catch((err) => {
-        toggleLoader();
         OnUpdateError(err.data.message);
+      }).finally(() => {
+        toggleLoader();
       });
   };
 
@@ -522,7 +517,7 @@ const User = () => {
   }, [countries, selectedCountry]);
 
   useEffect(() => {
-    if (selectedCountry && selectedState) {
+    if (states?.response && selectedCountry && selectedState) {
       _getCities();
     }
   }, [states, selectedState]);
@@ -739,7 +734,7 @@ const User = () => {
               </Grid>
               <Grid item xs={12}>
                 <TableContainer>
-                  {userDetails?.response?.length > 0 ? (
+                  {userDetails?.response != undefined ? (
                     <Table sx={{ minWidth: 600 }} aria-label="customized table">
                       <TableHead>
                         <TableRow>
@@ -754,60 +749,53 @@ const User = () => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {userDetails?.response?.length > 0 &&
-                          userDetails?.response?.map((row, index) => {
-                            const getRoleName = (type) => {
-                              return roles.filter((e) => e?.id == type)?.[0]
-                                ?.label;
-                            };
-                            return (
-                              <StyledTableRow key={index}>
-                                <StyledTableCell style={{ paddingLeft: "13px" }}>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                                <StyledTableCell className={classes.paddedRow} component="th" scope="row">{row.name}</StyledTableCell>
-                                <StyledTableCell>{row?.address}</StyledTableCell>
-                                <StyledTableCell>{row?.mobileNo}</StyledTableCell>
-                                <StyledTableCell>{row?.email}</StyledTableCell>
-                                <StyledTableCell>{row?.branchDetails?.map((e) => e?.branchName)?.join(",")}</StyledTableCell>
-                                <StyledTableCell>{getRoleName(row.userType)}</StyledTableCell>
-                                <StyledTableCell>
-                                  <Box display={"flex"} justifyContent={"end"} gap={1}>
-                                    {permissions?.update && <Assets
-                                      className={classes.writeBox}
-                                      src={"/assets/icons/write.svg"}
-                                      absolutePath={true}
-                                      onClick={() => { handleEdit(row); }}
-                                    />}
-                                    {/* <Assets
+                        {userDetails?.response?.length > 0 ? userDetails?.response?.map((row, index) => {
+                          const getRoleName = (type) => { return roles.filter((e) => e?.id == type)?.[0]?.label; };
+                          return (
+                            <StyledTableRow key={index}>
+                              <StyledTableCell style={{ paddingLeft: "13px" }}>{index + 1 + page * rowsPerPage}</StyledTableCell>
+                              <StyledTableCell className={classes.paddedRow} component="th" scope="row">{row.name}</StyledTableCell>
+                              <StyledTableCell>{row?.address}</StyledTableCell>
+                              <StyledTableCell>{row?.mobileNo}</StyledTableCell>
+                              <StyledTableCell>{row?.email}</StyledTableCell>
+                              <StyledTableCell>{row?.branchDetails?.map((e) => e?.branchName)?.join(",")}</StyledTableCell>
+                              <StyledTableCell>{getRoleName(row.userType)}</StyledTableCell>
+                              <StyledTableCell>
+                                <Box display={"flex"} justifyContent={"end"} gap={1}>
+                                  {permissions?.update && <Assets
+                                    className={classes.writeBox}
+                                    src={"/assets/icons/write.svg"}
+                                    absolutePath={true}
+                                    onClick={() => { handleEdit(row); }}
+                                  />}
+                                  {/* <Assets
                                       className={classes.viewBox}
                                       src={"/assets/icons/view.svg"}
                                       absolutePath={true}
                                     /> */}
-                                    {permissions?.delete && <Assets
-                                      className={classes.deleteBox}
-                                      src={"/assets/icons/delete.svg"}
-                                      absolutePath={true}
-                                      onClick={() => {
-                                        setDeleteId(row?._id);
-                                        _handleDelete();
-                                      }}
-                                    />}
-                                  </Box>
-                                </StyledTableCell>
-                              </StyledTableRow>
-                            );
-                          })}
+                                  {permissions?.delete && <Assets
+                                    className={classes.deleteBox}
+                                    src={"/assets/icons/delete.svg"}
+                                    absolutePath={true}
+                                    onClick={() => {
+                                      setDeleteId(row?._id);
+                                      _handleDelete();
+                                    }}
+                                  />}
+                                </Box>
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          );
+                        }) :
+                          <TableRow>
+                            <TableCell colSpan={12}> <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={2} />
+                            </TableCell>
+                          </TableRow>
+                        }
                       </TableBody>
                     </Table>
                   ) : (
-                    <DataNotFound
-                      icon={
-                        <ErrorOutlineIcon
-                          color="primary"
-                          style={{ fontSize: "3rem" }}
-                        />
-                      }
-                      elevation={2}
-                    />
+                    <WidgetLoader />
                   )}
                 </TableContainer>
               </Grid>

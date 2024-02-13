@@ -27,6 +27,7 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import WidgetLoader from "../../Components/Common/widgetLoader";
 
 
 const Accordion = styled((props) => (
@@ -253,7 +254,6 @@ const FinancialData = () => {
   };
 
   const _getFinancialData = async () => {
-    toggleLoader();
     let body = {
       limit: rowsPerPage,
       page: page + 1,
@@ -264,10 +264,8 @@ const FinancialData = () => {
         if (res?.data?.data) {
           setFinancialDetails(res?.data?.data);
         }
-        toggleLoader();
       })
       .catch((err) => {
-        toggleLoader();
         OnUpdateError(err.data.message);
       });
   };
@@ -282,7 +280,6 @@ const FinancialData = () => {
         }
       })
       .catch((err) => {
-        toggleLoader();
         OnUpdateError(err.data.message);
       });
   };
@@ -374,89 +371,95 @@ const FinancialData = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            {financialDetails?.response?.length > 0 ? financialDetails?.response?.map((val, index) => {
-              const sumOfInvestment = val.userPurchasePlan?.reduce((total, plan) => { return total + plan.investment }, 0);
-              return <Accordion expanded={expanded === index + 'panel1'} onChange={handleAccordian(index + 'panel1')} >
-                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<ArrowDownwardIcon sx={{ marginLeft: 3, marginRight: 3, fontSize: '1rem', color: theme.palette.primary.main }} />}>
-                  <Box display={'flex'} alignItems={'center'} width="100%" justifyContent="space-between">
-                    <Box display={'flex'} alignItems={'center'} flexShrink={0} width={'180px'}>
-                      <PersonOutlineIcon color="primary" fontSize="small" />
-                      <TextLabel color={theme.palette.primary.main} fontSize={"14px"} title={val?.name?.toUpperCase()} />
-                    </Box>
-                    <Box display={'flex'} flexWrap={'wrap'} alignItems={'center'} gap={10}>
-                      <Box display={'flex'} flexWrap={'wrap'} alignItems={'center'} gap={2}>
-                        <Box>
-                          <TextLabel fontSize={"12px"} title={"Total Plan"} textAlign={'start'} line />
-                          <TextLabel fontSize={"12px"} title={val.userPurchasePlan?.length} textAlign={'start'} fontWeight={600} />
-                        </Box>
-                        <Box>
-                          <TextLabel fontSize={"12px"} title={"Total Investment"} textAlign={'start'} line />
-                          <TextLabel fontSize={"12px"} title={globalAmountConfig(sumOfInvestment) || 0} textAlign={'start'} fontWeight={600} />
-                        </Box>
-                        <Box>
-                          <TextLabel fontSize={"12px"} title={"Status"} textAlign={'start'} line />
-                          <TextLabel fontSize={"12px"} color={val?.isGenerateId ? theme.palette.bgLightSuccess.main : theme.palette.bgLightBlue2.main} title={val?.isGenerateId ? "Generated" : "Pending"} textAlign={'center'} />
-                        </Box>
+            {financialDetails?.response != undefined ? financialDetails?.response?.length > 0 ?
+              financialDetails?.response?.map((val, index) => {
+                const sumOfInvestment = val.userPurchasePlan?.reduce((total, plan) => { return total + plan.investment }, 0);
+                return <Accordion expanded={expanded === index + 'panel1'} onChange={handleAccordian(index + 'panel1')} >
+                  <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<ArrowDownwardIcon sx={{ marginLeft: 3, marginRight: 3, fontSize: '1rem', color: theme.palette.primary.main }} />}>
+                    <Box display={'flex'} alignItems={'center'} width="100%" justifyContent="space-between">
+                      <Box display={'flex'} alignItems={'center'} flexShrink={0} width={'180px'}>
+                        <PersonOutlineIcon color="primary" fontSize="small" />
+                        <TextLabel color={theme.palette.primary.main} fontSize={"14px"} title={val?.name?.toUpperCase()} />
                       </Box>
-                      <Box display={"flex"} gap={1}>
-                        {permissions?.update && (
-                          <Assets className={classes.writeBox} src={"/assets/icons/write.svg"}
-                            absolutePath={true}
-                            onClick={() => {
-                              setData(val);
-                              setIsEdit(true);
-                              setModel(true);
-                              setFinancialId(val?._id);
-                            }}
-                          />
-                        )}
-                        {/* {permissions?.delete && (
+                      <Box display={'flex'} flexWrap={'wrap'} alignItems={'center'} gap={10}>
+                        <Box display={'flex'} flexWrap={'wrap'} alignItems={'center'} gap={2}>
+                          <Box>
+                            <TextLabel fontSize={"12px"} title={"Total Plan"} textAlign={'start'} line />
+                            <TextLabel fontSize={"12px"} title={val.userPurchasePlan?.length} textAlign={'start'} fontWeight={600} />
+                          </Box>
+                          <Box>
+                            <TextLabel fontSize={"12px"} title={"Total Investment"} textAlign={'start'} line />
+                            <TextLabel fontSize={"12px"} title={globalAmountConfig(sumOfInvestment) || 0} textAlign={'start'} fontWeight={600} />
+                          </Box>
+                          <Box>
+                            <TextLabel fontSize={"12px"} title={"Status"} textAlign={'start'} line />
+                            <TextLabel fontSize={"12px"} color={val?.isGenerateId ? theme.palette.bgLightSuccess.main : theme.palette.bgLightBlue2.main} title={val?.isGenerateId ? "Generated" : "Pending"} textAlign={'center'} />
+                          </Box>
+                        </Box>
+                        <Box display={"flex"} gap={1}>
+                          {permissions?.update && (
+                            <Assets className={classes.writeBox} src={"/assets/icons/write.svg"}
+                              absolutePath={true}
+                              onClick={() => {
+                                setData(val); setIsEdit(true); setModel(true); setFinancialId(val?._id);
+                              }}
+                            />
+                          )}
+                          {/* {permissions?.delete && (
                           <Assets
                             className={classes.deleteBox}
                             src={"/assets/icons/delete.svg"}
                             absolutePath={true}
                           />
                         )} */}
+                        </Box>
                       </Box>
-                    </Box>
 
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {/* <TableContainer> */}
-                  {val?.userPurchasePlan?.length > 0 && (
-                    <Table sx={{ minWidth: 600 }} aria-label="customized table">
-                      <TableHead>
-                        <TableRow>
-                          <StyledTableCell>No.</StyledTableCell>
-                          <StyledTableCell> Investment Date </StyledTableCell>
-                          <StyledTableCell> Closing Date </StyledTableCell>
-                          <StyledTableCell align="center"> Investment Days </StyledTableCell>
-                          <StyledTableCell> Return Amount Of Interest </StyledTableCell>
-                          <StyledTableCell> Investment Amount </StyledTableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {val?.userPurchasePlan?.length > 0 &&
-                          val?.userPurchasePlan?.map((row, index) => {
-                            console.log(row.createdAt, "row.createdAt")
-                            return (
-                              <StyledTableRow key={index}>
-                                <StyledTableCell style={{ paddingLeft: "15px" }}>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                                <StyledTableCell>{dayjs(row?.createdAt).format("DD/MM/YYYY")}</StyledTableCell>
-                                <StyledTableCell>{closeDate(row?.createdAt, row?.investmentDays)}</StyledTableCell>
-                                <StyledTableCell align="center">{row?.investmentDays}</StyledTableCell>
-                                <StyledTableCell>{`${(row.investment * row.returnOfInvestment) / 100}(${row.returnOfInvestment}%)`}</StyledTableCell>
-                                <StyledTableCell>{globalAmountConfig(row.investment)}</StyledTableCell>
-                              </StyledTableRow>
-                            );
-                          })}
-                      </TableBody>
-                    </Table>
-                  )}
-                </AccordionDetails>
-              </Accordion>
-            }) : <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={0} />}
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {/* <TableContainer> */}
+                    {val?.userPurchasePlan != undefined ? (
+                      <Table sx={{ minWidth: 600 }} aria-label="customized table">
+                        <TableHead>
+                          <TableRow>
+                            <StyledTableCell>No.</StyledTableCell>
+                            <StyledTableCell> Investment Date </StyledTableCell>
+                            <StyledTableCell> Closing Date </StyledTableCell>
+                            <StyledTableCell align="center"> Investment Days </StyledTableCell>
+                            <StyledTableCell> Return Amount Of Interest </StyledTableCell>
+                            <StyledTableCell> Investment Amount </StyledTableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {val?.userPurchasePlan?.length > 0 ?
+                            val?.userPurchasePlan?.map((row, index) => {
+                              console.log(row.createdAt, "row.createdAt")
+                              return (
+                                <StyledTableRow key={index}>
+                                  <StyledTableCell style={{ paddingLeft: "15px" }}>{index + 1 + page * rowsPerPage}</StyledTableCell>
+                                  <StyledTableCell>{dayjs(row?.createdAt).format("DD/MM/YYYY")}</StyledTableCell>
+                                  <StyledTableCell>{closeDate(row?.createdAt, row?.investmentDays)}</StyledTableCell>
+                                  <StyledTableCell align="center">{row?.investmentDays}</StyledTableCell>
+                                  <StyledTableCell>{`${(row.investment * row.returnOfInvestment) / 100}(${row.returnOfInvestment}%)`}</StyledTableCell>
+                                  <StyledTableCell>{globalAmountConfig(row.investment)}</StyledTableCell>
+                                </StyledTableRow>
+                              );
+                            }) : <TableRow>
+                              <TableCell colSpan={12}> <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={2} />
+                              </TableCell>
+                            </TableRow>}
+                        </TableBody>
+                      </Table>
+                    ) : <WidgetLoader />}
+                  </AccordionDetails>
+                </Accordion>
+              })
+              : <TableRow>
+                <TableCell colSpan={12}> <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={2} />
+                </TableCell>
+              </TableRow>
+              : <WidgetLoader />}
           </Grid>
           {financialDetails?.count > 0 && <Grid item xs={12}>
             <CommonPagination

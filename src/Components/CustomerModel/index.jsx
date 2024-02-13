@@ -280,7 +280,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                     <Grid item xs={12} sm={12} md={12} lg={12}>
                         <Box bgcolor={theme.palette.bgLightExtraPrimary.main} width={'100%'} border={`1px solid ${theme.palette.bgLightExtraPrimary.main}`} borderRadius={"10px"}>
                             {/* {i > 0 && ( */}
-                            <Box width={'20px'} display={"flex"} style={{ cursor: "pointer" }} margin={'6px 8px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
+                            <Box  display={"flex"} style={{ cursor: "pointer" }} margin={'6px 8px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
                                 <CloseIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "16px", marginRight: "1px", border: "0.5px dashed #F14336", cursor: "pointer", zoom: 1 }} onClick={() => setUserPurchasePlanDelete(i)} />
                             </Box>
                             {/* )} */}

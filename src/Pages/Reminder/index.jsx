@@ -16,6 +16,9 @@ import { closeDate } from '../../Utils/helper';
 import { globalAmountConfig } from '../../Utils/globalConfig';
 import SettleUpModel from './settleUpModel';
 import CommonModal from '../../Components/Common/CommonModel';
+import WidgetLoader from '../../Components/Common/widgetLoader';
+import DataNotFound from '../../Components/Common/DataNotFound';
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -130,7 +133,7 @@ const Reminder = () => {
         // }
     }
     const _getReminderList = () => {
-        toggleLoader();
+        // toggleLoader();
         let body = {
             limit: rowsPerPage,
             page: page + 1,
@@ -141,10 +144,10 @@ const Reminder = () => {
                 if (res?.data?.data) {
                     setReminderList(res?.data?.data);
                 }
-                toggleLoader();
+                // toggleLoader();
             })
             .catch((err) => {
-                toggleLoader();
+                // toggleLoader();
                 OnUpdateError(err?.data?.message);
             });
     };
@@ -160,40 +163,41 @@ const Reminder = () => {
     React.useEffect(() => {
         _getReminderList()
     }, [page, rowsPerPage, search]);
-
+    console.log(reminderList?.response, "reminderList?.response")
     return (
         <>
             <PaperContainer elevation={0} square={false}>
-                <Grid container>
-                    <Grid item xs={12}>
+                <Grid container xs={12} lg={12} md={12} sm={12}>
+                    <Grid itemxs={12} lg={12} md={12} sm={12}>
                         <TableHeading title="Reminder" handleSearch={(value) => { setSearch(value); }} />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} lg={12} md={12} sm={12}>
                         <TableContainer>
-                            <Table sx={{ minWidth: 600 }} aria-label="customized table">
-                                <TableHead >
-                                    <TableRow>
-                                        <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
-                                        <StyledTableCell>Name</StyledTableCell>
-                                        <StyledTableCell>  Investment Date </StyledTableCell>
-                                        <StyledTableCell > Closing Date</StyledTableCell>
-                                        <StyledTableCell> Investment Amount </StyledTableCell>
-                                        <StyledTableCell> Investment Days </StyledTableCell>
-                                        <StyledTableCell> Return Amount Of Interest </StyledTableCell>
-                                        {/* <StyledTableCell>  </StyledTableCell> */}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {reminderList?.response?.length > 0 ? reminderList?.response?.map((row, index) => (
-                                        <StyledTableRow key={index} >
-                                            <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                                            <StyledTableCell className={classes.paddedRow}>{row?.userDetails?.name}</StyledTableCell>
-                                            <StyledTableCell>{dayjs(row?.createdAt).format("DD/MM/YYYY")}</StyledTableCell>
-                                            <StyledTableCell>{closeDate(row?.createdAt, row?.investmentDays)}</StyledTableCell>
-                                            <StyledTableCell>{globalAmountConfig(row?.investment)}</StyledTableCell>
-                                            <StyledTableCell >{row?.investmentDays}</StyledTableCell>
-                                            <StyledTableCell>{`${(row?.investment * row?.returnOfInvestment) / 100}(${row?.returnOfInvestment}%)`}</StyledTableCell>
-                                            {/* <StyledTableCell>
+                            {reminderList?.response != undefined ? (
+                                <Table sx={{ minWidth: 600 }} aria-label="customized table">
+                                    <TableHead >
+                                        <TableRow>
+                                            <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
+                                            <StyledTableCell>Name</StyledTableCell>
+                                            <StyledTableCell>  Investment Date </StyledTableCell>
+                                            <StyledTableCell > Closing Date</StyledTableCell>
+                                            <StyledTableCell> Investment Amount </StyledTableCell>
+                                            <StyledTableCell> Investment Days </StyledTableCell>
+                                            <StyledTableCell> Return Amount Of Interest </StyledTableCell>
+                                            {/* <StyledTableCell>  </StyledTableCell> */}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {reminderList?.response?.length > 0 ? reminderList?.response?.map((row, index) => (
+                                            <StyledTableRow key={index} >
+                                                <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
+                                                <StyledTableCell className={classes.paddedRow}>{row?.userDetails?.name}</StyledTableCell>
+                                                <StyledTableCell>{dayjs(row?.createdAt).format("DD/MM/YYYY")}</StyledTableCell>
+                                                <StyledTableCell>{closeDate(row?.createdAt, row?.investmentDays)}</StyledTableCell>
+                                                <StyledTableCell>{globalAmountConfig(row?.investment)}</StyledTableCell>
+                                                <StyledTableCell >{row?.investmentDays}</StyledTableCell>
+                                                <StyledTableCell>{`${(row?.investment * row?.returnOfInvestment) / 100}(${row?.returnOfInvestment}%)`}</StyledTableCell>
+                                                {/* <StyledTableCell>
                                                 <Box display={"flex"} gap={1}>
                                                     <CommonButton
                                                         width={'90px'}
@@ -205,11 +209,19 @@ const Reminder = () => {
                                                     />
                                                 </Box>
                                             </StyledTableCell> */}
-
-                                        </StyledTableRow>
-                                    )) : ""}
-                                </TableBody>
-                            </Table>
+                                            </StyledTableRow>
+                                        )) :
+                                            <TableRow>
+                                                <TableCell colSpan={12}>
+                                                    <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={2} />
+                                                </TableCell>
+                                            </TableRow>
+                                        }
+                                    </TableBody>
+                                </Table>
+                            )
+                                : <WidgetLoader />
+                            }
                         </TableContainer>
                     </Grid>
                     {reminderList?.count > 0 && <Grid item xs={12}>

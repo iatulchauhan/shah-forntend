@@ -27,6 +27,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { lightTheme } from "../../theme";
 import { permissionStatus } from "../../Utils/enum";
 import { Regex } from "../../Utils/regex";
+import WidgetLoader from "../../Components/Common/widgetLoader";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -123,7 +124,7 @@ const Branches = () => {
     let errors = {};
     if (!data?.branchName) {
       formIsValid = false;
-      errors["branchName"] = "Please enter name.";
+      errors["branchName"] = "Please enter branch name.";
     }
     if (!data?.address) {
       formIsValid = false;
@@ -169,31 +170,26 @@ const Branches = () => {
   );
 
   const _getBranches = () => {
-    toggleLoader();
     let body = {
       limit: rowsPerPage,
       page: page + 1,
       search: search || "",
       isAll: true
     };
-    axios
-      .post(`/branch`, body)
+    axios.post(`/branch`, body)
       .then((res) => {
         if (res?.data?.data) {
           setBrancheDetails(res?.data?.data);
         }
-        toggleLoader();
       })
       .catch((err) => {
-        toggleLoader();
         OnUpdateError(err.data.message);
       });
   };
 
   const _getCountries = () => {
     toggleLoader();
-    axios
-      .get("/countries")
+    axios.get("/countries")
       .then((res) => {
         if (res?.data?.data) {
           setCountries(res?.data?.data);
@@ -329,15 +325,9 @@ const Branches = () => {
       const menuPermissions = menu.permissions;
       setPermissions({
         view: menuPermissions.includes(permissionStatus.view) ? true : false,
-        create: menuPermissions.includes(permissionStatus.create)
-          ? true
-          : false,
-        update: menuPermissions.includes(permissionStatus.update)
-          ? true
-          : false,
-        delete: menuPermissions.includes(permissionStatus.delete)
-          ? true
-          : false,
+        create: menuPermissions.includes(permissionStatus.create) ? true : false,
+        update: menuPermissions.includes(permissionStatus.update) ? true : false,
+        delete: menuPermissions.includes(permissionStatus.delete) ? true : false,
       });
     }
   }, [menuList, location]);
@@ -355,7 +345,7 @@ const Branches = () => {
           </Grid>
           <Grid item xs={12}>
             <TableContainer>
-              {brancesDetails?.response?.length > 0 ? (
+              {brancesDetails?.response != undefined ? (
                 <Table sx={{ minWidth: 600 }} aria-label="customized table">
                   <TableHead>
                     <TableRow>
@@ -374,7 +364,7 @@ const Branches = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {brancesDetails?.response?.length > 0 &&
+                    {brancesDetails?.response?.length > 0 ?
                       brancesDetails?.response?.map((row, index) => {
                         console.log(row, "rowwwwwwwwwwwwwww");
                         return (
@@ -439,19 +429,16 @@ const Branches = () => {
                             </StyledTableCell>
                           </StyledTableRow>
                         );
-                      })}
+                      }) :
+                      <TableRow>
+                        <TableCell colSpan={12}> <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={2} />
+                        </TableCell>
+                      </TableRow>
+                    }
                   </TableBody>
                 </Table>
               ) : (
-                <DataNotFound
-                  icon={
-                    <ErrorOutlineIcon
-                      color="primary"
-                      style={{ fontSize: "3rem" }}
-                    />
-                  }
-                  elevation={2}
-                />
+                <WidgetLoader />
               )}
             </TableContainer>
           </Grid>

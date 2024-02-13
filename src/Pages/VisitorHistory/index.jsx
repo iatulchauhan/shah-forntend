@@ -17,6 +17,9 @@ import CommonPagination from '../../Components/Common/Pagination';
 import { lightTheme } from '../../theme';
 import { useAppContext } from '../../Context/context';
 import axios from '../../APiSetUp/axios'
+import DataNotFound from '../../Components/Common/DataNotFound';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import WidgetLoader from '../../Components/Common/widgetLoader';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -90,7 +93,6 @@ const VisitorHistory = () => {
     };
 
     const _getVisitorHistory = () => {
-        toggleLoader();
         let body = {
             limit: rowsPerPage,
             page: page + 1,
@@ -101,9 +103,7 @@ const VisitorHistory = () => {
                 setVisitorHistoryDetails(res?.data?.data)
                 console.log('res?.data?.data👌', res)
             }
-            toggleLoader();
         }).catch((err) => {
-            toggleLoader();
             OnUpdateError(err?.data?.message);
         }
         );
@@ -120,23 +120,23 @@ const VisitorHistory = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <TableContainer>
-                            <Table sx={{ minWidth: 600 }} aria-label="customized table">
-                                <TableHead >
-                                    <TableRow>
-                                        <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
-                                        <StyledTableCell>Name</StyledTableCell>
-                                        <StyledTableCell>Visit Date</StyledTableCell>
-                                        <StyledTableCell><Box width={'200px'}>
-                                        </Box>Address</StyledTableCell>
-                                        <StyledTableCell>Email Id</StyledTableCell>
-                                        <StyledTableCell>Reason</StyledTableCell>
-                                        <StyledTableCell>Reference</StyledTableCell>
-                                        <StyledTableCell>Contact No.</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {visitorHistoryDetails?.response
-                                        ?.map((row, index) => (
+                            {visitorHistoryDetails?.response != undefined ?
+                                <Table sx={{ minWidth: 600 }} aria-label="customized table">
+                                    <TableHead >
+                                        <TableRow>
+                                            <StyledTableCell className={classes.paddedRow}>#</StyledTableCell>
+                                            <StyledTableCell>Name</StyledTableCell>
+                                            <StyledTableCell>Visit Date</StyledTableCell>
+                                            <StyledTableCell><Box width={'200px'}>
+                                            </Box>Address</StyledTableCell>
+                                            <StyledTableCell>Email Id</StyledTableCell>
+                                            <StyledTableCell>Reason</StyledTableCell>
+                                            <StyledTableCell>Reference</StyledTableCell>
+                                            <StyledTableCell>Contact No.</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {visitorHistoryDetails?.response?.length > 0 ? visitorHistoryDetails?.response?.map((row, index) => (
                                             <StyledTableRow key={index} >
                                                 <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.name}</StyledTableCell>
@@ -147,9 +147,13 @@ const VisitorHistory = () => {
                                                 <StyledTableCell>{row?.reference}</StyledTableCell>
                                                 <StyledTableCell>{row?.userDetail?.mobileNo}</StyledTableCell>
                                             </StyledTableRow>
-                                        ))}
-                                </TableBody>
-                            </Table>
+                                        )) : <TableRow>
+                                            <TableCell colSpan={12}> <DataNotFound icon={<ErrorOutlineIcon color="primary" style={{ fontSize: "3rem" }} />} elevation={2} />
+                                            </TableCell>
+                                        </TableRow>}
+                                    </TableBody>
+                                </Table> :
+                                <WidgetLoader />}
                         </TableContainer>
                     </Grid>
                     {visitorHistoryDetails?.count > 0 && <Grid item xs={12}>
@@ -162,7 +166,6 @@ const VisitorHistory = () => {
                         />
                     </Grid>}
                 </Grid>
-
             </PaperContainer>
         </>
     )
