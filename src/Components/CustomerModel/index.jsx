@@ -10,9 +10,18 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import { makeStyles } from "tss-react/mui";
 import dayjs from 'dayjs';
 import { Regex } from '../../Utils/regex';
 import { globalAmountConfig } from '../../Utils/globalConfig';
+
+const useStyles = makeStyles()((theme) => {
+    return {
+        customGridItem: {
+            paddingTop: '0px !important', // Adjust the margin top as needed
+        },
+    };
+});
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -45,6 +54,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, setSelectedBranch, selectedBranch,
     setSelectedState, selectedState, states, selectedCity, setSelectedCity, cities, error, handleChange, isEdit,
     onSubmit, setSelectedCountry, selectedCountry, countries, handleChangetable, addRow, visitorHistory, setUserPurchasePlanDelete, setUserPurchasePlanAdd }) => {
+
+    const { classes } = useStyles();
     useEffect(() => {
         const defaultCountry = "India";
         const defaultCountryObj = countries?.response?.find(country => country.name === defaultCountry);
@@ -264,18 +275,17 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                     </Box>
                 </Box>
             </Grid>
-            {data?.userPurchasePlan?.map((e, i) => {
-                console.log(e, "eee")
+            {data?.userPurchasePlan?.length > 0 ? data?.userPurchasePlan?.map((e, i) => {
                 return (
                     <Grid item xs={12} sm={12} md={12} lg={12}>
                         <Box bgcolor={theme.palette.bgLightExtraPrimary.main} width={'100%'} border={`1px solid ${theme.palette.bgLightExtraPrimary.main}`} borderRadius={"10px"}>
-                            {i > 0 && (
-                                <Box display={"flex"} sx={{ cursor: "pointer" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
-                                    <CloseIcon sx={{ color: "#fff", borderRadius: 1, fontSize: "18px", marginRight: "1px", backgroundColor: "#F14336", }} />
-                                </Box>
-                            )}
+                            {/* {i > 0 && ( */}
+                            <Box width={'20px'} display={"flex"} style={{ cursor: "pointer" }} margin={'6px 8px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
+                                <CloseIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "16px", marginRight: "1px", border: "0.5px dashed #F14336", cursor: "pointer", zoom: 1 }} onClick={() => setUserPurchasePlanDelete(i)} />
+                            </Box>
+                            {/* )} */}
                             <Grid container padding={'0px 5px 10px 5px'} spacing={2}>
-                                <Grid item xs={12} sm={12} md={6} lg={4}>
+                                <Grid item xs={12} sm={12} md={6} lg={4} className={classes.customGridItem}>
                                     <CommonTextField
                                         fontWeight={400}
                                         text={'Investment Amount'}
@@ -287,7 +297,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                                     />
                                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!e?.investment ? error?.investment : ""} />
                                 </Grid>
-                                <Grid item xs={12} sm={12} md={6} lg={4}>
+                                <Grid item xs={12} sm={12} md={6} lg={4} className={classes.customGridItem}>
                                     <CommonTextField
                                         fontWeight={400}
                                         text={'Investment Days'}
@@ -299,7 +309,7 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                                     />
                                     <TextLabel fontSize={"12px"} color={"red"} fontWeight={"400"} title={!e?.investmentDays ? error?.investmentDays : ""} />
                                 </Grid>
-                                <Grid item xs={12} sm={12} md={6} lg={4}>
+                                <Grid item xs={12} sm={12} md={6} lg={4} className={classes.customGridItem}>
                                     <CommonTextField
                                         fontWeight={400}
                                         text={'Return Of Investment (%)'}
@@ -316,7 +326,9 @@ const CustomerModel = ({ data, branches, roles, selectedRole, setSelectedRole, s
                         </Box>
                     </Grid>
                 );
-            })}
+            }) : <Grid item xs={12} sm={12} md={12} lg={12}>
+                <DataNotFound icon={<ErrorOutlineIcon color="error" style={{ fontSize: "3rem" }} />} elevation={0} title={'No Investment Detail Found!'} />
+            </Grid>}
 
 
 

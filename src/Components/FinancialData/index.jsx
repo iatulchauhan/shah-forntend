@@ -111,8 +111,8 @@ const AddFinancialData = ({ data, error, handleChange, isEdit, onSubmit, setSele
                                 })}>
                                     <DeleteForeverIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "22px", marginRight: "1px", backgroundColor: "" }} />
                                 </Box> :
-                                    <Box display={"flex"} style={{ cursor: "pointer" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
-                                        <CloseIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "16px", marginRight: "1px", border: "0.5px dashed #F14336",cursor: "pointer" }} />
+                                    <Box display={"flex"} style={{ cursor: "pointer" }} margin={'8px 8px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
+                                        <CloseIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "16px", marginRight: "1px", border: "0.5px dashed #F14336",cursor: "pointer" }} onClick={() => setUserPurchasePlanDelete(i)}/>
                                     </Box>
                                 }
 

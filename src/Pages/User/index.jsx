@@ -286,7 +286,7 @@ const User = () => {
     });
   };
 
-  const _getUsers = () => {
+  const _getUsers = async () => {
     toggleLoader();
     // let body = `/users?limit=${rowsPerPage}&page=${page + 1}`
     let body = {
@@ -294,7 +294,7 @@ const User = () => {
       page: page + 1,
       search: search || "",
     };
-    axios.post("/users", body)
+    await axios.post("/users", body)
       .then((res) => {
         if (res?.data?.data) {
           setUserDetails(res?.data?.data);
@@ -662,7 +662,7 @@ const User = () => {
         {customerModel && (
           <Grid item xs={12}>
             <TableHeading
-              title={`${isEdit ? "Update" : "Add"} Customer`}
+              title={`${isEdit ? "Update" : "Add"} Client`}
               handleBack={() => {
                 handleClear();
                 setCustomerModel(false);

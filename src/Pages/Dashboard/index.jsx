@@ -692,19 +692,19 @@ const upcomingData = meetingDetails.map((item, index) => {
                             justifyContent={"space-between"}
                             marginTop={2}
                           >
-                            <Box display={"flex"} gap={1}>
+                            {/* <Box display={"flex"} gap={1}>
                               <Avatar sx={{ height: "30px", width: "30px" }} />
                               <Avatar sx={{ height: "30px", width: "30px" }} />
                               <Avatar sx={{ height: "30px", width: "30px" }} />
                               <Avatar sx={{ height: "30px", width: "30px" }} />
-                            </Box>
-                            <CommonButton
+                            </Box> */}
+                            {/* <CommonButton
                               text="Export"
                               color={lightTheme.palette.bgWhite.main}
                               borderRadius={2}
                               background={item.borderColor}
                               fontSize={"10px"}
-                            />
+                            /> */}
                           </Box>
                         </Box>
                       );
@@ -774,19 +774,19 @@ const upcomingData = meetingDetails.map((item, index) => {
                             justifyContent={"space-between"}
                             marginTop={2}
                           >
-                            <Box display={"flex"} gap={1}>
+                            {/* <Box display={"flex"} gap={1}>
                               <Avatar sx={{ height: "30px", width: "30px" }} />
                               <Avatar sx={{ height: "30px", width: "30px" }} />
                               <Avatar sx={{ height: "30px", width: "30px" }} />
                               <Avatar sx={{ height: "30px", width: "30px" }} />
-                            </Box>
-                            <CommonButton
+                            </Box> */}
+                            {/* <CommonButton
                               text="Export"
                               color={lightTheme.palette.bgWhite.main}
                               borderRadius={2}
                               background={item.borderColor}
                               fontSize={"10px"}
-                            />
+                            /> */}
                           </Box>
                         </Box>
                       );

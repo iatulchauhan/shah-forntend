@@ -104,7 +104,7 @@ const AddNewFile = ({ data, error, handleChange, isEdit, onSubmit, setSelectedCl
                                     })}>
                                         <DeleteForeverIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "22px", marginRight: "1px", backgroundColor: "" }} />
                                     </Box> :
-                                        <Box display={"flex"}  style={{ cursor: "pointer" }} margin={'4px 4px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
+                                        <Box display={"flex"}  style={{ cursor: "pointer" }} margin={'8px 8px'} justifyContent={'end'} onClick={() => setUserPurchasePlanDelete(i)}>
                                             <CloseIcon sx={{ color: "#F14336", borderRadius: 1, fontSize: "16px", marginRight: "1px", cursor: "pointer", border: "0.5px dashed #F14336", }} />
                                         </Box>
                                     }
