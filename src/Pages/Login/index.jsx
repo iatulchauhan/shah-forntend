@@ -108,9 +108,9 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    requestForToken();
-  }, [])
+  // useEffect(() => {
+  //   requestForToken();
+  // }, [])
 
   return (
     <>

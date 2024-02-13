@@ -41,7 +41,7 @@ const OTPverification = () => {
     const [data, setData] = useState({})
     const [otp, setOtp] = useState('')
     const [error, setError] = useState({})
-    const { OnUpdateError, toggleLoader} = useAppContext();
+    const { OnUpdateError, toggleLoader } = useAppContext();
 
     //Validation
     const handleValidation = () => {
@@ -63,10 +63,7 @@ const OTPverification = () => {
     const handleLoginClick = () => {
         if (handleValidation()) {
             toggleLoader();
-            let body = {
-                "otp": parseInt(otp, 10),
-                "email": emailId,
-            }
+            let body = { "otp": parseInt(otp, 10), "email": emailId }
             axios.post("/otp_verification", body)
                 .then((res) => {
                     if (res?.data?.data) {
@@ -80,6 +77,22 @@ const OTPverification = () => {
                 }
                 );
         }
+    }
+
+    const handelResendOtp = () => {
+        toggleLoader();
+        let body = {
+            email: emailId,
+        }
+        axios.post("/forgetPassword", body)
+            .then((res) => {
+                swal(res?.data?.message, { icon: "success", timer: 5000, })
+                toggleLoader();
+            }).catch((err) => {
+                toggleLoader();
+                OnUpdateError(err.data.message);
+            }
+            );
     }
 
     return (
@@ -102,10 +115,10 @@ const OTPverification = () => {
                             onChange={handleChange}
                             renderInput={(props, index) => <input {...props} className={classes.otpBox} />}
                         />
-                         <TextLabel fontSize={"12px"} color={"red"} title={!data?.otp ? error?.otp : ""} />
+                        <TextLabel fontSize={"12px"} color={"red"} title={!data?.otp ? error?.otp : ""} />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}>
-                        <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', color: lightTheme.palette.primary.main }}>{'Resend OTP'}</Typography>
+                        <Typography style={{ fontSize: '16px', fontWeight: 500, textAlign: 'center', cursor: "pointer", color: lightTheme.palette.primary.main }} onClick={handelResendOtp}>{'Resend OTP'}</Typography>
                         <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '7rem' }}>
                             <CommonButton
                                 width={'200px'}
